@@ -36,4 +36,5 @@ RUN npm install --omit=dev
 COPY ./ ./
 
 # Run the web service on container startup.
-CMD [ "node ." ]
+# Run the web service on container startup.
+CMD [ "npm", "start" ]
