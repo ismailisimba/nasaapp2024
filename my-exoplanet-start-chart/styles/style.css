@@ -21,4 +21,14 @@ body {
     padding: 10px;
     background-color: #111;
   }
+/* Add to your style.css */
+#instructions {
+  position: absolute;
+  top: 120px;
+  left: 10px;
+  background-color: rgba(17, 17, 17, 0.8);
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}
   

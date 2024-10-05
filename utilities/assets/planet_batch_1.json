@@ -101,7 +101,7 @@
     "id": "2MASS J02192210-3925225",
     "ra": 34.8427046,
     "dec": -39.4230767,
-    "vmag": 0,
+    "vmag": null,
     "distance": 13.069223031200002
   },
   {
@@ -115,22 +115,22 @@
     "id": "2MASS J03590986+2009361",
     "ra": 59.7911026,
     "dec": 20.1599759,
-    "vmag": 0,
+    "vmag": null,
     "distance": 38.28381
   },
   {
     "id": "2MASS J04414489+2301513",
     "ra": 70.4371079,
     "dec": 23.0308544,
-    "vmag": 0,
+    "vmag": null,
     "distance": 39.258219762
   },
   {
     "id": "2MASS J11011926-7732383",
     "ra": 165.3295388,
     "dec": -77.5440912,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "2MASS J11550485-7919108",
@@ -584,21 +584,21 @@
     "id": "CFBDSIR J145829+101343",
     "ra": 224.6208333,
     "dec": 10.2286111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 7.530600000000001
   },
   {
     "id": "CFHTWIR-Oph 98 A",
     "ra": 246.934277,
     "dec": -23.98115,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "CHXR 73",
     "ra": 166.6193985,
     "dec": -77.6258725,
-    "vmag": 0,
+    "vmag": null,
     "distance": 62.061924
   },
   {
@@ -892,7 +892,7 @@
     "id": "DENIS-P J082303.1-491201",
     "ra": 125.7620668,
     "dec": -49.2003008,
-    "vmag": 0,
+    "vmag": null,
     "distance": 6.77102
   },
   {
@@ -1270,7 +1270,7 @@
     "id": "FU Tau",
     "ra": 65.8974962,
     "dec": 25.0506711,
-    "vmag": 0,
+    "vmag": null,
     "distance": 43.5193851916
   },
   {
@@ -2285,7 +2285,7 @@
     "id": "Gaia22dkvL",
     "ra": 151.769,
     "dec": -66.1808889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 414.02000000000004
   },
   {
@@ -9285,7 +9285,7 @@
     "id": "HIP 81208 C",
     "ra": 248.8075,
     "dec": -35.7247583,
-    "vmag": 0,
+    "vmag": null,
     "distance": 48.095758
   },
   {
@@ -9502,7 +9502,7 @@
     "id": "ITG 15 A",
     "ra": 69.9370379,
     "dec": 26.0312128,
-    "vmag": 0,
+    "vmag": null,
     "distance": 44.45662
   },
   {
@@ -10517,7 +10517,7 @@
     "id": "K2-2016-BLG-0005L",
     "ra": 269.8798333,
     "dec": -27.6074722,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1695.2
   },
   {
@@ -11602,7 +11602,7 @@
     "id": "K2-332",
     "ra": 135.8832666,
     "dec": 14.2504994,
-    "vmag": 0,
+    "vmag": null,
     "distance": 40.163852
   },
   {
@@ -13128,609 +13128,609 @@
     "id": "KMT-2016-BLG-0212L",
     "ra": 268.43925,
     "dec": -29.0868889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2053.8
   },
   {
     "id": "KMT-2016-BLG-1105L",
     "ra": 266.44725,
     "dec": -26.2663694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1656.0800000000002
   },
   {
     "id": "KMT-2016-BLG-1107L",
     "ra": 266.41775,
     "dec": -26.0318,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2168.226
   },
   {
     "id": "KMT-2016-BLG-1397L",
     "ra": 272.664612,
     "dec": -24.8577385,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2151.6
   },
   {
     "id": "KMT-2016-BLG-1820L",
     "ra": 268.76474,
     "dec": -29.5169201,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2040.76
   },
   {
     "id": "KMT-2016-BLG-1836L",
     "ra": 268.250333,
     "dec": -30.04075,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2314.6
   },
   {
     "id": "KMT-2016-BLG-2142L",
     "ra": 268.112,
     "dec": -29.3845615,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2285.26
   },
   {
     "id": "KMT-2016-BLG-2364L",
     "ra": 265.715667,
     "dec": -27.4355611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2099.44
   },
   {
     "id": "KMT-2016-BLG-2397L",
     "ra": 266.212542,
     "dec": -23.2013806,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1590.88
   },
   {
     "id": "KMT-2016-BLG-2605L",
     "ra": 269.8230833,
     "dec": -26.982,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2093.246
   },
   {
     "id": "KMT-2017-BLG-0165L",
     "ra": 269.6496667,
     "dec": -28.1336694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1476.78
   },
   {
     "id": "KMT-2017-BLG-0428L",
     "ra": 271.38525,
     "dec": -28.4902806,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1760.4
   },
   {
     "id": "KMT-2017-BLG-0673L",
     "ra": 264.7570417,
     "dec": -33.8080278,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1656.0800000000002
   },
   {
     "id": "KMT-2017-BLG-1003L",
     "ra": 265.4115,
     "dec": -24.3739389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2311.34
   },
   {
     "id": "KMT-2017-BLG-1038L",
     "ra": 266.170917,
     "dec": -25.1430306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1956
   },
   {
     "id": "KMT-2017-BLG-1146L",
     "ra": 269.105833,
     "dec": -33.1424694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2119
   },
   {
     "id": "KMT-2017-BLG-1194L",
     "ra": 274.322125,
     "dec": -25.3239389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1382.24
   },
   {
     "id": "KMT-2017-BLG-2509L",
     "ra": 265.589875,
     "dec": -26.31715,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2295.04
   },
   {
     "id": "KMT-2018-BLG-0029L",
     "ra": 264.469458,
     "dec": -27.9847,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1101.88
   },
   {
     "id": "KMT-2018-BLG-0030L",
     "ra": 264.5166667,
     "dec": -28.041625,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2112.48
   },
   {
     "id": "KMT-2018-BLG-0087L",
     "ra": 264.327,
     "dec": -27.8320611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2288.52
   },
   {
     "id": "KMT-2018-BLG-0247L",
     "ra": 264.5600417,
     "dec": -27.1504111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2203.76
   },
   {
     "id": "KMT-2018-BLG-0748L",
     "ra": 267.8745,
     "dec": -30.6463889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2379.8
   },
   {
     "id": "KMT-2018-BLG-0885L",
     "ra": 268.9663333,
     "dec": -28.5133611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2246.14
   },
   {
     "id": "KMT-2018-BLG-1025L",
     "ra": 269.8664167,
     "dec": -27.8780611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2185.83
   },
   {
     "id": "KMT-2018-BLG-1292L",
     "ra": 263.427583,
     "dec": -33.5206694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1127.96
   },
   {
     "id": "KMT-2018-BLG-1743L",
     "ra": 274.283375,
     "dec": -26.3596389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2113.458
   },
   {
     "id": "KMT-2018-BLG-1976L",
     "ra": 266.3546667,
     "dec": -35.7003306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1903.8400000000001
   },
   {
     "id": "KMT-2018-BLG-1988L",
     "ra": 265.2825417,
     "dec": -35.5947,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1352.9
   },
   {
     "id": "KMT-2018-BLG-1990L",
     "ra": 268.435375,
     "dec": -22.1525389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 315.242
   },
   {
     "id": "KMT-2018-BLG-1996L",
     "ra": 268.6785,
     "dec": -22.8204111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1926.66
   },
   {
     "id": "KMT-2018-BLG-2602L",
     "ra": 267.3970417,
     "dec": -21.9762,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1405.06
   },
   {
     "id": "KMT-2019-BLG-0253L",
     "ra": 267.8825833,
     "dec": -29.5654722,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1597.4
   },
   {
     "id": "KMT-2019-BLG-0297L",
     "ra": 270.0632917,
     "dec": -28.9652806,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1007.34
   },
   {
     "id": "KMT-2019-BLG-0298L",
     "ra": 264.878,
     "dec": -27.6381389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2187.46
   },
   {
     "id": "KMT-2019-BLG-0335L",
     "ra": 262.840125,
     "dec": -29.5906889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2513.46
   },
   {
     "id": "KMT-2019-BLG-0371L",
     "ra": 268.3839167,
     "dec": -31.5550222,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2285.26
   },
   {
     "id": "KMT-2019-BLG-0414L",
     "ra": 268.8529167,
     "dec": -21.8955389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1437.66
   },
   {
     "id": "KMT-2019-BLG-0842L",
     "ra": 268.458458,
     "dec": -29.8774389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1082.32
   },
   {
     "id": "KMT-2019-BLG-0953L",
     "ra": 269.3385833,
     "dec": -28.6746389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2347.2000000000003
   },
   {
     "id": "KMT-2019-BLG-1042L",
     "ra": 270.5440417,
     "dec": -27.5806694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2151.6
   },
   {
     "id": "KMT-2019-BLG-1216L",
     "ra": 268.480625,
     "dec": -35.1366389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 893.24
   },
   {
     "id": "KMT-2019-BLG-1339L",
     "ra": 265.743417,
     "dec": -25.5739167,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1995.1200000000001
   },
   {
     "id": "KMT-2019-BLG-1367L",
     "ra": 272.4713333,
     "dec": -29.7622111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1522.42
   },
   {
     "id": "KMT-2019-BLG-1552L",
     "ra": 269.5957917,
     "dec": -27.5669389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1499.6000000000001
   },
   {
     "id": "KMT-2019-BLG-1715L",
     "ra": 270.3717083,
     "dec": -28.7771389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1258.3600000000001
   },
   {
     "id": "KMT-2019-BLG-1806L",
     "ra": 270.5375417,
     "dec": -29.4148889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2164.64
   },
   {
     "id": "KMT-2019-BLG-1953L",
     "ra": 269.11625,
     "dec": -28.2011111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2295.04
   },
   {
     "id": "KMT-2019-BLG-2783L",
     "ra": 269.2919167,
     "dec": -33.7885194,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1926.66
   },
   {
     "id": "KMT-2019-BLG-2974L",
     "ra": 267.8520833,
     "dec": -29.4231611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1988.6000000000001
   },
   {
     "id": "KMT-2020-BLG-0414L",
     "ra": 271.915,
     "dec": -28.4852222,
-    "vmag": 0,
+    "vmag": null,
     "distance": 260.8
   },
   {
     "id": "KMT-2020-BLG-0414L",
     "ra": 271.915,
     "dec": -28.4852222,
-    "vmag": 0,
+    "vmag": null,
     "distance": 260.8
   },
   {
     "id": "KMT-2021-BLG-0119L",
     "ra": 274.0005417,
     "dec": -29.7438889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1020.38
   },
   {
     "id": "KMT-2021-BLG-0171L",
     "ra": 269.2416667,
     "dec": -30.0930556,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1499.6000000000001
   },
   {
     "id": "KMT-2021-BLG-0192L",
     "ra": 268.1049583,
     "dec": -30.0086889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1669.1200000000001
   },
   {
     "id": "KMT-2021-BLG-0240L",
     "ra": 267.5772917,
     "dec": -30.0049694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2151.6
   },
   {
     "id": "KMT-2021-BLG-0320L",
     "ra": 269.388125,
     "dec": -30.5039389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2265.7000000000003
   },
   {
     "id": "KMT-2021-BLG-0322L",
     "ra": 270.9116667,
     "dec": -29.6043889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2151.6
   },
   {
     "id": "KMT-2021-BLG-0712L",
     "ra": 269.2856667,
     "dec": -31.1844694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1007.34
   },
   {
     "id": "KMT-2021-BLG-0748L",
     "ra": 272.4213333,
     "dec": -25.7465806,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1985.3400000000001
   },
   {
     "id": "KMT-2021-BLG-0909L",
     "ra": 265.6202083,
     "dec": -27.6391389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2112.48
   },
   {
     "id": "KMT-2021-BLG-0912L",
     "ra": 269.8211667,
     "dec": -31.9976389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1812.5600000000002
   },
   {
     "id": "KMT-2021-BLG-1077L",
     "ra": 266.489125,
     "dec": -33.8428111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2686.2400000000002
   },
   {
     "id": "KMT-2021-BLG-1077L",
     "ra": 266.489125,
     "dec": -33.8428111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2686.2400000000002
   },
   {
     "id": "KMT-2021-BLG-1105L",
     "ra": 265.73225,
     "dec": -25.5089111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1480.04
   },
   {
     "id": "KMT-2021-BLG-1150L",
     "ra": 268.790125,
     "dec": -31.3133306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1238.8
   },
   {
     "id": "KMT-2021-BLG-1253L",
     "ra": 267.6172083,
     "dec": -29.2792806,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2164.64
   },
   {
     "id": "KMT-2021-BLG-1303L",
     "ra": 271.863875,
     "dec": -29.2815806,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2047.28
   },
   {
     "id": "KMT-2021-BLG-1372L",
     "ra": 264.4885417,
     "dec": -28.1483889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1946.22
   },
   {
     "id": "KMT-2021-BLG-1391L",
     "ra": 270.6835833,
     "dec": -28.0605,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1864.72
   },
   {
     "id": "KMT-2021-BLG-1547L",
     "ra": 272.3995833,
     "dec": -29.0839389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1652.8200000000002
   },
   {
     "id": "KMT-2021-BLG-1554L",
     "ra": 267.8034167,
     "dec": -31.8643611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2503.6800000000003
   },
   {
     "id": "KMT-2021-BLG-1689L",
     "ra": 269.5791667,
     "dec": -30.1452778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2347.2000000000003
   },
   {
     "id": "KMT-2021-BLG-1770L",
     "ra": 270.4399583,
     "dec": -27.4186694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2255.92
   },
   {
     "id": "KMT-2021-BLG-1898L",
     "ra": 265.691875,
     "dec": -27.3758389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2249.4
   },
   {
     "id": "KMT-2021-BLG-2010L",
     "ra": 268.0085,
     "dec": -32.26975,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2311.34
   },
   {
     "id": "KMT-2021-BLG-2294L",
     "ra": 270.0624167,
     "dec": -28.6124389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2216.8
   },
   {
     "id": "KMT-2021-BLG-2478L",
     "ra": 269.3092083,
     "dec": -29.1019694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 968.22
   },
   {
     "id": "KMT-2022-BLG-0371L",
     "ra": 265.3619167,
     "dec": -34.6986694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2327.64
   },
   {
     "id": "KMT-2022-BLG-0440L",
     "ra": 269.5835833,
     "dec": -32.2953056,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1141
   },
   {
     "id": "KMT-2022-BLG-1013L",
     "ra": 264.70925,
     "dec": -28.3556694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2513.46
   },
   {
     "id": "KMT-2023-BLG-0416L",
     "ra": 266.3240417,
     "dec": -25.0794889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1923.4
   },
   {
     "id": "KMT-2023-BLG-0469L",
     "ra": 269.4067917,
     "dec": -28.7150611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2304.82
   },
   {
     "id": "KMT-2023-BLG-0735L",
     "ra": 267.5759583,
     "dec": -29.2029194,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2083.14
   },
   {
     "id": "KMT-2023-BLG-1431L",
     "ra": 271.1835417,
     "dec": -29.7439194,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2216.8
   },
   {
     "id": "KMT-2023-BLG-1454L",
     "ra": 267.6200833,
     "dec": -29.62275,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2353.7200000000003
   },
   {
     "id": "KMT-2023-BLG-1642L",
     "ra": 261.366,
     "dec": -29.0584694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2275.48
   },
   {
@@ -20493,7 +20493,7 @@
     "ra": 287.2368778,
     "dec": 43.5671665,
     "vmag": 13.485,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1677",
@@ -21046,7 +21046,7 @@
     "ra": 297.0148111,
     "dec": 47.486417,
     "vmag": 15.498,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1738",
@@ -21214,7 +21214,7 @@
     "ra": 294.364904,
     "dec": 40.7208898,
     "vmag": 15.736,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1757",
@@ -21270,7 +21270,7 @@
     "ra": 284.1326058,
     "dec": 48.8251452,
     "vmag": 14.472,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1761",
@@ -21564,7 +21564,7 @@
     "ra": 286.4792568,
     "dec": 39.2698793,
     "vmag": 16.188,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1796",
@@ -21746,7 +21746,7 @@
     "ra": 292.2399069,
     "dec": 48.5115214,
     "vmag": 15.639,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1814",
@@ -22117,7 +22117,7 @@
     "ra": 283.4018628,
     "dec": 41.5161554,
     "vmag": 16.556,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1856",
@@ -22656,7 +22656,7 @@
     "ra": 296.6171677,
     "dec": 41.2811677,
     "vmag": 16.092,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1911",
@@ -22964,7 +22964,7 @@
     "ra": 281.8980828,
     "dec": 42.2858185,
     "vmag": 13.586,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1946",
@@ -23132,7 +23132,7 @@
     "ra": 297.0588033,
     "dec": 49.4784362,
     "vmag": 16.363,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1965",
@@ -23293,14 +23293,14 @@
     "ra": 291.2850446,
     "dec": 40.7300225,
     "vmag": 16.192,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1985",
     "ra": 293.5663715,
     "dec": 42.1325825,
     "vmag": 15.223,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "Kepler-1986",
@@ -33456,8 +33456,8 @@
     "id": "Luhman 16 A",
     "ra": 162.3282594,
     "dec": -53.3193715,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "Lupus-TR-3",
@@ -33470,8 +33470,8 @@
     "id": "M62H",
     "ra": 255.3074504,
     "dec": -30.1069833,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "MASCARA-1",
@@ -33491,56 +33491,56 @@
     "id": "MOA-2007-BLG-192L",
     "ra": 272.015825,
     "dec": -27.150075,
-    "vmag": 0,
+    "vmag": null,
     "distance": 326
   },
   {
     "id": "MOA-2007-BLG-400L",
     "ra": 272.4249167,
     "dec": -29.2241528,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2246.14
   },
   {
     "id": "MOA-2008-BLG-310L",
     "ra": 268.560542,
     "dec": -34.7780528,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2510.2000000000003
   },
   {
     "id": "MOA-2008-BLG-379L",
     "ra": 269.706,
     "dec": -30.1969306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1075.8
   },
   {
     "id": "MOA-2009-BLG-266L",
     "ra": 267.008125,
     "dec": -35.0054111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 991.0400000000001
   },
   {
     "id": "MOA-2009-BLG-319L",
     "ra": 271.742208,
     "dec": -26.8196917,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2298.3
   },
   {
     "id": "MOA-2009-BLG-387L",
     "ra": 268.461625,
     "dec": -33.9903333,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1854.94
   },
   {
     "id": "MOA-2010-BLG-073L",
     "ra": 272.547258,
     "dec": -26.5229319,
-    "vmag": 0,
+    "vmag": null,
     "distance": 912.8000000000001
   },
   {
@@ -33554,147 +33554,147 @@
     "id": "MOA-2010-BLG-328L",
     "ra": 269.496333,
     "dec": -30.715175,
-    "vmag": 0,
+    "vmag": null,
     "distance": 264.06
   },
   {
     "id": "MOA-2010-BLG-353L",
     "ra": 271.303917,
     "dec": -27.2932333,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2096.1800000000003
   },
   {
     "id": "MOA-2010-BLG-477L",
     "ra": 271.531006,
     "dec": -31.4544773,
-    "vmag": 0,
+    "vmag": null,
     "distance": 749.8000000000001
   },
   {
     "id": "MOA-2011-BLG-028L",
     "ra": 270.854,
     "dec": -29.2134167,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2405.88
   },
   {
     "id": "MOA-2011-BLG-262L",
     "ra": 270.097833,
     "dec": -31.2452583,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2347.2000000000003
   },
   {
     "id": "MOA-2011-BLG-291L",
     "ra": 268.867889,
     "dec": -29.1706657,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1434.4
   },
   {
     "id": "MOA-2011-BLG-293L",
     "ra": 268.913958,
     "dec": -28.4768472,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2516.7200000000003
   },
   {
     "id": "MOA-2011-BLG-322L",
     "ra": 271.223333,
     "dec": -27.2209444,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2464.56
   },
   {
     "id": "MOA-2012-BLG-006L",
     "ra": 270.442963,
     "dec": -29.108778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1727.8
   },
   {
     "id": "MOA-2012-BLG-505L",
     "ra": 268.143097,
     "dec": -32.0400925,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2350.46
   },
   {
     "id": "MOA-2013-BLG-220L",
     "ra": 270.985417,
     "dec": -29.5447222,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2190.7200000000003
   },
   {
     "id": "MOA-2013-BLG-605L",
     "ra": 272.019257,
     "dec": -29.7315826,
-    "vmag": 0,
+    "vmag": null,
     "distance": 277.1
   },
   {
     "id": "MOA-2015-BLG-337L",
     "ra": 271.9487,
     "dec": -28.1702785,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2314.6
   },
   {
     "id": "MOA-2016-BLG-227L",
     "ra": 271.473755,
     "dec": -27.7142868,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2119
   },
   {
     "id": "MOA-2016-BLG-319L",
     "ra": 268.742218,
     "dec": -29.7504635,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2216.8
   },
   {
     "id": "MOA-2019-BLG-008L",
     "ra": 267.982875,
     "dec": -29.9897306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 880.2
   },
   {
     "id": "MOA-2020-BLG-135L",
     "ra": 268.4235,
     "dec": -29.8075667,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2575.4
   },
   {
     "id": "MOA-2020-BLG-208L",
     "ra": 268.4325,
     "dec": -32.5893111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2441.7400000000002
   },
   {
     "id": "MOA-2022-BLG-249L",
     "ra": 268.8655417,
     "dec": -28.3060611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 652
   },
   {
     "id": "MOA-2022-BLG-563L",
     "ra": 270.3002083,
     "dec": -27.8358306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2128.78
   },
   {
     "id": "MOA-bin-1L",
     "ra": 261.7925,
     "dec": -29.7939722,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1662.6000000000001
   },
   {
@@ -33715,8 +33715,8 @@
     "id": "MXB 1658-298",
     "ra": 255.5272522,
     "dec": -29.9455833,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "NGC 2682 Sand 1429",
@@ -33974,14 +33974,14 @@
     "id": "OGLE-2003-BLG-235L",
     "ra": 271.318125,
     "dec": -28.895,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1890.8000000000002
   },
   {
     "id": "OGLE-2005-BLG-071L",
     "ra": 267.540708,
     "dec": -34.6731944,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1043.2
   },
   {
@@ -33995,28 +33995,28 @@
     "id": "OGLE-2005-BLG-390L",
     "ra": 268.579958,
     "dec": -30.3773056,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2151.6
   },
   {
     "id": "OGLE-2006-BLG-109L",
     "ra": 268.143792,
     "dec": -30.0877778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 492.26
   },
   {
     "id": "OGLE-2006-BLG-109L",
     "ra": 268.143792,
     "dec": -30.0877778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 492.26
   },
   {
     "id": "OGLE-2006-BLG-284L A",
     "ra": 269.65925,
     "dec": -29.1366667,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1304
   },
   {
@@ -34037,35 +34037,35 @@
     "id": "OGLE-2008-BLG-092L",
     "ra": 267.540708,
     "dec": -34.6731944,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2640.6
   },
   {
     "id": "OGLE-2008-BLG-355L",
     "ra": 269.786708,
     "dec": -30.7594722,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2216.8
   },
   {
     "id": "OGLE-2011-BLG-0173L",
     "ra": 269.315735,
     "dec": -28.2338619,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1988.6000000000001
   },
   {
     "id": "OGLE-2011-BLG-0251L",
     "ra": 264.559083,
     "dec": -27.1361389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 837.82
   },
   {
     "id": "OGLE-2011-BLG-0265L",
     "ra": 269.448833,
     "dec": -27.3945278,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1427.88
   },
   {
@@ -34086,63 +34086,63 @@
     "id": "OGLE-2012-BLG-0358L",
     "ra": 265.694875,
     "dec": -24.261,
-    "vmag": 0,
+    "vmag": null,
     "distance": 573.76
   },
   {
     "id": "OGLE-2012-BLG-0406L",
     "ra": 268.325708,
     "dec": -30.4711667,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1620.22
   },
   {
     "id": "OGLE-2012-BLG-0563L",
     "ra": 271.4905,
     "dec": -27.712,
-    "vmag": 0,
+    "vmag": null,
     "distance": 423.8
   },
   {
     "id": "OGLE-2012-BLG-0724L",
     "ra": 268.9682917,
     "dec": -29.8185278,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2184.2000000000003
   },
   {
     "id": "OGLE-2012-BLG-0838L",
     "ra": 273.003083,
     "dec": -25.7116111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2060.32
   },
   {
     "id": "OGLE-2012-BLG-0950L",
     "ra": 272.019257,
     "dec": -29.7315826,
-    "vmag": 0,
+    "vmag": null,
     "distance": 847.6
   },
   {
     "id": "OGLE-2013-BLG-0102L",
     "ra": 268.0295,
     "dec": -31.6905833,
-    "vmag": 0,
+    "vmag": null,
     "distance": 991.0400000000001
   },
   {
     "id": "OGLE-2013-BLG-0132L",
     "ra": 269.764618,
     "dec": -28.4210281,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1271.4
   },
   {
     "id": "OGLE-2013-BLG-0341L B",
     "ra": 268.031208,
     "dec": -29.8461111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 296.986
   },
   {
@@ -34156,168 +34156,168 @@
     "id": "OGLE-2013-BLG-1721L",
     "ra": 268.126556,
     "dec": -30.2926941,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2053.8
   },
   {
     "id": "OGLE-2013-BLG-1761L",
     "ra": 268.409485,
     "dec": -28.8952713,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2249.4
   },
   {
     "id": "OGLE-2014-BLG-0124L",
     "ra": 270.6217083,
     "dec": -28.39625,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1141
   },
   {
     "id": "OGLE-2014-BLG-0221L",
     "ra": 270.30375,
     "dec": -27.4267639,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1199.68
   },
   {
     "id": "OGLE-2014-BLG-0319L",
     "ra": 266.9611667,
     "dec": -33.9350444,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2519.98
   },
   {
     "id": "OGLE-2014-BLG-0676L",
     "ra": 268.1020833,
     "dec": -30.5483889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 870.4200000000001
   },
   {
     "id": "OGLE-2014-BLG-1722L",
     "ra": 268.75238,
     "dec": -31.4690552,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2086.4
   },
   {
     "id": "OGLE-2014-BLG-1722L",
     "ra": 268.75238,
     "dec": -31.4690552,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2086.4
   },
   {
     "id": "OGLE-2014-BLG-1760L",
     "ra": 269.408997,
     "dec": -28.9631577,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2236.36
   },
   {
     "id": "OGLE-2015-BLG-0051L",
     "ra": 269.662537,
     "dec": -28.0316944,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2673.2000000000003
   },
   {
     "id": "OGLE-2015-BLG-0954L",
     "ra": 270.184333,
     "dec": -28.6608889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 391.2
   },
   {
     "id": "OGLE-2015-BLG-0966L",
     "ra": 268.75425,
     "dec": -29.0471111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1075.8
   },
   {
     "id": "OGLE-2015-BLG-1649L",
     "ra": 271.2050417,
     "dec": -32.6330278,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1378.98
   },
   {
     "id": "OGLE-2015-BLG-1670L",
     "ra": 268.1587917,
     "dec": -28.5519167,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2184.2000000000003
   },
   {
     "id": "OGLE-2015-BLG-1771L",
     "ra": 268.799,
     "dec": -28.86275,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2304.82
   },
   {
     "id": "OGLE-2016-BLG-0263L",
     "ra": 269.895416,
     "dec": -31.8186111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2119
   },
   {
     "id": "OGLE-2016-BLG-0613L AB",
     "ra": 269.260406,
     "dec": -28.1161671,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1111.66
   },
   {
     "id": "OGLE-2016-BLG-1067L",
     "ra": 273.2045,
     "dec": -27.0126389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1215.98
   },
   {
     "id": "OGLE-2016-BLG-1093L",
     "ra": 269.0042917,
     "dec": -32.7134722,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2647.12
   },
   {
     "id": "OGLE-2016-BLG-1190L",
     "ra": 269.717926,
     "dec": -27.6135559,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2207.02
   },
   {
     "id": "OGLE-2016-BLG-1195L",
     "ra": 268.847931,
     "dec": -30.2072506,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1274.66
   },
   {
     "id": "OGLE-2016-BLG-1227L",
     "ra": 265.597125,
     "dec": -33.7597778,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "OGLE-2017-BLG-0173L",
     "ra": 267.970612,
     "dec": -29.2713604,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1533.8300000000002
   },
   {
     "id": "OGLE-2017-BLG-0373L",
     "ra": 269.3294067,
     "dec": -31.9517231,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1928.29
   },
   {
@@ -34331,154 +34331,154 @@
     "id": "OGLE-2017-BLG-0448L",
     "ra": 268.668625,
     "dec": -31.0319167,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2454.78
   },
   {
     "id": "OGLE-2017-BLG-0482L",
     "ra": 269.048889,
     "dec": -30.5283604,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1890.8000000000002
   },
   {
     "id": "OGLE-2017-BLG-0604L",
     "ra": 267.891667,
     "dec": -30.9465556,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1287.7
   },
   {
     "id": "OGLE-2017-BLG-0640L",
     "ra": 267.465125,
     "dec": -29.4615,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2161.38
   },
   {
     "id": "OGLE-2017-BLG-1049L",
     "ra": 269.533542,
     "dec": -27.1442222,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1848.42
   },
   {
     "id": "OGLE-2017-BLG-1099L",
     "ra": 263.96425,
     "dec": -29.5858611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2363.5
   },
   {
     "id": "OGLE-2017-BLG-1140L",
     "ra": 266.883057,
     "dec": -24.5226669,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "OGLE-2017-BLG-1237L",
     "ra": 271.6499583,
     "dec": -28.3288306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1965.78
   },
   {
     "id": "OGLE-2017-BLG-1275L",
     "ra": 267.9154167,
     "dec": -29.4979694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2506.94
   },
   {
     "id": "OGLE-2017-BLG-1375L",
     "ra": 269.154875,
     "dec": -30.3114167,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1281.18
   },
   {
     "id": "OGLE-2017-BLG-1434L",
     "ra": 268.2804667,
     "dec": -30.2456583,
-    "vmag": 0,
+    "vmag": null,
     "distance": 280.36
   },
   {
     "id": "OGLE-2017-BLG-1522L",
     "ra": 270.319366,
     "dec": -28.4619713,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2441.7400000000002
   },
   {
     "id": "OGLE-2017-BLG-1691L",
     "ra": 263.5938333,
     "dec": -29.2848306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2376.54
   },
   {
     "id": "OGLE-2017-BLG-1806L",
     "ra": 266.62325,
     "dec": -24.2722694,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2086.4
   },
   {
     "id": "OGLE-2018-BLG-0298L",
     "ra": 264.2845,
     "dec": -29.7091111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2132.04
   },
   {
     "id": "OGLE-2018-BLG-0383L",
     "ra": 268.68075,
     "dec": -28.7392778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2510.2000000000003
   },
   {
     "id": "OGLE-2018-BLG-0506L",
     "ra": 267.6298333,
     "dec": -31.9240556,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1825.6000000000001
   },
   {
     "id": "OGLE-2018-BLG-0516L",
     "ra": 269.640125,
     "dec": -31.2623889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2282
   },
   {
     "id": "OGLE-2018-BLG-0532L",
     "ra": 269.9834167,
     "dec": -28.99775,
-    "vmag": 0,
+    "vmag": null,
     "distance": 251.99800000000002
   },
   {
     "id": "OGLE-2018-BLG-0567L",
     "ra": 269.0184167,
     "dec": -27.9871111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2301.56
   },
   {
     "id": "OGLE-2018-BLG-0596L",
     "ra": 269.0555417,
     "dec": -29.1990833,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1841.9
   },
   {
     "id": "OGLE-2018-BLG-0677L",
     "ra": 268.751125,
     "dec": -32.0165306,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2471.08
   },
   {
@@ -34492,56 +34492,56 @@
     "id": "OGLE-2018-BLG-0799L",
     "ra": 273.459,
     "dec": -25.4857222,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1320.3
   },
   {
     "id": "OGLE-2018-BLG-0932L",
     "ra": 268.3512083,
     "dec": -29.0218056,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2158.12
   },
   {
     "id": "OGLE-2018-BLG-0962L",
     "ra": 268.1747917,
     "dec": -32.30925,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2119
   },
   {
     "id": "OGLE-2018-BLG-0977L",
     "ra": 268.506125,
     "dec": -30.6048056,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2119
   },
   {
     "id": "OGLE-2018-BLG-1011L",
     "ra": 269.014,
     "dec": -29.0828889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2314.6
   },
   {
     "id": "OGLE-2018-BLG-1011L",
     "ra": 269.014,
     "dec": -29.0828889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2314.6
   },
   {
     "id": "OGLE-2018-BLG-1119L",
     "ra": 270.02925,
     "dec": -32.3752778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1877.76
   },
   {
     "id": "OGLE-2018-BLG-1126L",
     "ra": 268.355875,
     "dec": -31.7247194,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1858.2
   },
   {
@@ -34555,140 +34555,140 @@
     "id": "OGLE-2018-BLG-1212L",
     "ra": 271.077625,
     "dec": -28.1940833,
-    "vmag": 0,
+    "vmag": null,
     "distance": 505.3
   },
   {
     "id": "OGLE-2018-BLG-1269L",
     "ra": 269.693417,
     "dec": -27.6179444,
-    "vmag": 0,
+    "vmag": null,
     "distance": 818.26
   },
   {
     "id": "OGLE-2018-BLG-1367L",
     "ra": 269.755625,
     "dec": -29.1683611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1750.6200000000001
   },
   {
     "id": "OGLE-2018-BLG-1428L",
     "ra": 265.548708,
     "dec": -26.1378889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2027.72
   },
   {
     "id": "OGLE-2018-BLG-1647L",
     "ra": 268.962375,
     "dec": -31.817,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2568.88
   },
   {
     "id": "OGLE-2018-BLG-1700L",
     "ra": 269.956042,
     "dec": -28.5286389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2477.6
   },
   {
     "id": "OGLE-2019-BLG-0249L",
     "ra": 265.4035,
     "dec": -34.70175,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2076.62
   },
   {
     "id": "OGLE-2019-BLG-0299L",
     "ra": 266.6794583,
     "dec": -23.5843111,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1900.5800000000002
   },
   {
     "id": "OGLE-2019-BLG-0304L",
     "ra": 264.0267083,
     "dec": -26.1459889,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2275.48
   },
   {
     "id": "OGLE-2019-BLG-0362L",
     "ra": 263.46525,
     "dec": -24.8103611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1900.5800000000002
   },
   {
     "id": "OGLE-2019-BLG-0468L",
     "ra": 266.406,
     "dec": -24.4472778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1434.4
   },
   {
     "id": "OGLE-2019-BLG-0468L",
     "ra": 266.406,
     "dec": -24.4472778,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1434.4
   },
   {
     "id": "OGLE-2019-BLG-0679L",
     "ra": 265.7404167,
     "dec": -27.7728806,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1835.38
   },
   {
     "id": "OGLE-2019-BLG-0954L",
     "ra": 267.91325,
     "dec": -29.611,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1183.38
   },
   {
     "id": "OGLE-2019-BLG-0960L",
     "ra": 274.0142917,
     "dec": -25.7746667,
-    "vmag": 0,
+    "vmag": null,
     "distance": 319.48
   },
   {
     "id": "OGLE-2019-BLG-1053L",
     "ra": 270.166375,
     "dec": -27.3415833,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2216.8
   },
   {
     "id": "OGLE-2019-BLG-1180L",
     "ra": 269.2465417,
     "dec": -27.9754444,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1978.8200000000002
   },
   {
     "id": "OGLE-2019-BLG-1470L A",
     "ra": 271.9492083,
     "dec": -27.0335556,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1923.4
   },
   {
     "id": "OGLE-2019-BLG-1492L",
     "ra": 270.0964583,
     "dec": -28.6311389,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1825.6000000000001
   },
   {
     "id": "OGLE-2023-BLG-0836L",
     "ra": 267.186875,
     "dec": -23.7415194,
-    "vmag": 0,
+    "vmag": null,
     "distance": 1669.1200000000001
   },
   {
@@ -34751,7 +34751,7 @@
     "id": "Oph 11",
     "ra": 245.604961,
     "dec": -24.0872219,
-    "vmag": 0,
+    "vmag": null,
     "distance": 44.389982992
   },
   {
@@ -34800,42 +34800,42 @@
     "id": "PSR B1257+12",
     "ra": 195.0149029,
     "dec": 12.6823534,
-    "vmag": 0,
+    "vmag": null,
     "distance": 195.6
   },
   {
     "id": "PSR B1257+12",
     "ra": 195.0149029,
     "dec": 12.6823534,
-    "vmag": 0,
+    "vmag": null,
     "distance": 195.6
   },
   {
     "id": "PSR B1257+12",
     "ra": 195.0149029,
     "dec": 12.6823534,
-    "vmag": 0,
+    "vmag": null,
     "distance": 195.6
   },
   {
     "id": "PSR B1620-26",
     "ra": 245.9092617,
     "dec": -26.5315944,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "PSR J1719-1438",
     "ra": 259.7919708,
     "dec": -14.6336,
-    "vmag": 0,
+    "vmag": null,
     "distance": 391.2
   },
   {
     "id": "PSR J2322-2650",
     "ra": 350.6443481,
     "dec": -26.8495331,
-    "vmag": 0,
+    "vmag": null,
     "distance": 74.98
   },
   {
@@ -34990,7 +34990,7 @@
     "ra": 312.3632611,
     "dec": 33.6123832,
     "vmag": 17.8,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "SR 12 AB",
@@ -36725,7 +36725,7 @@
     "id": "TOI-2406",
     "ra": 8.8060544,
     "dec": -3.3720833,
-    "vmag": 0,
+    "vmag": null,
     "distance": 18.066594
   },
   {
@@ -37013,7 +37013,7 @@
     "ra": 143.9265177,
     "dec": -60.3574758,
     "vmag": 12.6334,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "TOI-2981",
@@ -37111,7 +37111,7 @@
     "ra": 328.9113712,
     "dec": 28.1794996,
     "vmag": 11.514,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "TOI-3568",
@@ -38503,14 +38503,14 @@
     "id": "UKIRT-2017-BLG-001L",
     "ra": 266.654083,
     "dec": -29.2113609,
-    "vmag": 0,
+    "vmag": null,
     "distance": 2053.8
   },
   {
     "id": "USco CTIO 108",
     "ra": 241.4752653,
     "dec": -18.3124167,
-    "vmag": 0,
+    "vmag": null,
     "distance": 46.950194
   },
   {
@@ -39861,14 +39861,14 @@
     "id": "WISE J033605.05-014350.4",
     "ra": 54.0210417,
     "dec": -1.7306944,
-    "vmag": 0,
-    "distance": 0
+    "vmag": null,
+    "distance": null
   },
   {
     "id": "WISEP J121756.91+162640.2 A",
     "ra": 184.487125,
     "dec": 16.4445,
-    "vmag": 0,
+    "vmag": null,
     "distance": 3.2926
   },
   {
@@ -40184,7 +40184,7 @@
     "ra": 253.0838724,
     "dec": -38.0176339,
     "vmag": 3.56,
-    "distance": 0
+    "distance": null
   },
   {
     "id": "nu Oct A",
