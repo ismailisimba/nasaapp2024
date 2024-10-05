@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #000; /* Black background for the night sky */
+    color: #fff;
+  }
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  header {
+    padding: 10px;
+    background-color: #111;
+  }
+  #starChartContainer {
+    flex: 1;
+    position: relative;
+  }
+  #toolbar {
+    padding: 10px;
+    background-color: #111;
+  }
+  

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exoplanet Star Chart</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <!-- Include Three.js and OrbitControls via module imports -->
+  <script src="./threen.js" type="module"></script>
+  <script src="./OrbitControls.js" type="module"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Exoplanet Selection -->
+    <header>
+      <h1>Exoplanet Star Chart</h1>
+      <select id="exoplanetSelect">
+        <!-- Options will be populated dynamically -->
+      </select>
+    </header>
+    <!-- Star Chart Container -->
+    <div id="starChartContainer"></div>
+    <!-- Toolbar for Drawing Tools -->
+    <div id="toolbar">
+      <!-- Drawing buttons and options -->
+      <button id="undoButton">Undo Last Line</button>
+      <button id="saveButton">Save Constellations</button>
+      <button id="exportButton">Export Star Chart</button>
+    </div>
+  </div>
+
+  <!-- Include the main script -->
+  <script src="main.js" type="module"></script>
+</body>
+</html>
