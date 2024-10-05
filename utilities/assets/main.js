@@ -37,22 +37,30 @@ window.addEventListener('resize', () => {
 });
 
 // Load exoplanet and star data
-Promise.all([
-  fetch('planet_batch_1.json').then(response => response.json()),
-  fetch('stars.json').then(response => response.json())
-]).then(([exoData, starData]) => {
-  exoplanets = exoData;
-  stars = starData;
-  console.log('Exoplanet and Star data loaded');
-  populateExoplanetSelect();
-});
+const promises = []
+promises.push(fetch('planet_batch_1.json').then(response => response.json()))
+promises.push(fetch('stars.json').then(response => response.json()))
+
+const res = await Promise.all(promises)
+
+exoplanets = res[0];
+stars = res[1];
+
+console.log(exoplanets,'Exoplanets');
+console.log(stars,'Stars');
+console.log(res,'All');
+console.log('Exoplanet and Star data loaded');
+populateExoplanetSelect();
+
+
+
 
 function populateExoplanetSelect() {
   const select = document.getElementById('exoplanetSelect');
   exoplanets.forEach(exoplanet => {
     const option = document.createElement('option');
-    option.value = exoplanet.name;
-    option.textContent = exoplanet.name;
+    option.value = exoplanet.id;
+    option.textContent = exoplanet.id;
     select.appendChild(option);
   });
 
@@ -97,6 +105,7 @@ function updateStarChart(selectedExoplanet) {
   const sizes = [];
 
   unitPositions.forEach(star => {
+    console.log(star,"starData")
     positions.push(star.position.x, star.position.y, star.position.z);
     // Set sizes based on magnitude
     const magnitudeScale = (6 - star.vmag) / 6; // Scale from 0 to 1
