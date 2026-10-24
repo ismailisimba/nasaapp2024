@@ -141,7 +141,7 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Moon (Luna)', radiusRatio: 0.273, orbitRadius: 2.35, speed: 0.55, color: 0xcbd5e1, inclination: 0.09, targetObjectId: 'Moon / Luna (Earth Moon)' }
+      { name: 'Moon (Luna)', radiusRatio: 0.273, orbitRadius: 5.35, speed: 0.42, color: 0xcbd5e1, inclination: 0.09, targetObjectId: 'Moon / Luna (Earth Moon)' }
     ]
   },
   {
@@ -252,8 +252,8 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Phobos', radiusRatio: 0.09, orbitRadius: 1.65, speed: 1.4, color: 0xa89f91, inclination: 0.03, targetObjectId: 'Phobos (Mars Moon)' },
-      { name: 'Deimos', radiusRatio: 0.07, orbitRadius: 2.25, speed: 0.85, color: 0xc2b8a3, inclination: 0.05 }
+      { name: 'Phobos', radiusRatio: 0.032, orbitRadius: 1.55, speed: 1.45, color: 0xa89f91, inclination: 0.03, targetObjectId: 'Phobos (Mars Moon)' },
+      { name: 'Deimos', radiusRatio: 0.024, orbitRadius: 2.65, speed: 0.78, color: 0xc2b8a3, inclination: 0.05 }
     ]
   },
   {
@@ -310,10 +310,10 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Io', radiusRatio: 0.11, orbitRadius: 1.75, speed: 1.25, color: 0xfacc15, inclination: 0.02, targetObjectId: 'Io (Jupiter Moon)' },
-      { name: 'Europa', radiusRatio: 0.095, orbitRadius: 2.2, speed: 0.92, color: 0xe0f2fe, inclination: 0.03, targetObjectId: 'Europa (Jupiter Moon)' },
-      { name: 'Ganymede', radiusRatio: 0.145, orbitRadius: 2.75, speed: 0.65, color: 0x94a3b8, inclination: 0.04, targetObjectId: 'Ganymede (Jupiter Moon)' },
-      { name: 'Callisto', radiusRatio: 0.13, orbitRadius: 3.35, speed: 0.45, color: 0x64748b, inclination: 0.05, targetObjectId: 'Callisto (Jupiter Moon)' }
+      { name: 'Io', radiusRatio: 0.042, orbitRadius: 2.35, speed: 1.25, color: 0xfacc15, inclination: 0.02, targetObjectId: 'Io (Jupiter Moon)' },
+      { name: 'Europa', radiusRatio: 0.036, orbitRadius: 3.25, speed: 0.90, color: 0xe0f2fe, inclination: 0.03, targetObjectId: 'Europa (Jupiter Moon)' },
+      { name: 'Ganymede', radiusRatio: 0.058, orbitRadius: 4.55, speed: 0.62, color: 0x94a3b8, inclination: 0.04, targetObjectId: 'Ganymede (Jupiter Moon)' },
+      { name: 'Callisto', radiusRatio: 0.052, orbitRadius: 6.35, speed: 0.42, color: 0x64748b, inclination: 0.05, targetObjectId: 'Callisto (Jupiter Moon)' }
     ]
   },
   {
@@ -454,8 +454,8 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Enceladus', radiusRatio: 0.08, orbitRadius: 2.45, speed: 1.05, color: 0xf0f9ff, inclination: 0.04, targetObjectId: 'Enceladus (Saturn Moon)' },
-      { name: 'Titan', radiusRatio: 0.145, orbitRadius: 3.15, speed: 0.62, color: 0xf59e0b, inclination: 0.06, targetObjectId: 'Titan (Saturn Moon)' }
+      { name: 'Enceladus', radiusRatio: 0.028, orbitRadius: 2.85, speed: 1.08, color: 0xf0f9ff, inclination: 0.04, targetObjectId: 'Enceladus (Saturn Moon)' },
+      { name: 'Titan', radiusRatio: 0.062, orbitRadius: 5.45, speed: 0.56, color: 0xf59e0b, inclination: 0.06, targetObjectId: 'Titan (Saturn Moon)' }
     ]
   },
   {
@@ -540,8 +540,8 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Titania', radiusRatio: 0.11, orbitRadius: 2.3, speed: 0.8, color: 0xcbd5e1, inclination: 0.45 },
-      { name: 'Oberon', radiusRatio: 0.105, orbitRadius: 2.85, speed: 0.55, color: 0x94a3b8, inclination: 0.45 }
+      { name: 'Titania', radiusRatio: 0.045, orbitRadius: 3.15, speed: 0.78, color: 0xcbd5e1, inclination: 0.45 },
+      { name: 'Oberon', radiusRatio: 0.042, orbitRadius: 4.25, speed: 0.52, color: 0x94a3b8, inclination: 0.45 }
     ]
   },
   {
@@ -570,7 +570,7 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Triton', radiusRatio: 0.125, orbitRadius: 2.35, speed: -0.75, color: 0xfce7f3, inclination: 0.35, targetObjectId: 'Triton (Neptune Moon)' }
+      { name: 'Triton', radiusRatio: 0.055, orbitRadius: 3.35, speed: -0.72, color: 0xfce7f3, inclination: 0.35, targetObjectId: 'Triton (Neptune Moon)' }
     ]
   },
   {
@@ -627,7 +627,7 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Charon', radiusRatio: 0.51, orbitRadius: 2.1, speed: 0.6, color: 0x9ca3af, inclination: 0.18 }
+      { name: 'Charon', radiusRatio: 0.51, orbitRadius: 3.45, speed: 0.55, color: 0x9ca3af, inclination: 0.18 }
     ]
   }
 ];

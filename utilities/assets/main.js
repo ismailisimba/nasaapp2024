@@ -94,8 +94,8 @@ const inspectorControls = new OrbitControls(inspectorCamera, renderer.domElement
 inspectorControls.enableDamping = true;
 inspectorControls.dampingFactor = 0.06;
 inspectorControls.enablePan = true;
-inspectorControls.minDistance = 1.45;
-inspectorControls.maxDistance = 24.0;
+inspectorControls.minDistance = 1.35;
+inspectorControls.maxDistance = 42.0;
 inspectorControls.enabled = false;
 
 // OrbitControls for Entire Star System Orrery Mode
@@ -455,6 +455,7 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
     beaconMesh.position.copy(horizonPos);
     beaconMesh.userData = {
       isSolarSystemSkyBody: true,
+      skyPos: horizonPos.clone(),
       targetObjectId: 'Earth (Sol System)',
       data: {
         Object: '🌍 Earth (Horizon Bearing Beacon)',
@@ -475,7 +476,7 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
     );
     horizonBadge.position.set(horizonPos.x, 22, horizonPos.z);
     horizonBadge.renderOrder = 999;
-    horizonBadge.userData = beaconMesh.userData;
+    horizonBadge.userData = { ...beaconMesh.userData, skyPos: horizonPos.clone() };
     earthBeaconGroup.add(horizonBadge);
 
     // True 3D Sky Position of Earth + Vertical Meridian Guide Arc connecting to Horizon
@@ -490,7 +491,7 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
       new THREE.MeshBasicMaterial({ color: 0x38bdf8 })
     );
     earthTrueOrb.position.copy(trueSkyPos);
-    earthTrueOrb.userData = beaconMesh.userData;
+    earthTrueOrb.userData = { ...beaconMesh.userData, skyPos: trueSkyPos.clone() };
     earthBeaconGroup.add(earthTrueOrb);
 
     const trueLabel = createBadgeSprite(
@@ -499,7 +500,7 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
       16
     );
     trueLabel.position.copy(trueSkyPos).add(new THREE.Vector3(0, 14, 0));
-    trueLabel.userData = beaconMesh.userData;
+    trueLabel.userData = { ...beaconMesh.userData, skyPos: trueSkyPos.clone() };
     earthBeaconGroup.add(trueLabel);
 
     // Vertical meridian arc from Horizon (0°) to Earth's true altitude (altDeg)
@@ -600,6 +601,7 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
 
       bodyMesh.userData = {
         isSolarSystemSkyBody: true,
+        skyPos: skyPos.clone(),
         targetPlanetId: body.id,
         targetObjectId: body.id,
         data: {
@@ -776,6 +778,7 @@ function buildDeepSkyObjectsInSky(planet, quadrant) {
     const metaPayload = {
       isSolarSystemSkyBody: true,
       isDeepSkySkyBody: true,
+      skyPos: skyPos.clone(),
       targetObjectId: dso.id,
       data: {
         Object: dso.id,
@@ -911,6 +914,7 @@ function buildSpaceMissionsInSky(planet, quadrant) {
     const metaPayload = {
       isSolarSystemSkyBody: true,
       isSpaceMissionSkyBody: true,
+      skyPos: skyPos.clone(),
       targetObjectId: msn.id,
       data: {
         Object: msn.id,
@@ -1191,7 +1195,8 @@ function rebuildIAUConstellationsAndLabels() {
       sprite.userData = {
         baseScale: sprite.scale.clone(),
         minZoom,
-        baseOpacity: baseOp
+        baseOpacity: baseOp,
+        starEntry: s
       };
       labelsGroup.add(sprite);
     }
@@ -1621,9 +1626,9 @@ function resetActiveCamera() {
     const latRad = THREE.MathUtils.degToRad(q.centerLat * 0.6);
     const lonRad = THREE.MathUtils.degToRad(q.centerLon);
     inspectorCamera.position.set(
-      3.3 * Math.cos(latRad) * Math.cos(lonRad),
-      3.3 * Math.sin(latRad),
-      -3.3 * Math.cos(latRad) * Math.sin(lonRad)
+      3.55 * Math.cos(latRad) * Math.cos(lonRad),
+      3.55 * Math.sin(latRad),
+      -3.55 * Math.cos(latRad) * Math.sin(lonRad)
     );
     inspectorControls.target.set(0, 0, 0);
     inspectorControls.update();
@@ -1736,6 +1741,105 @@ function rebuildCustomConstellationLines() {
   });
 }
 
+// Map any Sky Star (Sun, Named Star, or Hipparcos Catalog Star) to a navigable 3D World / System in exoplanets
+const HIP_TO_WORLD_ID = {
+  '71683': 'Alpha Centauri A — Pandora / Polyphemus (Avatar)',
+  '70890': 'Proxima Centauri b',
+  '8102': 'Tau Ceti e — Planet Adrian (Project Hail Mary)',
+  '19849': '40 Eridani A (HD 26965 b) — Planet Vulcan (Star Trek)',
+  '32349': 'Sirius AB Binary System — Dog Star (8.6 ly)',
+  '37279': 'Procyon AB System — White Dwarf Binary (11.46 ly)',
+  '30438': 'Canopus (Alpha Carinae) — Arrakis / Dune (Frank Herbert)',
+  '16537': 'Epsilon Eridani b (AEgir) — Babylon 5 / Reach / Borg',
+  '91262': 'Vega (Alpha Lyrae) — Contact (Carl Sagan)',
+  '97649': 'Altair IV — Forbidden Planet (16.7 ly)',
+  '37826': 'Pollux b',
+  '21421': 'Aldebaran b',
+  '113368': 'Fomalhaut b'
+};
+
+function resolveOrCreateWorldForSkyStar(starEntry) {
+  if (!starEntry) return null;
+
+  // 1. Sol (Our Sun) -> Jump to Earth (or Mercury if already on Earth)
+  if (starEntry.isSun) {
+    return currentPlanet?.isEarth ? 'Mercury (Sol System)' : 'Earth (Sol System)';
+  }
+
+  // 2. Direct Hipparcos ID match to curated Popular Media / Solar / Exoplanet systems
+  const mappedId = HIP_TO_WORLD_ID[String(starEntry.id)];
+  if (mappedId && exoplanets.some(p => p.id === mappedId)) {
+    return mappedId;
+  }
+
+  // 3. Match by proper star name against existing catalog worlds
+  if (starEntry.hasProperName) {
+    const cleanStarName = starEntry.name.split(' (')[0].trim().toLowerCase();
+    const matchedWorld = exoplanets.find(
+      p =>
+        (p.hostname && p.hostname.toLowerCase().includes(cleanStarName)) ||
+        p.id.toLowerCase().startsWith(cleanStarName)
+    );
+    if (matchedWorld) return matchedWorld.id;
+  }
+
+  // 4. Dynamically synthesize & register a navigable 3D Stellar Vantage Point for any Hipparcos star
+  const synthId = starEntry.hasProperName
+    ? `${starEntry.name} (Stellar System — HIP ${starEntry.id})`
+    : `HIP ${starEntry.id} (Stellar System — ${starEntry.distLyFromPlanet} ly)`;
+
+  const existingSynth = exoplanets.find(p => p.id === synthId);
+  if (existingSynth) return existingSynth.id;
+
+  const raw = starEntry.raw || {};
+  const distPc = raw.distPcEarth || 1000.0 / Math.max(0.25, raw.Plx || 10);
+  const distLy = Number((distPc * PARSEC_TO_LY).toFixed(2));
+  const teff = starEntry.teff || 5778;
+  const specClass =
+    teff >= 20000
+      ? 'B0 V (Luminous Blue Star)'
+      : teff >= 9500
+      ? 'A1 V (White Main-Sequence Star)'
+      : teff >= 7200
+      ? 'F5 V (Yellow-White Star)'
+      : teff >= 5200
+      ? 'G2 V (Solar-Type Star)'
+      : teff >= 3700
+      ? 'K2 V (Orange Star)'
+      : 'M2 V (Red Star)';
+
+  const synthWorld = {
+    id: synthId,
+    pl_name: synthId,
+    hostname: starEntry.name,
+    isStellarVantage: true,
+    ra: raw.RAJ2000 ?? 0,
+    dec: raw.DEJ2000 ?? 0,
+    dist_pc: Number(distPc.toFixed(2)),
+    distance: distLy,
+    pl_rade: 1.35,
+    pl_radj: 0.12,
+    pl_bmasse: 2.1,
+    pl_bmassj: 0.0066,
+    pl_orbper: 240,
+    pl_orbsmax: 0.85,
+    pl_orbeccen: 0.03,
+    pl_eqt: Math.round(Math.min(1800, Math.max(180, teff * 0.048))),
+    discoverymethod: 'Hipparcos / Gaia Astrometric Stellar Catalog',
+    disc_year: 1997,
+    st_spectype: specClass,
+    st_teff: teff,
+    st_rad: teff < 4200 && starEntry.earthVmag < 2.5 ? 65.0 : teff > 8500 ? 2.4 : 1.1,
+    st_mass: teff > 8500 ? 2.2 : 1.0,
+    sy_snum: 1,
+    sy_pnum: 1,
+    description: `Direct 3D stellar vantage point at ${starEntry.name} (Hipparcos Catalog HIP ${starEntry.id}), located ${distLy} light-years (${distPc.toFixed(2)} pc) from Earth at RA ${Number(raw.RAJ2000 || 0).toFixed(2)}°, Dec ${Number(raw.DEJ2000 || 0).toFixed(2)}°.`
+  };
+
+  exoplanets.push(synthWorld);
+  return synthWorld.id;
+}
+
 function handleStarClickInSky(starEntry) {
   highlightedStarIndices.add(starEntry.id);
   selectedStars.push(starEntry);
@@ -1755,6 +1859,7 @@ function handleStarClickInSky(starEntry) {
   }
 
   refreshStarVisualAttributes();
+  const targetWorldId = resolveOrCreateWorldForSkyStar(starEntry);
   showObjectDetails({
     Name: starEntry.name,
     'Hipparcos ID': starEntry.id,
@@ -1762,7 +1867,9 @@ function handleStarClickInSky(starEntry) {
     'Horizon Status': starEntry.aboveHorizon ? 'Above Local Horizon' : 'Below Local Horizon',
     'Apparent Magnitude': `${starEntry.appMag} (Earth Vmag: ${starEntry.earthVmag})`,
     'Distance from World': `${starEntry.distLyFromPlanet} light-years`,
-    'Effective Temp': `${starEntry.teff} K (B-V: ${starEntry.bv})`
+    'Effective Temp': `${starEntry.teff} K (B-V: ${starEntry.bv})`,
+    Tip: 'Double-click this star in the sky or click the buttons below to travel to it in 3D!',
+    _targetObjectId: targetWorldId
   });
 }
 
@@ -1785,18 +1892,78 @@ function clearCustomConstellations() {
 const raycaster = new THREE.Raycaster();
 const mouseNDC = new THREE.Vector2();
 
-function findClosestSkyStar(ray, maxAngularRad = 0.024) {
-  let bestStar = null;
-  let bestAngle = maxAngularRad * (skyFov / DEFAULT_SKY_FOV);
+// Precise angular hit-test against visible Sky Markers (ignores oversized 2D Sprite text bounding boxes on hover)
+function findClosestSkyMarker(ray, maxAngularRad = 0.016, allowSpriteClick = false) {
   const rayDir = ray.direction.clone().normalize();
+  let bestAngle = maxAngularRad * (skyFov / DEFAULT_SKY_FOV);
+  let bestUserData = null;
+
+  const groups = [earthBeaconGroup];
+  if (spaceMissionsSkyGroup.visible) groups.push(spaceMissionsSkyGroup);
+  if (solarSystemSkyGroup.visible) groups.push(solarSystemSkyGroup);
+  if (deepSkyGroup.visible) groups.push(deepSkyGroup);
+
+  for (let g = 0; g < groups.length; g++) {
+    const children = groups[g].children;
+    for (let i = 0; i < children.length; i++) {
+      const obj = children[i];
+      if (obj.isLine || obj.isSprite) continue;
+      const ud = obj.userData;
+      if (!ud || !ud.data) continue;
+      const pos = ud.skyPos || obj.position;
+      if (!pos || pos.lengthSq() < 1) continue;
+      const dir = pos.clone().normalize();
+      const dot = Math.max(-1, Math.min(1, rayDir.dot(dir)));
+      const angle = Math.acos(dot);
+      if (angle < bestAngle) {
+        bestAngle = angle;
+        bestUserData = ud;
+      }
+    }
+  }
+
+  // Fallback for clicks/double-clicks directly on 3D marker meshes or label badges
+  if (!bestUserData && allowSpriteClick) {
+    const targets = [];
+    groups.forEach(grp => {
+      grp.children.forEach(c => {
+        if (!c.isLine) targets.push(c);
+      });
+    });
+    const hits = ray.intersectObjects(targets, true);
+    const validHit = hits.find(
+      h =>
+        h.object.userData?.data ||
+        h.object.userData?.targetObjectId ||
+        h.object.userData?.targetPlanetId
+    );
+    if (validHit) {
+      bestUserData = validHit.object.userData;
+    }
+  }
+
+  return bestUserData;
+}
+
+function findClosestSkyStar(ray, maxAngularRad = 0.022, isHover = false) {
+  let bestStar = null;
+  const zoomScale = skyFov / DEFAULT_SKY_FOV;
+  let bestAngle = maxAngularRad * zoomScale;
+  const rayDir = ray.direction.clone().normalize();
+  // In hover mode, filter out faint unnamed background stars unless zoomed in so empty sky doesn't keep tooltip stuck open
+  const hoverMagCutoff = 4.75 + Math.max(0, Math.log2(DEFAULT_SKY_FOV / Math.max(8, skyFov))) * 1.15;
 
   for (let i = 0; i < activeSkyStars.length; i++) {
     const s = activeSkyStars[i];
     if (!s.aboveHorizon && belowHorizonMode === 'hidden') continue;
+    const isProminent = s.isSun || s.hasProperName || highlightedStarIndices.has(s.id);
+    if (isHover && !isProminent && s.appMag > hoverMagCutoff) continue;
+
     const starDir = s.position.clone().normalize();
     const dot = Math.max(-1, Math.min(1, rayDir.dot(starDir)));
     const angle = Math.acos(dot);
-    if (angle < bestAngle) {
+    const allowedAngle = isHover && !isProminent ? bestAngle * 0.65 : bestAngle;
+    if (angle < allowedAngle) {
       bestAngle = angle;
       bestStar = s;
     }
@@ -1850,14 +2017,17 @@ renderer.domElement.addEventListener(
 );
 
 let pointerDownPos = { x: 0, y: 0 };
+let isPointerDown = false;
 const DRAG_THRESHOLD_PX = 5;
 
 renderer.domElement.addEventListener('pointerdown', e => {
   pointerDownPos.x = e.clientX;
   pointerDownPos.y = e.clientY;
+  isPointerDown = true;
 });
 
 renderer.domElement.addEventListener('pointerup', e => {
+  isPointerDown = false;
   if (e.button !== 0) return;
   const dx = e.clientX - pointerDownPos.x;
   const dy = e.clientY - pointerDownPos.y;
@@ -1866,41 +2036,65 @@ renderer.domElement.addEventListener('pointerup', e => {
   handleViewportClick(e);
 });
 
+// Hide hover info card immediately when pointer leaves the 3D canvas
+const hideHoverCard = () => {
+  isPointerDown = false;
+  const tooltip = document.getElementById('starHoverTooltip');
+  if (tooltip) tooltip.style.display = 'none';
+};
+renderer.domElement.addEventListener('pointerleave', hideHoverCard);
+renderer.domElement.addEventListener('mouseleave', hideHoverCard);
+
 renderer.domElement.addEventListener('dblclick', e => {
   const rect = renderer.domElement.getBoundingClientRect();
   mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
   mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
+  const tooltip = document.getElementById('starHoverTooltip');
+  if (tooltip) tooltip.style.display = 'none';
+
   if (viewMode === 'sky') {
     raycaster.setFromCamera(mouseNDC, skyCamera);
 
-    // Double-clicking a Space Station, Telescope, Probe, Deep-Sky, or Solar System marker jumps straight to inspecting it in 3D
-    const skyObjHits = raycaster.intersectObjects(
-      deepSkyGroup.children
-        .concat(solarSystemSkyGroup.children)
-        .concat(spaceMissionsSkyGroup.children)
-        .concat(earthBeaconGroup.children),
-      true
-    );
-    if (skyObjHits.length > 0) {
+    // 1. Check if user double-clicked a Space Station, Telescope, Probe, Deep-Sky, Solar System, or Earth Beacon marker/label
+    const markerUd = findClosestSkyMarker(raycaster, 0.028, true);
+    if (markerUd) {
       const targetId =
-        skyObjHits[0].object.userData?.targetObjectId ||
-        skyObjHits[0].object.userData?.targetPlanetId ||
-        skyObjHits[0].object.userData?.data?._targetObjectId;
+        markerUd.targetObjectId ||
+        markerUd.targetPlanetId ||
+        markerUd.data?._targetObjectId;
       if (targetId) {
         jumpToCelestialObjectById(targetId, 'inspector');
         return;
       }
     }
 
-    const hitStar = findClosestSkyStar(raycaster, 0.028);
-    if (hitStar) {
-      if (individuallyDimmedStars.has(hitStar.id)) {
-        individuallyDimmedStars.delete(hitStar.id);
-      } else {
-        individuallyDimmedStars.add(hitStar.id);
+    // 2. Check if user double-clicked a Star or a Star's Label Badge in Sky Mode -> Navigate straight to that Star System!
+    let hitStar = findClosestSkyStar(raycaster, 0.028, false);
+    if (!hitStar && labelsGroup.visible) {
+      const labelHits = raycaster.intersectObjects(labelsGroup.children, true);
+      const starLabelHit = labelHits.find(h => h.object.visible && h.object.userData?.starEntry);
+      if (starLabelHit) {
+        hitStar = starLabelHit.object.userData.starEntry;
       }
-      refreshStarVisualAttributes();
+    }
+    if (hitStar) {
+      // Remove any accidental custom constellation line created by the two single-clicks preceding dblclick
+      if (selectedStars.length > 0 && selectedStars[selectedStars.length - 1]?.id === hitStar.id) {
+        selectedStars.pop();
+      }
+      if (
+        customConstellations.length > 0 &&
+        customConstellations[customConstellations.length - 1]?.star2Id === hitStar.id
+      ) {
+        customConstellations.pop();
+        rebuildCustomConstellationLines();
+      }
+      const targetWorldId = resolveOrCreateWorldForSkyStar(hitStar);
+      if (targetWorldId) {
+        jumpToCelestialObjectById(targetWorldId, 'inspector');
+        return;
+      }
     }
   } else if (viewMode === 'system' && activeSystemOrrery) {
     raycaster.setFromCamera(mouseNDC, systemCamera);
@@ -1970,22 +2164,28 @@ function handleViewportClick(event) {
     raycaster.setFromCamera(mouseNDC, skyCamera);
 
     // Check if user clicked Earth Horizon Beacon, a Space Station/Telescope/Probe, a Solar System Planet/Moon, or a Deep-Sky Object in the sky
-    const ssHits = raycaster.intersectObjects(
-      earthBeaconGroup.children
-        .concat(spaceMissionsSkyGroup.children)
-        .concat(solarSystemSkyGroup.children)
-        .concat(deepSkyGroup.children),
-      true
-    );
-    if (ssHits.length > 0 && ssHits[0].object.userData?.data) {
-      showObjectDetails(ssHits[0].object.userData.data);
+    const markerUd = findClosestSkyMarker(raycaster, 0.024, true);
+    if (markerUd && markerUd.data) {
+      showObjectDetails(markerUd.data);
       return;
     }
 
-    const hitStar = findClosestSkyStar(raycaster, 0.025);
+    let hitStar = findClosestSkyStar(raycaster, 0.022, false);
+    if (!hitStar && labelsGroup.visible) {
+      const labelHits = raycaster.intersectObjects(labelsGroup.children, true);
+      const starLabelHit = labelHits.find(h => h.object.visible && h.object.userData?.starEntry);
+      if (starLabelHit) {
+        hitStar = starLabelHit.object.userData.starEntry;
+      }
+    }
     if (hitStar) {
       handleStarClickInSky(hitStar);
+      return;
     }
+
+    // Clicked empty sky -> close any open Object Details popup card
+    const popup = document.getElementById('popup');
+    if (popup) popup.style.display = 'none';
   } else if (viewMode === 'system' && activeSystemOrrery) {
     raycaster.setFromCamera(mouseNDC, systemCamera);
     const hits = raycaster.intersectObjects(activeSystemOrrery.rootGroup.children, true);
@@ -2013,10 +2213,14 @@ function handleViewportClick(event) {
           Tip: 'Click the buttons below or double-click in the Star System to inspect in 3D or view its sky!',
           _targetObjectId: moonTargetId || p.id
         });
+        return;
       } else if (starHit) {
         showObjectDetails(starHit.object.userData.data);
+        return;
       }
     }
+    const popup = document.getElementById('popup');
+    if (popup) popup.style.display = 'none';
   } else if (activeCelestialSystem) {
     raycaster.setFromCamera(mouseNDC, inspectorCamera);
     const hits = raycaster.intersectObjects(activeCelestialSystem.rootGroup.children, true);
@@ -2033,6 +2237,7 @@ function handleViewportClick(event) {
 
       if (obj.userData.isExpeditionProbe) {
         showObjectDetails(obj.userData.data);
+        return;
       } else if (obj.userData.isQuadrant) {
         selectQuadrant(obj.userData.quadrantId);
         const q = obj.userData.quadrantData;
@@ -2044,10 +2249,13 @@ function handleViewportClick(event) {
           'Planet Sector': q.exoRegion,
           Tip: 'Double-click any quadrant or click "Sky Observatory" to view the constellations from here!'
         });
+        return;
       } else if (obj.userData.isMoon) {
         showObjectDetails(obj.userData.data);
+        return;
       } else if (obj.userData.isHostStar) {
         showObjectDetails(obj.userData.data);
+        return;
       } else if (obj.userData.isPlanet) {
         showObjectDetails({
           World: currentPlanet.id,
@@ -2059,14 +2267,28 @@ function handleViewportClick(event) {
           'Host Star': `${currentPlanet.hostname} (${currentPlanet.st_spectype || 'G2 V'})`,
           _targetObjectId: currentPlanet.id
         });
+        return;
       }
     }
+    const popup = document.getElementById('popup');
+    if (popup) popup.style.display = 'none';
   }
 }
 
 // Hover Tooltip Handler
 renderer.domElement.addEventListener('pointermove', event => {
   const tooltip = document.getElementById('starHoverTooltip');
+  if (!tooltip) return;
+
+  // Hide tooltip immediately if user is dragging the camera
+  if (isPointerDown) {
+    const moveDist = Math.hypot(event.clientX - pointerDownPos.x, event.clientY - pointerDownPos.y);
+    if (moveDist > DRAG_THRESHOLD_PX) {
+      tooltip.style.display = 'none';
+      return;
+    }
+  }
+
   const rect = renderer.domElement.getBoundingClientRect();
   mouseNDC.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouseNDC.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -2074,16 +2296,10 @@ renderer.domElement.addEventListener('pointermove', event => {
   if (viewMode === 'sky') {
     raycaster.setFromCamera(mouseNDC, skyCamera);
 
-    // Check Earth Beacon, Space Missions/Stations, Solar System Sky Bodies, or Deep-Sky Objects first
-    const ssHits = raycaster.intersectObjects(
-      earthBeaconGroup.children
-        .concat(spaceMissionsSkyGroup.children)
-        .concat(solarSystemSkyGroup.children)
-        .concat(deepSkyGroup.children),
-      true
-    );
-    if (ssHits.length > 0 && ssHits[0].object.userData?.data) {
-      const d = ssHits[0].object.userData.data;
+    // 1. Check Earth Beacon, Space Missions/Stations, Solar System Sky Bodies, or Deep-Sky Objects using tight angular hit-test
+    const markerUd = findClosestSkyMarker(raycaster, 0.015, false);
+    if (markerUd && markerUd.data) {
+      const d = markerUd.data;
       renderer.domElement.style.cursor = 'pointer';
       tooltip.style.display = 'block';
       tooltip.style.left = `${Math.min(rect.width - 260, event.clientX - rect.left + 14)}px`;
@@ -2097,7 +2313,8 @@ renderer.domElement.addEventListener('pointermove', event => {
       return;
     }
 
-    const hitStar = findClosestSkyStar(raycaster, 0.02);
+    // 2. Check prominent / visible stars using tight hover radius so moving onto empty sky immediately hides the card
+    const hitStar = findClosestSkyStar(raycaster, 0.011, true);
     if (hitStar) {
       renderer.domElement.style.cursor = 'pointer';
       tooltip.style.display = 'block';
@@ -2106,14 +2323,15 @@ renderer.domElement.addEventListener('pointermove', event => {
       tooltip.innerHTML = `
         <strong>${hitStar.name}</strong> (HIP ${hitStar.id})<br/>
         🧭 Look: <strong>${hitStar.compass}</strong> · Az ${hitStar.azDeg}° · Alt ${hitStar.altDeg}°<br/>
-        ✨ Mag: <strong>${hitStar.appMag}</strong> · Dist: ${hitStar.distLyFromPlanet} ly · ${hitStar.teff} K
+        ✨ Mag: <strong>${hitStar.appMag}</strong> · Dist: ${hitStar.distLyFromPlanet} ly · ${hitStar.teff} K<br/>
+        <em>Click for details · Double-click to travel to this star</em>
       `;
       return;
     }
   } else if (viewMode === 'system' && activeSystemOrrery) {
     raycaster.setFromCamera(mouseNDC, systemCamera);
     const hits = raycaster.intersectObjects(activeSystemOrrery.rootGroup.children, true);
-    const planetHit = hits.find(h => h.object.userData?.isSystemPlanet);
+    const planetHit = hits.find(h => h.object.userData?.isSystemPlanet && !h.object.isSprite);
     if (planetHit) {
       const p = planetHit.object.userData.planetData;
       const moonName = planetHit.object.userData.moonName;
@@ -2133,7 +2351,7 @@ renderer.domElement.addEventListener('pointermove', event => {
   } else if (activeCelestialSystem) {
     raycaster.setFromCamera(mouseNDC, inspectorCamera);
     const allHits = raycaster.intersectObjects(activeCelestialSystem.rootGroup.children, true);
-    const probeHit = allHits.find(h => h.object.userData?.isExpeditionProbe);
+    const probeHit = allHits.find(h => h.object.userData?.isExpeditionProbe && !h.object.isSprite);
     if (probeHit && probeHit.object.userData.data) {
       const d = probeHit.object.userData.data;
       renderer.domElement.style.cursor = 'pointer';
@@ -2148,7 +2366,9 @@ renderer.domElement.addEventListener('pointermove', event => {
       `;
       return;
     }
-    const moonHit = allHits.find(h => h.object.userData?.isMoon && !h.object.userData?.isExpeditionProbe);
+    const moonHit = allHits.find(
+      h => h.object.userData?.isMoon && !h.object.userData?.isExpeditionProbe && !h.object.isSprite
+    );
     if (moonHit && moonHit.object.userData.data) {
       const d = moonHit.object.userData.data;
       renderer.domElement.style.cursor = 'pointer';

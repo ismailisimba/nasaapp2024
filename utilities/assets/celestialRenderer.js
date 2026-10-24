@@ -2140,14 +2140,14 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
 
   const moonsList = getMoonsForPlanet(planet, profile);
   moonsList.forEach((m, idx) => {
-    const orbitR = m.orbitRadius || (1.8 + idx * 0.55);
-    const moonR = Math.max(0.065, Math.min(0.26, m.radiusRatio || 0.12));
+    const orbitR = m.orbitRadius || (2.2 + idx * 0.95);
+    const moonR = Math.max(0.022, Math.min(0.48, m.radiusRatio || 0.08));
     const inc = m.inclination || 0.04;
 
     // Orbit path ring
     const orbitPts = [];
-    for (let i = 0; i <= 96; i++) {
-      const a = (i / 96) * Math.PI * 2;
+    for (let i = 0; i <= 128; i++) {
+      const a = (i / 128) * Math.PI * 2;
       orbitPts.push(new THREE.Vector3(
         Math.cos(a) * orbitR,
         Math.sin(a) * orbitR * Math.sin(inc),
@@ -2176,7 +2176,8 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
       data: {
         Moon: m.name,
         'Parent World': planet.id,
-        'Relative Radius': `${(moonR * 100).toFixed(0)}% of parent display scale`,
+        'Relative Radius': `${((m.radiusRatio || moonR) * 100).toFixed(1)}% of parent radius`,
+        'Orbital Distance': `${orbitR.toFixed(2)} planetary radii (scaled)`,
         Tip: m.targetObjectId
           ? 'Click "Inspect & View Sky" below (or double-click this moon) to jump to its 3D surface!'
           : 'Orbiting satellite in this planetary system.',
@@ -2185,8 +2186,8 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
     };
     moonMesh.userData = moonMeta;
 
-    const moonLabel = createBadgeSprite(`🌕 ${m.name}`, m.color || 0x94a3b8, 0.11);
-    moonLabel.position.set(0, moonR + 0.14, 0);
+    const moonLabel = createBadgeSprite(`🌕 ${m.name}`, m.color || 0x94a3b8, 0.095);
+    moonLabel.position.set(0, moonR + 0.11, 0);
     moonLabel.userData = {
       ...moonMeta,
       baseScale: moonLabel.scale.clone()
@@ -2204,71 +2205,159 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
     });
   });
 
-  // If currently inspecting a Moon or Orbital Space Station with a parentBody, show its Parent World looming in background!
+  // If currently inspecting a Moon or Orbital Space Station with a parentBody, show its Parent World at proportional size & distance!
   if ((planet.bodyType === 'moon' || planet.isSpaceMission) && planet.parentBody) {
-    const parentIsEarth = planet.parentBody.startsWith('Earth');
-    const parentGeo = new THREE.SphereGeometry(0.95, 48, 48);
-    let parentMat;
-    if (parentIsEarth) {
-      parentMat = new THREE.ShaderMaterial({
-        vertexShader: PLANET_VERTEX_SHADER,
-        fragmentShader: PLANET_FRAGMENT_SHADER,
-        transparent: true,
-        uniforms: {
-          uMode: { value: 0 },
-          uUseEarthTex: { value: 1 },
-          uEarthTex: { value: earthTex },
-          uSeed: { value: 0.42 },
-          uTime: { value: 0.0 },
-          uPrimary: { value: new THREE.Color(0x0b4a8c) },
-          uSecondary: { value: new THREE.Color(0x2f7d3d) },
-          uAccent: { value: new THREE.Color(0xd9b382) },
-          uAtmo: { value: new THREE.Color(0x4da6ff) },
-          uLightDir: { value: lightDir },
-          uOpacity: { value: 0.88 }
-        }
-      });
-    } else {
-      const pCol = new THREE.Color(0xd99b52);
-      parentMat = new THREE.MeshPhongMaterial({
-        color: pCol,
-        emissive: pCol.clone().multiplyScalar(0.45),
-        transparent: true,
-        opacity: 0.88
-      });
+    const pBodyName = planet.parentBody;
+    const parentIsEarth = pBodyName.startsWith('Earth');
+    const parentIsMoon = pBodyName.startsWith('Moon');
+    const parentIsMars = pBodyName.startsWith('Mars');
+    const parentIsJupiter = pBodyName.startsWith('Jupiter');
+    const parentIsSaturn = pBodyName.startsWith('Saturn');
+    const parentIsNeptune = pBodyName.startsWith('Neptune');
+
+    // Determine proportional parent radius and 3D position based on physical mission altitude / moon orbital distance
+    let parentRadius = 1.45;
+    let parentPos = new THREE.Vector3(-4.2, 1.0, -3.4);
+    const stPreset = planet.stationPreset || '';
+    const solPreset = planet.solarPreset || '';
+
+    if (stPreset === 'iss' || stPreset === 'tiangong' || stPreset === 'hubble') {
+      // Low Earth Orbit (390–535 km): Earth looms huge directly beneath the spacecraft!
+      parentRadius = 2.65;
+      parentPos.set(-2.45, -1.75, -1.85);
+    } else if (stPreset === 'apollo_lm' || stPreset === 'perseverance') {
+      // Surface Lander / Rover on Moon or Mars: parent body surface looms close beneath
+      parentRadius = 2.45;
+      parentPos.set(-2.35, -1.65, -1.80);
+    } else if (stPreset === 'cassini') {
+      // Cassini Grand Finale orbit close to Saturn & rings
+      parentRadius = 2.35;
+      parentPos.set(-3.75, 0.75, -3.05);
+    } else if (stPreset === 'jwst' || stPreset === 'gaia_kepler') {
+      // Sun-Earth L2 (1.5 million km from Earth): Earth appears small and far away
+      parentRadius = 0.38;
+      parentPos.set(-8.4, 1.35, -6.8);
+    } else if (solPreset === 'moon') {
+      // Viewing from Luna: Earth is 3.67x larger than the Moon at cislunar distance
+      parentRadius = 1.85;
+      parentPos.set(-6.2, 1.35, -4.9);
+    } else if (solPreset === 'phobos') {
+      // Viewing from Phobos (only 6,000 km above Mars): Mars fills the sky
+      parentRadius = 2.55;
+      parentPos.set(-4.1, 0.85, -3.2);
+    } else if (parentIsJupiter) {
+      // Viewing from Io, Europa, Ganymede, or Callisto: Jupiter is an immense gas giant
+      parentRadius = 2.35;
+      const dScale = solPreset === 'io' ? 1.0 : solPreset === 'europa' ? 1.22 : solPreset === 'ganymede' ? 1.48 : 1.75;
+      parentPos.set(-4.8 * dScale, 1.05 * dScale, -3.8 * dScale);
+    } else if (parentIsSaturn) {
+      // Viewing from Enceladus or Titan: Saturn + Rings loom in the sky
+      parentRadius = 2.20;
+      const dScale = solPreset === 'enceladus' ? 1.05 : 1.55;
+      parentPos.set(-5.0 * dScale, 1.05 * dScale, -4.0 * dScale);
+    } else if (parentIsNeptune) {
+      // Viewing from Triton: Neptune looms in azure
+      parentRadius = 2.05;
+      parentPos.set(-5.4, 1.15, -4.3);
     }
+
+    const parentProfilePreset = parentIsEarth ? 'earth'
+      : parentIsMoon ? 'moon'
+      : parentIsMars ? 'mars'
+      : parentIsJupiter ? 'jupiter'
+      : parentIsSaturn ? 'saturn'
+      : parentIsNeptune ? 'neptune' : null;
+    const parentProfile = classifyPlanet({
+      id: pBodyName,
+      isEarth: parentIsEarth,
+      isSolarSystem: true,
+      solarPreset: parentProfilePreset,
+      pl_rade: parentIsJupiter ? 11.2 : parentIsSaturn ? 9.45 : parentIsNeptune ? 3.88 : 1.0,
+      pl_eqt: parentIsJupiter ? 110 : parentIsSaturn ? 81 : parentIsMars ? 210 : 255
+    });
+
+    const parentGeo = new THREE.SphereGeometry(parentRadius, 64, 64);
+    const parentMat = new THREE.ShaderMaterial({
+      vertexShader: PLANET_VERTEX_SHADER,
+      fragmentShader: PLANET_FRAGMENT_SHADER,
+      transparent: true,
+      uniforms: {
+        uMode: { value: parentProfile.shaderMode },
+        uUseEarthTex: { value: parentIsEarth ? 1 : 0 },
+        uEarthTex: { value: earthTex },
+        uSeed: { value: parentProfile.seed },
+        uTime: { value: 0.0 },
+        uPrimary: { value: parentProfile.primaryColor },
+        uSecondary: { value: parentProfile.secondaryColor },
+        uAccent: { value: parentProfile.accentColor },
+        uAtmo: { value: parentProfile.atmoColor },
+        uLightDir: { value: lightDir },
+        uOpacity: { value: 0.88 }
+      }
+    });
+
     const parentMesh = new THREE.Mesh(parentGeo, parentMat);
-    parentMesh.position.set(-3.2, 1.1, -2.6);
+    parentMesh.position.copy(parentPos);
     const parentMeta = {
       isMoon: true,
-      targetObjectId: planet.parentBody,
+      targetObjectId: pBodyName,
       data: {
-        'Parent World': planet.parentBody,
+        'Parent World': pBodyName,
         'Current Vantage Point': planet.id,
-        Tip: 'Click "Inspect & View Sky" below or double-click to return to the parent world!',
-        _targetObjectId: planet.parentBody
+        'Altitude / Separation': planet.alt_km ? `${Number(planet.alt_km).toLocaleString('en-US')} km` : 'Proportional Orbital Separation',
+        Tip: 'Click "Inspect & View Sky" below or double-click to jump to the parent world!',
+        _targetObjectId: pBodyName
       }
     };
     parentMesh.userData = parentMeta;
-    const pBadge = createBadgeSprite(`🪐 Parent: ${planet.parentBody}`, 0x38bdf8, 0.22);
-    pBadge.position.set(0, 1.25, 0);
+
+    // Add Saturn's rings if the parent body is Saturn!
+    if (parentIsSaturn) {
+      const pRing = new THREE.Mesh(
+        new THREE.RingGeometry(parentRadius * 1.32, parentRadius * 2.22, 96),
+        new THREE.MeshBasicMaterial({
+          color: parentProfile.secondaryColor,
+          transparent: true,
+          opacity: 0.65,
+          side: THREE.DoubleSide,
+          depthWrite: false
+        })
+      );
+      pRing.rotation.x = Math.PI / 2 - 0.24;
+      pRing.userData = parentMeta;
+      parentMesh.add(pRing);
+    }
+
+    const pBadge = createBadgeSprite(`🪐 Parent: ${pBodyName}`, 0x38bdf8, Math.max(0.16, Math.min(0.32, parentRadius * 0.14)));
+    pBadge.position.set(0, parentRadius + 0.38, 0);
     pBadge.userData = parentMeta;
     parentMesh.add(pBadge);
     moonsGroup.add(parentMesh);
   }
 
-  // 3b. Render Interactive 3D Scientific Expedition Spacecraft / Stations in Orbit (up to 4 pickable probes)
+  // 3b. Render Interactive 3D Scientific Expedition Spacecraft / Stations in Orbit (proportional altitude & miniature scale)
   const expeditions = !planet.isSpaceMission ? getExpeditionsForWorld(planet) : [];
   if (expeditions && expeditions.length > 0) {
     const probeColors = [0x10b981, 0x38bdf8, 0xfbbf24, 0xc084fc];
     expeditions.slice(0, 4).forEach((exp, eIdx) => {
-      const probeOrbitR = 1.52 + eIdx * 0.22;
-      const probeInc = (eIdx % 2 === 0 ? 1 : -1) * (0.34 + eIdx * 0.14);
+      const labelStr = (exp.probeLabel || '') + ' ' + (exp.mission || '');
+      const isDeepL2OrFlyby = /JWST|L2|SETI|Voyager|Gaia|Kepler|TESS|Breakthrough|Ozma|VLT/i.test(labelStr);
+      // Low-orbit stations & orbiters skim close to the globe (1.14..1.32 R); L2 / deep space / ring-clearing probes orbit farther out
+      let probeOrbitR;
+      if (isDeepL2OrFlyby) {
+        probeOrbitR = (profile.hasRings ? 2.55 : 2.05) + eIdx * 0.34;
+      } else if (profile.hasRings) {
+        // E.g. Cassini Grand Finale skimming inside Saturn's inner ring gap at 1.16 R
+        probeOrbitR = 1.16 + eIdx * 0.06;
+      } else {
+        probeOrbitR = 1.14 + eIdx * 0.065;
+      }
+      const probeInc = (eIdx % 2 === 0 ? 1 : -1) * (0.28 + eIdx * 0.14);
       const badgeColor = probeColors[eIdx % probeColors.length];
 
       const probeOrbitPts = [];
-      for (let i = 0; i <= 96; i++) {
-        const a = (i / 96) * Math.PI * 2;
+      for (let i = 0; i <= 128; i++) {
+        const a = (i / 128) * Math.PI * 2;
         probeOrbitPts.push(
           new THREE.Vector3(
             Math.cos(a) * probeOrbitR,
@@ -2279,12 +2368,13 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
       }
       const probeTrack = new THREE.LineLoop(
         new THREE.BufferGeometry().setFromPoints(probeOrbitPts),
-        new THREE.LineBasicMaterial({ color: badgeColor, transparent: true, opacity: 0.34 })
+        new THREE.LineBasicMaterial({ color: badgeColor, transparent: true, opacity: 0.32 })
       );
       moonsGroup.add(probeTrack);
 
-      // Build miniature 3D Spacecraft (Gold Foil Bus + Solar Panels + Dish Antenna)
+      // Build miniature 3D Spacecraft (Gold Foil Bus + Solar Panels + Dish Antenna, scaled down proportionally)
       const probeGroup = new THREE.Group();
+      const probeMeshContainer = new THREE.Group();
       const busMesh = new THREE.Mesh(
         new THREE.CylinderGeometry(0.032, 0.032, 0.075, 12),
         new THREE.MeshPhongMaterial({ color: 0xfbbf24, emissive: 0xb45309 })
@@ -2300,10 +2390,12 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
       );
       dishMesh.position.set(0, 0.05, 0);
 
-      probeGroup.add(busMesh);
-      probeGroup.add(leftWing);
-      probeGroup.add(rightWing);
-      probeGroup.add(dishMesh);
+      probeMeshContainer.add(busMesh);
+      probeMeshContainer.add(leftWing);
+      probeMeshContainer.add(rightWing);
+      probeMeshContainer.add(dishMesh);
+      probeMeshContainer.scale.setScalar(0.46);
+      probeGroup.add(probeMeshContainer);
 
       const probeMeta = {
         isMoon: true,
@@ -2326,9 +2418,9 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
       const probeBadge = createBadgeSprite(
         exp.probeLabel || '🛰️ Scientific Probe',
         badgeColor,
-        0.155
+        0.092
       );
-      probeBadge.position.set(0, 0.14, 0);
+      probeBadge.position.set(0, 0.095, 0);
       probeBadge.userData = {
         ...probeMeta,
         baseScale: probeBadge.scale.clone()
@@ -2340,7 +2432,7 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
         mesh: probeGroup,
         labelSprite: probeBadge,
         orbitR: probeOrbitR,
-        speed: 1.35 - eIdx * 0.18,
+        speed: (isDeepL2OrFlyby ? 0.65 : 1.45) - eIdx * 0.14,
         phase: 1.2 + eIdx * 1.65,
         inc: probeInc
       });
@@ -2349,14 +2441,20 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
 
   rootGroup.add(moonsGroup);
 
-  // 4. Up-Close Host Star Mesh & Corona in the Background
+  // 4. Up-Close Host Star Mesh & Corona in the Background (proportional distance & apparent angular size!)
   const starColor = teffToColor(planet.st_teff || 5778);
   const starGroup = new THREE.Group();
   starGroup.name = 'HostStarGroup';
 
   const stRad = planet.st_rad || 1.0;
-  const orbsmax = planet.pl_orbsmax || 1.0;
-  const relativeStarSize = Math.max(0.28, Math.min(1.6, 0.45 * Math.pow(stRad / Math.max(0.05, orbsmax), 0.22)));
+  const orbsmax = Math.max(0.015, planet.pl_orbsmax || 1.0);
+  // Scale host star distance & apparent size from orbital semi-major axis (orbsmax in AU) and stellar radius (stRad in R_sun)
+  const starDist = THREE.MathUtils.clamp(8.5 + Math.log10(1.0 + orbsmax * 8.0) * 6.5, 6.2, 26.0);
+  const relativeStarSize = THREE.MathUtils.clamp(
+    0.44 * (Math.pow(stRad, 0.65) / Math.pow(orbsmax, 0.42)),
+    0.075,
+    1.55
+  );
 
   const starGeo = new THREE.SphereGeometry(relativeStarSize, 48, 48);
   const starMat = new THREE.ShaderMaterial({
@@ -2391,10 +2489,10 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
       depthWrite: false
     })
   );
-  coronaSprite.scale.set(relativeStarSize * 4.2, relativeStarSize * 4.2, 1);
+  coronaSprite.scale.set(relativeStarSize * 4.5, relativeStarSize * 4.5, 1);
   starGroup.add(coronaSprite);
 
-  starGroup.position.copy(lightDir.clone().multiplyScalar(6.5));
+  starGroup.position.copy(lightDir.clone().multiplyScalar(starDist));
   rootGroup.add(starGroup);
 
   function updateOrbitingMoons(timeSec) {
@@ -2588,17 +2686,44 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
     rootGroup.add(compStar);
   }
 
-  // 3. Habitable Zone Band (Translucent Emerald Ring)
-  // Find which visual orbit indices correspond to habitable temperatures (195 K <= pl_eqt <= 330 K)
-  let hzInnerVis = 5.4;
-  let hzOuterVis = 8.4;
+  // Precompute proportional planet radii (from pl_rade) and semi-major-axis-scaled orbital radii (from pl_orbsmax)
+  const minAu = Math.max(0.008, systemPlanets[0]?.pl_orbsmax || 0.1);
+  const computedPlanetRadii = [];
+  const computedOrbitRadii = [];
+
+  systemPlanets.forEach((p, idx) => {
+    const rade = Math.max(0.15, p.pl_rade || 1.0);
+    // Proportional radius: Pluto (~0.11) -> Mercury (~0.13) -> Earth (~0.22) -> Neptune (~0.45) -> Jupiter (~0.78)
+    const pRadius = Math.max(0.11, Math.min(0.92, 0.22 * Math.pow(rade, 0.52)));
+    computedPlanetRadii.push(pRadius);
+
+    const au = Math.max(0.01, p.pl_orbsmax || (0.4 + idx * 0.7));
+    const scaledFromAu = 2.85 + Math.pow(au / Math.min(0.35, minAu), 0.46) * 1.85;
+    if (idx === 0) {
+      computedOrbitRadii.push(Math.max(2.9, Math.min(4.6, scaledFromAu)));
+    } else {
+      const prevOrbitR = computedOrbitRadii[idx - 1];
+      const prevR = computedPlanetRadii[idx - 1];
+      const prevAu = Math.max(0.01, systemPlanets[idx - 1].pl_orbsmax || (0.4 + (idx - 1) * 0.7));
+      const auRatioJump = Math.pow(Math.max(1.05, au / prevAu), 0.52) * 1.45;
+      // Add extra separation across the Main Asteroid Belt (between Mars idx=3 and Jupiter idx=4)
+      const beltGap = (selectedWorld.isSolarSystem || isSolMission) && idx === 4 ? 1.85 : 0.0;
+      const minSafeStep = prevR + pRadius + 1.15 + beltGap;
+      const nextOrbitR = prevOrbitR + Math.max(minSafeStep, Math.min(6.2, auRatioJump + beltGap));
+      computedOrbitRadii.push(nextOrbitR);
+    }
+  });
+
+  // 3. Habitable Zone Band (Translucent Emerald Ring aligned to computed proportional orbits)
+  let hzInnerVis = (computedOrbitRadii[0] || 3.4) + 1.4;
+  let hzOuterVis = hzInnerVis + 2.4;
   const habIndices = [];
   systemPlanets.forEach((p, i) => {
     if (p.pl_eqt >= 195 && p.pl_eqt <= 330) habIndices.push(i);
   });
   if (habIndices.length > 0) {
-    hzInnerVis = 3.6 + Math.min(...habIndices) * 2.55 - 0.85;
-    hzOuterVis = 3.6 + Math.max(...habIndices) * 2.55 + 0.85;
+    hzInnerVis = Math.max(centralRadius + 0.6, computedOrbitRadii[Math.min(...habIndices)] - 0.85);
+    hzOuterVis = computedOrbitRadii[Math.max(...habIndices)] + 0.85;
   }
   const hzGeo = new THREE.RingGeometry(hzInnerVis, hzOuterVis, 128);
   const hzMat = new THREE.MeshBasicMaterial({
@@ -2619,7 +2744,8 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
   systemPlanets.forEach((p, idx) => {
     const pProfile = classifyPlanet(p);
     const isTarget = p.id === targetPlanetId;
-    const orbitR = 3.6 + idx * 2.55;
+    const orbitR = computedOrbitRadii[idx];
+    const pRadius = computedPlanetRadii[idx];
     const ecc = Math.min(0.38, p.pl_orbeccen || 0);
     const semiMinor = orbitR * Math.sqrt(1 - ecc * ecc);
     const focusOffset = orbitR * ecc * 0.45;
@@ -2646,8 +2772,6 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
 
     // Planet Node Container
     const pNode = new THREE.Group();
-    const rade = p.pl_rade || 1.0;
-    const pRadius = Math.max(0.24, Math.min(0.88, 0.28 * Math.pow(rade, 0.34)));
 
     const pMat = new THREE.ShaderMaterial({
       vertexShader: PLANET_VERTEX_SHADER,
@@ -2703,12 +2827,13 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
       pNode.add(rMesh);
     }
 
-    // Orbiting Moons around this Planet in the System View
+    // Orbiting Moons around this Planet in the System View (proportional to parent planet radius)
     const pMoons = getMoonsForPlanet(p, pProfile);
     const moonNodes = [];
     pMoons.forEach((m, mIdx) => {
-      const mOrbitR = pRadius * (1.65 + mIdx * 0.45);
-      const mRad = Math.max(0.05, pRadius * 0.22);
+      const baseRingClear = pProfile.hasRings ? 2.35 : 1.55;
+      const mOrbitR = pRadius * (baseRingClear + mIdx * 0.48);
+      const mRad = Math.max(0.024, Math.min(pRadius * 0.48, pRadius * Math.max(0.08, m.radiusRatio || 0.14)));
       const mCol = new THREE.Color(m.color || 0xcbd5e1);
       const mMesh = new THREE.Mesh(
         new THREE.SphereGeometry(mRad, 16, 16),
@@ -2740,15 +2865,16 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
     const pBadge = createBadgeSprite(
       `${p.isEarth ? '🌍' : '🪐'} ${shortName} (${auText})`,
       isTarget ? 0x00ffff : 0x60a5fa,
-      isTarget ? 0.42 : 0.34
+      isTarget ? 0.38 : 0.30
     );
-    pBadge.position.set(0, pRadius + 0.65, 0);
+    pBadge.position.set(0, pRadius + 0.55, 0);
     pBadge.userData = pMesh.userData;
     pNode.add(pBadge);
 
     rootGroup.add(pNode);
 
-    const orbitalSpeed = 0.32 / Math.pow(idx + 1, 0.65);
+    const auVal = Math.max(0.04, p.pl_orbsmax || (idx + 1));
+    const orbitalSpeed = Math.min(0.55, Math.max(0.035, 0.24 / Math.pow(auVal, 0.42)));
     animatedSystemNodes.push({
       node: pNode,
       pMat,
@@ -2763,12 +2889,15 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
 
   // 5. Asteroid Belt for Solar System (between Mars index 3 and Jupiter index 4)
   if ((selectedWorld.isSolarSystem || isSolMission) && systemPlanets.length >= 5) {
-    const beltR = 3.6 + 3.5 * 2.55;
+    const marsR = computedOrbitRadii[3] || 9.0;
+    const jupR = computedOrbitRadii[4] || 13.5;
+    const beltR = (marsR + jupR) * 0.5;
+    const beltSpan = Math.max(1.1, (jupR - marsR) * 0.42);
     const beltCount = 1200;
     const bPos = new Float32Array(beltCount * 3);
     for (let i = 0; i < beltCount; i++) {
       const a = Math.random() * Math.PI * 2;
-      const r = beltR + (Math.random() - 0.5) * 1.1;
+      const r = beltR + (Math.random() - 0.5) * beltSpan;
       const y = (Math.random() - 0.5) * 0.35;
       bPos[i * 3] = Math.cos(a) * r;
       bPos[i * 3 + 1] = y;
@@ -2808,10 +2937,14 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
   }
   updateOrrery(0);
 
+  const maxComputedR = computedOrbitRadii.length > 0
+    ? computedOrbitRadii[computedOrbitRadii.length - 1] + 2.5
+    : 12.0;
+
   return {
     rootGroup,
     systemPlanetsCount: systemPlanets.length,
-    maxOrbitRadius: 3.6 + systemPlanets.length * 2.55,
+    maxOrbitRadius: maxComputedR,
     updateOrrery
   };
 }
