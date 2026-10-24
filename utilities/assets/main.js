@@ -1894,7 +1894,9 @@ const mouseNDC = new THREE.Vector2();
 
 // Precise angular hit-test against visible Sky Markers (ignores oversized 2D Sprite text bounding boxes on hover)
 function findClosestSkyMarker(ray, maxAngularRad = 0.016, allowSpriteClick = false) {
-  const rayDir = ray.direction.clone().normalize();
+  const dirVec = ray?.ray?.direction || ray?.direction;
+  if (!dirVec) return null;
+  const rayDir = dirVec.clone().normalize();
   let bestAngle = maxAngularRad * (skyFov / DEFAULT_SKY_FOV);
   let bestUserData = null;
 
@@ -1949,7 +1951,9 @@ function findClosestSkyStar(ray, maxAngularRad = 0.022, isHover = false) {
   let bestStar = null;
   const zoomScale = skyFov / DEFAULT_SKY_FOV;
   let bestAngle = maxAngularRad * zoomScale;
-  const rayDir = ray.direction.clone().normalize();
+  const dirVec = ray?.ray?.direction || ray?.direction;
+  if (!dirVec) return null;
+  const rayDir = dirVec.clone().normalize();
   // In hover mode, filter out faint unnamed background stars unless zoomed in so empty sky doesn't keep tooltip stuck open
   const hoverMagCutoff = 4.75 + Math.max(0, Math.log2(DEFAULT_SKY_FOV / Math.max(8, skyFov))) * 1.15;
 
