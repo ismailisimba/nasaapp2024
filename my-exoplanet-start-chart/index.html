@@ -4,50 +4,183 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exoplanet Star Chart</title>
+  <title>ExoSky · 8-Quadrant Star Chart & Celestial Inspector</title>
   <link rel="stylesheet" href="styles/style.css" />
-  <!-- Include Three.js and OrbitControls via module imports -->
   <script src="./threen.js" type="module"></script>
   <script src="./OrbitControls.js" type="module"></script>
 </head>
 <body>
   <div id="app">
-    <!-- Exoplanet Selection -->
-    <header>
-      <h1>Exoplanet Star Chart</h1>
-      <select id="exoplanetSelect">
-        <!-- Options will be populated dynamically -->
-      </select>
+    <!-- Top Header: World Selection + View Mode Toggle -->
+    <header id="topHeader">
+      <div class="brand-block">
+        <h1>🪐 ExoSky Observatory</h1>
+        <span class="subtitle-badge">8-Quadrant Sky, Solar System, Star Systems &amp; Deep-Sky Cosmic Objects</span>
+      </div>
+
+      <div class="selector-controls">
+        <div class="control-group">
+          <label for="planetSearchInput">Search World / Sci-Fi / Mission</label>
+          <input type="text" id="planetSearchInput" placeholder="e.g. Adrian, Erid, Vulcan, Pandora, Arrakis, Saturn..." autocomplete="off" />
+        </div>
+
+        <div class="control-group">
+          <label for="planetCategoryFilter">Object Category</label>
+          <select id="planetCategoryFilter">
+            <option value="all">All Worlds, Media &amp; Deep-Sky (5,799)</option>
+            <option value="solar_system">☀️ Solar System Planets &amp; Moons (19)</option>
+            <option value="popular_media">🎬 Popular Media &amp; Iconic Systems (20)</option>
+            <option value="deep_sky">🕳️ Black Holes, Galaxies &amp; Nebulae (22)</option>
+            <option value="earth_nearby">Nearby Stars (&lt; 50 ly)</option>
+            <option value="habitable">Habitable Zone Candidates</option>
+            <option value="terrestrial">Rocky &amp; Super-Earths</option>
+            <option value="giant">Gas &amp; Ice Giants</option>
+            <option value="extreme">Extreme &amp; Molten Lava Worlds</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="exoplanetSelect">Selected Celestial Body (<span id="planetCountLabel">5799</span>)</label>
+          <select id="exoplanetSelect"></select>
+        </div>
+      </div>
+
+      <div class="view-mode-switch">
+        <button id="modeSkyBtn" class="mode-btn active" title="Stand in one of the 8 surface quadrants and look out at the true-scale sky">
+          🌌 Sky Observatory
+        </button>
+        <button id="modeInspectorBtn" class="mode-btn" title="Inspect the planet, moon, black hole, galaxy, or nebula up close in 3D">
+          🪐 Up-Close 3D Inspector
+        </button>
+        <button id="modeSystemBtn" class="mode-btn" title="View the entire star system at once with its host star(s), habitable zone, and all orbiting planets &amp; moons">
+          ☀️ Entire Star System
+        </button>
+      </div>
     </header>
-    <!-- Star Chart Container -->
-    <div id="starChartContainer"></div>
-    <!-- Toolbar for Drawing Tools -->
+
+    <!-- 8-Quadrant Bar & Live Compass + Earth Horizon Distance Readout -->
+    <div id="quadrantBar">
+      <div class="quadrant-label-title">
+        <span>🌐 8 Quadrants:</span>
+      </div>
+      <div id="quadrantButtonsContainer" class="quadrant-buttons">
+        <!-- Populated dynamically from PLANETARY_QUADRANTS (Q1..Q8) -->
+      </div>
+      <div id="activeQuadrantInfo" class="quadrant-meta">
+        Looking from <strong>Q1 (NE-1)</strong>
+      </div>
+      <div id="earthHorizonReadout" class="earth-horizon-pill" title="Click to look directly at Earth on the horizon">
+        🌍 Earth on Horizon: <strong>0 km (Home World)</strong>
+      </div>
+      <div id="compassReadout" class="compass-readout">
+        🧭 Look: <strong>N (Az 0°) · Alt +35°</strong>
+      </div>
+    </div>
+
+    <!-- Main 3D Viewport Area -->
+    <div id="starChartContainer">
+      <!-- Left Collapsible Dossier & Guide Panel -->
+      <aside id="dossierPanel">
+        <div class="panel-header">
+          <h2 id="dossierTitle">Earth (Sol System)</h2>
+          <button id="toggleDossierBtn" class="icon-btn" title="Collapse/Expand Panel">−</button>
+        </div>
+        <div id="dossierBody">
+          <div id="planetTypeBadge" class="type-badge">Temperate Ocean World</div>
+          <p id="planetVisualDesc" class="visual-desc"></p>
+
+          <div class="stats-grid" id="planetStatsGrid">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div class="host-star-box" id="hostStarBox">
+            <div class="star-swatch" id="hostStarSwatch"></div>
+            <div class="star-meta" id="hostStarMeta"></div>
+          </div>
+
+          <div class="sky-summary-box" id="skySummaryBox">
+            <!-- Populated dynamically with quadrant sky stats, moons & Earth bearing -->
+          </div>
+
+          <div class="expeditions-box" id="expeditionsBox">
+            <!-- Populated dynamically with Scientific Expeditions, Vehicles Sent & Results -->
+          </div>
+
+          <details class="instructions-details">
+            <summary>💡 Navigation, Zoom &amp; Drawing Controls</summary>
+            <ul>
+              <li><strong>🔭 Sky Zoom (Pinch / Wheel / Buttons):</strong> Scroll, pinch with two fingers on mobile, or tap <strong>🔍 + / −</strong> on screen to zoom in up to 8× on the Sky Dome and reveal detailed star &amp; deep-sky labels!</li>
+              <li><strong>🎬 Popular Media &amp; Expeditions:</strong> Filter by <em>Popular Media &amp; Iconic Systems</em> for <em>Project Hail Mary</em> (Adrian / Erid), <em>Star Trek</em> (Vulcan / Andoria), <em>Avatar</em> (Pandora), <em>Dune</em> (Arrakis), and view real + canon spacecraft missions!</li>
+              <li><strong>8 Quadrants &amp; Continents:</strong> Click <strong>Q1–Q8</strong> above (or on the 3D globe) to stand in that octant. On Earth, accurate continents help you orient yourself!</li>
+              <li><strong>🌍 Earth on the Horizon:</strong> Click the green <strong>🌍 Earth on Horizon</strong> pill above to snap your view toward Earth!</li>
+              <li><strong>☀️ Entire Star System View:</strong> Click <strong>☀️ Entire Star System</strong> to view the host star(s), habitable zone, and all planets &amp; moons orbiting together.</li>
+            </ul>
+          </details>
+        </div>
+      </aside>
+
+      <!-- Floating Optical Zoom Controls HUD (Works on Desktop & Mobile across all views) -->
+      <div id="skyZoomHud" class="sky-zoom-hud">
+        <button id="zoomOutBtn" class="zoom-btn" title="Zoom Out (Wider Field of View)">🔍 −</button>
+        <span id="zoomLevelReadout" class="zoom-readout" title="Current Magnification & Field of View">🔭 1.0× (65°)</span>
+        <button id="zoomInBtn" class="zoom-btn" title="Zoom In (Telescopic Detail & Labels)">🔍 +</button>
+        <button id="zoomResetBtn" class="zoom-btn reset" title="Reset Zoom to 1.0×">1×</button>
+      </div>
+
+      <!-- Corner 3D Mini-Globe HUD Frame (shown in Sky Observatory Mode) -->
+      <div id="miniGlobeHud">
+        <div class="mini-globe-header">
+          <span id="miniGlobeTitle">3D Globe &amp; Moons (Click Q1–Q8)</span>
+          <button id="expandInspectorBtn" title="Switch to Full Up-Close Planet, Moons & Star Inspector">Inspect ⤢</button>
+        </div>
+        <div class="mini-globe-footer" id="miniGlobeSubtext">
+          Zenith arrow shows your current sky quadrant
+        </div>
+      </div>
+
+      <!-- Floating Hover Tooltip -->
+      <div id="starHoverTooltip" style="display: none;"></div>
+    </div>
+
+    <!-- Bottom Toolbar for Overlays, Drawing & Export -->
     <div id="toolbar">
-      <!-- Add this in your HTML body, perhaps in the toolbar or header -->
-<div id="instructions">
-  <p>Use mouse or touch gestures to navigate the star chart.</p>
-  <ul>
-    <li>Zoom until you can no longer see the green globe at the center then look around for the best view!</li>
-    <li>Rotate: Left-Click and drag or use one finger swipe.</li>
-    <li>Translate: Right-Click and drag or use one finger swipe.</li>
-    <li>Zoom: Scroll or pinch gesture.</li>
-    <li>Pan: Right-click and drag or two-finger swipe.</li>
-    <li>Double click a star to toggle it on or off, or use button below to do for all stars.</li>
-  </ul>
-</div>
+      <div class="toolbar-group">
+        <button id="toggleIAUButton" class="tool-btn active" title="Show/Hide real Earth IAU constellation stick figures & see how they warp in 3D">
+          ✨ IAU Constellations: ON
+        </button>
+        <button id="toggleDeepSkyButton" class="tool-btn active" title="Show/Hide Black Holes, Galaxies, Nebulae, Pulsars, and Star Clusters in the Sky">
+          🌀 Deep-Sky: ON
+        </button>
+        <button id="toggleHorizonButton" class="tool-btn active" title="Show/Hide local quadrant horizon ring, N/E/S/W compass, and altitude grid">
+          🧭 Compass &amp; Horizon: ON
+        </button>
+        <button id="toggleBelowHorizonButton" class="tool-btn" title="Cycle visibility of stars below the current quadrant's horizon">
+          🌗 Below Horizon: Dimmed
+        </button>
+        <button id="toggleStarLabelsButton" class="tool-btn active" title="Show/Hide proper names for bright stars, Sol, planets, moons, deep-sky objects, and constellations">
+          🏷️ Labels: ON
+        </button>
+      </div>
 
-      <!-- Drawing buttons and options -->
-      <button id="undoButton">Undo Last Line</button>
-      <button id="exportButton">Export Star Chart</button>
-      <button id="downloadDataButton">Download Data</button>
-      <button id="saveConstellationsButton">Save Constellations</button>
-      <button id="toggleAllStarsButton">Toggle All Stars Dimming</button>
-      <button id="resetCameraButton">Reset Camera</button>
+      <div class="toolbar-group">
+        <input type="text" id="constellationNameInput" placeholder="Custom constellation name..." />
+        <button id="undoButton" class="tool-btn">↩ Undo Line</button>
+        <button id="clearLinesButton" class="tool-btn">🗑️ Clear Custom</button>
+        <button id="toggleAllStarsButton" class="tool-btn">🔅 Dim Background Stars</button>
+      </div>
 
+      <div class="toolbar-group">
+        <button id="saveConstellationsButton" class="tool-btn">💾 Save Constellations</button>
+        <button id="loadConstellationsBtn" class="tool-btn">📂 Load</button>
+        <input type="file" id="loadConstellationsInput" accept=".json" style="display: none;" />
+        <button id="exportButton" class="tool-btn">📸 Export PNG</button>
+        <button id="downloadDataButton" class="tool-btn">⬇️ Data</button>
+        <button id="resetCameraButton" class="tool-btn accent">🎯 Reset View</button>
+      </div>
     </div>
   </div>
 
-  <!-- Include the main script -->
+  <!-- Main Application Module -->
   <script src="main.js" type="module"></script>
 </body>
 </html>

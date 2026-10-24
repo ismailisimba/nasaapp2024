@@ -1,34 +1,800 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #000; /* Black background for the night sky */
-    color: #fff;
-  }
-  #app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  header {
-    padding: 10px;
-    background-color: #111;
-  }
-  #starChartContainer {
-    flex: 1;
-    position: relative;
-  }
-  #toolbar {
-    padding: 10px;
-    background-color: #111;
-  }
-/* Add to your style.css */
-#instructions {
-  position: absolute;
-  top: 120px;
-  left: 10px;
-  background-color: rgba(17, 17, 17, 0.8);
-  color: #fff;
-  padding: 10px;
-  border-radius: 5px;
+* {
+  box-sizing: border-box;
 }
-  
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif;
+  background-color: #030712;
+  color: #f1f5f9;
+  overflow: hidden;
+  user-select: none;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+}
+
+/* Top Header */
+#topHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(9, 14, 28, 0.95) 100%);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.22);
+  z-index: 20;
+}
+
+.brand-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-block h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #f8fafc;
+}
+
+.subtitle-badge {
+  font-size: 0.72rem;
+  color: #38bdf8;
+  opacity: 0.9;
+}
+
+.selector-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.control-group label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+}
+
+.control-group input,
+.control-group select {
+  background: rgba(30, 41, 59, 0.9);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.control-group input:focus,
+.control-group select:focus {
+  border-color: #38bdf8;
+}
+
+#planetSearchInput {
+  width: 195px;
+}
+
+#exoplanetSelect {
+  min-width: 210px;
+  max-width: 260px;
+}
+
+.view-mode-switch {
+  display: flex;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 4px;
+}
+
+.mode-btn {
+  background: transparent;
+  color: #cbd5e1;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.mode-btn:hover {
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.15);
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.45);
+}
+
+/* 8-Quadrant Selector Bar */
+#quadrantBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(11, 18, 35, 0.95);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.16);
+  z-index: 19;
+}
+
+.quadrant-label-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.quadrant-buttons {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.quad-btn {
+  background: rgba(30, 41, 59, 0.8);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 5px;
+  padding: 4px 9px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.quad-btn:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+}
+
+.quad-btn.active {
+  background: rgba(14, 165, 233, 0.28);
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+}
+
+.quadrant-meta {
+  font-size: 0.76rem;
+  color: #cbd5e1;
+}
+
+.earth-horizon-pill {
+  font-size: 0.76rem;
+  color: #6ee7b7;
+  background: rgba(6, 78, 59, 0.55);
+  border: 1px solid rgba(16, 185, 129, 0.55);
+  padding: 3px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.earth-horizon-pill:hover {
+  background: rgba(16, 185, 129, 0.35);
+  border-color: #34d399;
+  color: #ffffff;
+}
+
+.compass-readout {
+  font-size: 0.78rem;
+  color: #7dd3fc;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Main 3D Viewport */
+#starChartContainer {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #02040a;
+}
+
+#starChartContainer canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* Left Collapsible Dossier Panel */
+#dossierPanel {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 320px;
+  max-height: calc(100% - 24px);
+  overflow-y: auto;
+  background: rgba(10, 17, 32, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 10px;
+  padding: 12px;
+  z-index: 15;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: #f8fafc;
+}
+
+.icon-btn {
+  background: rgba(51, 65, 85, 0.7);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 5px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.type-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(56, 189, 248, 0.2);
+  color: #7dd3fc;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  margin-bottom: 6px;
+}
+
+.visual-desc {
+  margin: 4px 0 10px 0;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  color: #cbd5e1;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.stat-card {
+  background: rgba(30, 41, 59, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+
+.stat-card .stat-label {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.stat-card .stat-val {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.host-star-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(30, 41, 59, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 7px;
+  padding: 7px 9px;
+  margin-bottom: 10px;
+}
+
+.star-swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.star-meta {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: #e2e8f0;
+}
+
+.sky-summary-box {
+  background: rgba(14, 165, 233, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 7px;
+  padding: 7px 9px;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: #e2e8f0;
+  margin-bottom: 8px;
+}
+
+/* Scientific Expeditions, Vehicles & Results Box */
+.expeditions-box {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 7px;
+  padding: 8px 9px;
+  margin-bottom: 8px;
+}
+
+.expeditions-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #6ee7b7;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.expedition-card {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+  font-size: 0.72rem;
+  line-height: 1.38;
+  color: #e2e8f0;
+}
+
+.expedition-card:last-child {
+  margin-bottom: 0;
+}
+
+.expedition-name {
+  font-weight: 700;
+  color: #38bdf8;
+  font-size: 0.75rem;
+}
+
+.expedition-agency {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  margin-bottom: 3px;
+}
+
+.expedition-vehicles {
+  color: #fde68a;
+  margin-bottom: 3px;
+}
+
+.expedition-results {
+  color: #cbd5e1;
+}
+
+.instructions-details {
+  font-size: 0.74rem;
+  color: #cbd5e1;
+  border-top: 1px solid rgba(148, 163, 184, 0.2);
+  padding-top: 6px;
+}
+
+.instructions-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: #93c5fd;
+  outline: none;
+}
+
+.instructions-details ul {
+  margin: 6px 0 0 0;
+  padding-left: 16px;
+}
+
+.instructions-details li {
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+/* Floating Optical Zoom Controls HUD */
+.sky-zoom-hud {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(10, 17, 32, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  border-radius: 999px;
+  padding: 4px 8px;
+  z-index: 16;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.65);
+}
+
+.zoom-btn {
+  background: rgba(30, 41, 59, 0.9);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.zoom-btn:hover {
+  background: rgba(14, 165, 233, 0.35);
+  border-color: #38bdf8;
+}
+
+.zoom-btn.reset {
+  font-size: 0.7rem;
+  color: #93c5fd;
+  padding: 4px 8px;
+}
+
+.zoom-readout {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #7dd3fc;
+  padding: 0 4px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Corner 3D Mini-Globe HUD Frame */
+#miniGlobeHud {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 220px;
+  height: 220px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 12px;
+  background: radial-gradient(circle, rgba(15, 23, 42, 0.35) 0%, rgba(3, 7, 18, 0.75) 100%);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 7px 9px;
+  z-index: 14;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
+}
+
+.mini-globe-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #bae6fd;
+  pointer-events: auto;
+}
+
+#expandInspectorBtn {
+  background: rgba(14, 165, 233, 0.3);
+  color: #ffffff;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+#expandInspectorBtn:hover {
+  background: rgba(14, 165, 233, 0.65);
+}
+
+.mini-globe-footer {
+  font-size: 0.66rem;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* Hover Tooltip */
+#starHoverTooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(9, 15, 29, 0.94);
+  color: #f8fafc;
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  z-index: 50;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+  max-width: 270px;
+}
+
+/* Selected Object Popup */
+#popup {
+  position: absolute;
+  top: 96px;
+  right: 14px;
+  background: rgba(10, 17, 32, 0.92);
+  backdrop-filter: blur(8px);
+  color: #f8fafc;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  max-width: 310px;
+  z-index: 30;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+}
+
+#popup h3 {
+  margin: 0 0 6px 0;
+  font-size: 0.92rem;
+  color: #38bdf8;
+}
+
+/* Bottom Toolbar */
+#toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(11, 18, 35, 0.98);
+  border-top: 1px solid rgba(56, 189, 248, 0.22);
+  z-index: 20;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+#constellationNameInput {
+  background: rgba(30, 41, 59, 0.9);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 0.76rem;
+  width: 170px;
+}
+
+.tool-btn {
+  background: rgba(30, 41, 59, 0.85);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tool-btn:hover {
+  background: rgba(51, 65, 85, 0.95);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.tool-btn.active {
+  background: rgba(14, 165, 233, 0.24);
+  border-color: #38bdf8;
+  color: #7dd3fc;
+}
+
+.tool-btn.accent {
+  background: rgba(37, 99, 235, 0.35);
+  border-color: #60a5fa;
+  color: #ffffff;
+}
+
+/* Responsive Tablet & Mobile Optimizations */
+@media (max-width: 960px) {
+  #dossierPanel {
+    width: 265px;
+  }
+  #miniGlobeHud {
+    width: 155px;
+    height: 155px;
+  }
+}
+
+@media (max-width: 768px) {
+  #topHeader {
+    padding: 6px 10px;
+    gap: 6px;
+  }
+
+  .brand-block {
+    width: 100%;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .brand-block h1 {
+    font-size: 1rem;
+  }
+
+  .subtitle-badge {
+    font-size: 0.65rem;
+    display: none;
+  }
+
+  .selector-controls {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .selector-controls .control-group:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  #planetSearchInput,
+  #planetCategoryFilter,
+  #exoplanetSelect {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    font-size: 0.78rem;
+    padding: 5px 7px;
+  }
+
+  .view-mode-switch {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 6px 6px;
+    font-size: 0.72rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  #quadrantBar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 5px 10px;
+    gap: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #quadrantBar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .quadrant-label-title,
+  .quadrant-meta {
+    display: none;
+  }
+
+  .quadrant-buttons {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+
+  .quad-btn {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    flex-shrink: 0;
+  }
+
+  .earth-horizon-pill,
+  .compass-readout {
+    flex-shrink: 0;
+    white-space: nowrap;
+    font-size: 0.72rem;
+  }
+
+  #dossierPanel {
+    top: 8px;
+    left: 8px;
+    width: calc(100vw - 16px);
+    max-width: 340px;
+    max-height: calc(100% - 16px);
+    padding: 9px 11px;
+  }
+
+  .sky-zoom-hud {
+    top: auto;
+    bottom: 10px;
+    left: 8px;
+    right: auto;
+    padding: 3px 7px;
+  }
+
+  #miniGlobeHud {
+    width: 122px;
+    height: 122px;
+    bottom: 8px;
+    right: 8px;
+    padding: 5px 6px;
+  }
+
+  .mini-globe-header {
+    font-size: 0.62rem;
+  }
+
+  .mini-globe-footer {
+    display: none;
+  }
+
+  #toolbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 6px 10px;
+    gap: 6px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  #toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .toolbar-group {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tool-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 6px 9px;
+    font-size: 0.72rem;
+  }
+
+  #popup {
+    top: auto;
+    bottom: 58px;
+    left: 10px;
+    right: 10px;
+    max-width: none;
+  }
+}
