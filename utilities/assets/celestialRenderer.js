@@ -173,9 +173,107 @@ export function getEarthContinentTexture() {
   return cachedEarthTexture;
 }
 
-// Classify any Solar System Planet, Moon, Deep-Sky Object, or Exoplanet
+// Classify any Solar System Planet, Moon, Space Station/Telescope/Probe, Deep-Sky Object, or Exoplanet
 export function classifyPlanet(planet) {
   const seed = hashString(planet.id || 'exo');
+
+  // 0a. Handle Space Stations, Space Telescopes, Interstellar Probes, SETI & JWST Benchmark Worlds
+  if (planet.isSpaceMission && planet.stationPreset) {
+    if (planet.stationPreset === 'wasp39b') {
+      return {
+        type: 'JWST Landmark · Hot Saturn (SO₂ & CO₂ Photochemistry)',
+        category: 'gas_hot',
+        filterGroup: 'space_missions',
+        shaderMode: 4,
+        useEarthMap: false,
+        oblateness: 0.06,
+        tidalStretch: 1.05,
+        hasRings: false,
+        seed: 0.44,
+        primaryColor: new THREE.Color(0xb45309),
+        secondaryColor: new THREE.Color(0xfbbf24),
+        accentColor: new THREE.Color(0x38bdf8),
+        atmoColor: new THREE.Color(0xf59e0b),
+        emissiveColor: new THREE.Color(0x9a3412),
+        cloudOpacity: 0.65,
+        description: planet.description
+      };
+    }
+    if (planet.stationPreset === 'k2_18b') {
+      return {
+        type: 'JWST Landmark · Habitable-Zone Hycean Ocean World',
+        category: 'temperate_rocky',
+        filterGroup: 'space_missions',
+        shaderMode: 0,
+        useEarthMap: false,
+        oblateness: 0.015,
+        tidalStretch: 1.0,
+        hasRings: false,
+        seed: 0.31,
+        primaryColor: new THREE.Color(0x0369a1),
+        secondaryColor: new THREE.Color(0x0d9488),
+        accentColor: new THREE.Color(0x7dd3fc),
+        atmoColor: new THREE.Color(0x38bdf8),
+        emissiveColor: new THREE.Color(0x000000),
+        cloudOpacity: 0.6,
+        description: planet.description
+      };
+    }
+    if (planet.stationPreset === 'seti_arecibo' || planet.stationPreset === 'seti_wow') {
+      return {
+        type: planet.stationPreset === 'seti_arecibo'
+          ? 'SETI / METI · 1974 Arecibo Message & Globular Cluster M13'
+          : 'SETI · 1977 "Wow! Signal" (1420 MHz) & Breakthrough Listen',
+        category: 'seti_beacon',
+        filterGroup: 'space_missions',
+        shaderMode: 3,
+        useEarthMap: false,
+        oblateness: 0.0,
+        tidalStretch: 1.0,
+        hasRings: false,
+        seed,
+        primaryColor: new THREE.Color(0x10b981),
+        secondaryColor: new THREE.Color(0x38bdf8),
+        accentColor: new THREE.Color(0xfacc15),
+        atmoColor: new THREE.Color(0x34d399),
+        emissiveColor: new THREE.Color(0x10b981),
+        cloudOpacity: 0.3,
+        description: planet.description
+      };
+    }
+    const stationTitles = {
+      iss: 'Crewed Orbital Laboratory · Low Earth Orbit (408 km)',
+      jwst: 'Infrared Flagship Space Observatory · Sun-Earth L2 (1.5M km)',
+      hubble: 'Optical / UV Space Observatory · Low Earth Orbit (535 km)',
+      tiangong: 'Modular Crewed Space Station · Low Earth Orbit (390 km)',
+      voyager1: 'Interstellar Probe & Golden Record · Ophiuchus (172+ AU)',
+      voyager2: 'Interstellar Grand Tour Probe · Pavo (143+ AU)',
+      parker: 'Solar Corona Touchdown Probe · 6.1M km Perihelion (692,000 km/h)',
+      newhorizons: 'Kuiper Belt Interplanetary Probe · 61+ AU',
+      cassini: 'Saturn Flagship Orbiter & Huygens Titan Probe',
+      apollo_lm: 'Crewed Lunar Lander · Tranquility Base (Mare Tranquillitatis)',
+      perseverance: 'Nuclear Mars Rover & Ingenuity Coaxial Helicopter (Jezero Crater)',
+      gaia_kepler: 'Astrometric & Exoplanet Photometry Fleet · Sun-Earth L2'
+    };
+    return {
+      type: stationTitles[planet.stationPreset] || 'Spacecraft / Orbital Observatory',
+      category: 'spacecraft',
+      filterGroup: 'space_missions',
+      shaderMode: 2,
+      useEarthMap: false,
+      oblateness: 0.0,
+      tidalStretch: 1.0,
+      hasRings: false,
+      seed,
+      primaryColor: new THREE.Color(0x38bdf8),
+      secondaryColor: new THREE.Color(0xfacc15),
+      accentColor: new THREE.Color(0xf8fafc),
+      atmoColor: new THREE.Color(0x38bdf8),
+      emissiveColor: new THREE.Color(0x0284c7),
+      cloudOpacity: 0.1,
+      description: planet.description
+    };
+  }
 
   // 0. Handle Curated Deep-Sky & Exotic Cosmic Objects (Black Holes, Galaxies, Nebulae, Pulsars, Clusters)
   if (planet.isDeepSky) {
@@ -1022,6 +1120,7 @@ const PLANET_FRAGMENT_SHADER = `
   uniform sampler2D uEarthTex;
   uniform float uSeed;
   uniform float uTime;
+  uniform float uOpacity;
   uniform vec3 uPrimary;
   uniform vec3 uSecondary;
   uniform vec3 uAccent;
@@ -1168,7 +1267,9 @@ const PLANET_FRAGMENT_SHADER = `
     vec3 atmoRim = uAtmo * fresnel * (0.45 + 0.55 * dayFactor);
 
     vec3 finalColor = surfaceColor * diffuse + nightEmission * (1.0 - dayFactor * 0.5) + atmoRim;
-    gl_FragColor = vec4(finalColor, 1.0);
+    // Semi-opaque alpha (default 0.88) so hidden-side structure and far-side labels are subtly visible through the globe
+    float alpha = clamp(uOpacity + fresnel * 0.10, 0.72, 0.98);
+    gl_FragColor = vec4(finalColor, alpha);
   }
 `;
 
@@ -1176,6 +1277,7 @@ const PLANET_FRAGMENT_SHADER = `
 const STAR_SURFACE_FRAGMENT_SHADER = `
   uniform vec3 uStarColor;
   uniform float uTime;
+  uniform float uOpacity;
   varying vec3 vNormal;
   varying vec3 vPosition;
 
@@ -1204,7 +1306,7 @@ const STAR_SURFACE_FRAGMENT_SHADER = `
     float limbDarkening = pow(mu, 0.45);
     vec3 coreColor = mix(uStarColor * 0.7, vec3(1.0, 0.99, 0.95), limbDarkening * 0.65);
     vec3 col = mix(uStarColor * 0.55, coreColor * 1.25, gran * 0.5 + 0.5);
-    gl_FragColor = vec4(col, 1.0);
+    gl_FragColor = vec4(col, uOpacity);
   }
 `;
 
@@ -1293,6 +1395,404 @@ export function getMoonsForPlanet(planet, profile) {
   return [];
 }
 
+// Build detailed Up-Close 3D Spacecraft, Space Station, Space Telescope & SETI Models
+function buildSpaceMission3DModel(planet, planetGroup, planetMesh) {
+  const preset = planet.stationPreset;
+  if (!preset || preset === 'wasp39b' || preset === 'k2_18b') return null;
+
+  // Turn the unit sphere into a translucent holographic 8-Quadrant orientation cage around the spacecraft
+  planetMesh.material = new THREE.MeshBasicMaterial({
+    color: 0x38bdf8,
+    transparent: true,
+    opacity: 0.10,
+    wireframe: true,
+    depthWrite: false
+  });
+
+  const craftGroup = new THREE.Group();
+  craftGroup.name = 'SpaceMission3DModelGroup';
+
+  const goldFoilMat = new THREE.MeshPhongMaterial({
+    color: 0xfbbf24,
+    emissive: 0x92400e,
+    shininess: 90,
+    transparent: true,
+    opacity: 0.94
+  });
+  const silverMat = new THREE.MeshPhongMaterial({
+    color: 0xe2e8f0,
+    emissive: 0x334155,
+    shininess: 85,
+    transparent: true,
+    opacity: 0.94
+  });
+  const whiteMat = new THREE.MeshPhongMaterial({
+    color: 0xf8fafc,
+    emissive: 0x475569,
+    shininess: 60,
+    transparent: true,
+    opacity: 0.94
+  });
+  const darkCarbonMat = new THREE.MeshPhongMaterial({
+    color: 0x1e293b,
+    emissive: 0x0f172a,
+    shininess: 40,
+    transparent: true,
+    opacity: 0.94
+  });
+  const solarBlueMat = new THREE.MeshPhongMaterial({
+    color: 0x1d4ed8,
+    emissive: 0x1e3a8a,
+    shininess: 95,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.92
+  });
+  const solarCopperMat = new THREE.MeshPhongMaterial({
+    color: 0xd97706,
+    emissive: 0x78350f,
+    shininess: 85,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.92
+  });
+
+  if (preset === 'iss') {
+    // 109m Integrated Truss Structure backbone
+    const truss = new THREE.Mesh(new THREE.BoxGeometry(1.75, 0.055, 0.055), silverMat);
+    craftGroup.add(truss);
+
+    // 8 pairs (16 wings) of Sawyer Copper-Gold Solar Arrays on Port & Starboard Truss
+    const xPositions = [-0.78, -0.58, 0.58, 0.78];
+    xPositions.forEach(xPos => {
+      const topWing = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.62), solarCopperMat);
+      topWing.position.set(xPos, 0, 0.36);
+      topWing.rotation.x = 0.25;
+      const botWing = new THREE.Mesh(new THREE.PlaneGeometry(0.13, 0.62), solarCopperMat);
+      botWing.position.set(xPos, 0, -0.36);
+      botWing.rotation.x = 0.25;
+      craftGroup.add(topWing, botWing);
+    });
+
+    // Pressurized Modules along Z axis (Zvezda, Zarya, Unity, Destiny, Harmony)
+    const coreModules = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.95, 24), silverMat);
+    coreModules.rotation.x = Math.PI / 2;
+    craftGroup.add(coreModules);
+
+    // Columbus (ESA) & Kibo (JAXA) Cross Modules
+    const crossModules = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.52, 24), whiteMat);
+    crossModules.rotation.z = Math.PI / 2;
+    crossModules.position.set(0, 0, 0.28);
+    craftGroup.add(crossModules);
+
+    // Nauka & Russian Segment Lower Module
+    const nauka = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.36, 20), whiteMat);
+    nauka.position.set(0, -0.18, -0.22);
+    craftGroup.add(nauka);
+
+    // White Thermal Radiator Panels
+    [-0.25, 0.25].forEach(rx => {
+      const rad = new THREE.Mesh(new THREE.PlaneGeometry(0.11, 0.32), whiteMat);
+      rad.position.set(rx, -0.12, -0.18);
+      rad.rotation.y = 0.4;
+      craftGroup.add(rad);
+    });
+
+    // Cupola 7-Window Earth-Viewing Dome (Nadir-facing)
+    const cupola = new THREE.Mesh(
+      new THREE.SphereGeometry(0.055, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.85 })
+    );
+    cupola.position.set(0, -0.09, 0.08);
+    craftGroup.add(cupola);
+  } else if (preset === 'jwst') {
+    // 5-Layer Diamond Kapton Sunshield
+    for (let layer = 0; layer < 5; layer++) {
+      const scale = 1.0 - layer * 0.04;
+      const shieldGeo = new THREE.ConeGeometry(0.78 * scale, 0.02, 4);
+      const shieldMat = new THREE.MeshPhongMaterial({
+        color: layer === 0 ? 0xfda4af : 0xcbd5e1,
+        emissive: layer === 0 ? 0x4c0519 : 0x334155,
+        shininess: 95,
+        transparent: true,
+        opacity: 0.88
+      });
+      const shield = new THREE.Mesh(shieldGeo, shieldMat);
+      shield.scale.set(1.25, 1.0, 0.78);
+      shield.position.y = -0.22 - layer * 0.038;
+      craftGroup.add(shield);
+    }
+
+    // 18 Hexagonal Gold-Coated Beryllium Mirror Segments in 2-Ring Honeycomb
+    const mirrorGroup = new THREE.Group();
+    mirrorGroup.position.set(0, 0.16, 0);
+    const hexR = 0.095;
+    const dx = hexR * 1.75;
+    const dy = hexR * 1.52;
+    const hexCoords = [
+      // Inner Ring (6)
+      [dx, 0], [-dx, 0], [dx * 0.5, dy], [-dx * 0.5, dy], [dx * 0.5, -dy], [-dx * 0.5, -dy],
+      // Outer Ring (12)
+      [dx * 2, 0], [-dx * 2, 0],
+      [dx * 1.5, dy], [-dx * 1.5, dy], [dx * 1.5, -dy], [-dx * 1.5, -dy],
+      [dx, dy * 2], [-dx, dy * 2], [dx, -dy * 2], [-dx, -dy * 2],
+      [0, dy * 2], [0, -dy * 2]
+    ];
+    hexCoords.forEach(([hx, hy]) => {
+      const seg = new THREE.Mesh(new THREE.CylinderGeometry(hexR * 0.94, hexR * 0.94, 0.025, 6), goldFoilMat);
+      seg.rotation.x = Math.PI / 2;
+      seg.position.set(hx, hy, 0);
+      mirrorGroup.add(seg);
+    });
+    // Central Secondary Baffle Cone
+    const baffle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.14, 16), darkCarbonMat);
+    baffle.rotation.x = Math.PI / 2;
+    baffle.position.z = 0.06;
+    mirrorGroup.add(baffle);
+
+    // Secondary Mirror & 3 Support Tripod Struts
+    const secMirror = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.02, 16), goldFoilMat);
+    secMirror.rotation.x = Math.PI / 2;
+    secMirror.position.set(0, 0, 0.48);
+    mirrorGroup.add(secMirror);
+
+    [[0, 0.36], [-0.32, -0.28], [0.32, -0.28]].forEach(([sx, sy]) => {
+      const pts = [new THREE.Vector3(sx, sy, 0), new THREE.Vector3(0, 0, 0.48)];
+      const strut = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(pts),
+        new THREE.LineBasicMaterial({ color: 0x94a3b8, linewidth: 2 })
+      );
+      mirrorGroup.add(strut);
+    });
+
+    craftGroup.add(mirrorGroup);
+  } else if (preset === 'hubble') {
+    // Aft Shroud + Forward Light Shield Cylinder
+    const aftTube = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.42, 32), silverMat);
+    aftTube.rotation.z = Math.PI / 2;
+    aftTube.position.x = -0.18;
+    const fwdTube = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.52, 32), silverMat);
+    fwdTube.rotation.z = Math.PI / 2;
+    fwdTube.position.x = 0.24;
+    craftGroup.add(aftTube, fwdTube);
+
+    // Open Aperture Door
+    const door = new THREE.Mesh(new THREE.CircleGeometry(0.18, 24), silverMat);
+    door.position.set(0.56, 0.18, 0);
+    door.rotation.z = -0.65;
+    craftGroup.add(door);
+
+    // Twin Blue Roll-Out Solar Arrays
+    const sWingL = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.72), solarBlueMat);
+    sWingL.position.set(0.05, 0, 0.56);
+    sWingL.rotation.x = Math.PI / 2;
+    const sWingR = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.72), solarBlueMat);
+    sWingR.position.set(0.05, 0, -0.56);
+    sWingR.rotation.x = Math.PI / 2;
+    craftGroup.add(sWingL, sWingR);
+  } else if (preset === 'tiangong') {
+    // Tianhe Core Module + Wentian & Mengtian T-Shape
+    const tianhe = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.085, 0.85, 24), whiteMat);
+    tianhe.rotation.z = Math.PI / 2;
+    const labs = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.88, 24), whiteMat);
+    labs.rotation.x = Math.PI / 2;
+    labs.position.x = 0.28;
+    const nodeSphere = new THREE.Mesh(new THREE.SphereGeometry(0.11, 20, 20), goldFoilMat);
+    nodeSphere.position.x = 0.28;
+    craftGroup.add(tianhe, labs, nodeSphere);
+
+    // 4 Large Flexible Solar Wings at Lab Ends
+    [-0.44, 0.44].forEach(zPos => {
+      const wingUp = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.58), solarCopperMat);
+      wingUp.position.set(0.28, 0.34, zPos);
+      const wingDn = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.58), solarCopperMat);
+      wingDn.position.set(0.28, -0.34, zPos);
+      craftGroup.add(wingUp, wingDn);
+    });
+  } else if (preset === 'voyager1' || preset === 'voyager2') {
+    // 3.7m White Parabolic High-Gain Dish Antenna
+    const dish = new THREE.Mesh(new THREE.ConeGeometry(0.46, 0.16, 32, 1, true), whiteMat);
+    dish.position.y = 0.12;
+    dish.rotation.x = Math.PI;
+    craftGroup.add(dish);
+
+    // Decagonal Spacecraft Bus
+    const bus = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.12, 10), darkCarbonMat);
+    bus.position.y = -0.02;
+    craftGroup.add(bus);
+
+    // Iconic 12-inch Gold-Plated Voyager Golden Record mounted on the Bus!
+    const goldenRecord = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.012, 24), goldFoilMat);
+    goldenRecord.rotation.z = Math.PI / 2;
+    goldenRecord.position.set(0.185, -0.02, 0);
+    craftGroup.add(goldenRecord);
+
+    // 13-meter Magnetometer Boom + 3 Pu-238 RTG Boom
+    const magBoom = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.95, 8), goldFoilMat);
+    magBoom.rotation.z = 1.25;
+    magBoom.position.set(-0.48, -0.16, 0);
+    const rtgBoom = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.52, 12), darkCarbonMat);
+    rtgBoom.rotation.z = -1.1;
+    rtgBoom.position.set(0.28, -0.14, 0.15);
+    const scanPlatform = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.09, 0.09), goldFoilMat);
+    scanPlatform.position.set(0.12, -0.12, -0.32);
+    craftGroup.add(magBoom, rtgBoom, scanPlatform);
+  } else if (preset === 'parker') {
+    // White Carbon-Composite Hexagonal Thermal Protection System (TPS) Heat Shield facing the Sun (+X)
+    const tpsShield = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.045, 6), whiteMat);
+    tpsShield.rotation.z = Math.PI / 2;
+    tpsShield.position.x = 0.28;
+    const bus = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.20, 0.48, 6), goldFoilMat);
+    bus.rotation.z = Math.PI / 2;
+    bus.position.x = 0.0;
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.18, 12), silverMat);
+    cup.rotation.z = Math.PI / 2;
+    cup.position.x = 0.36;
+    craftGroup.add(tpsShield, bus, cup);
+
+    // 2 Retracted Angled Solar Paddles behind the Heat Shield shadow
+    [-0.26, 0.26].forEach(zOff => {
+      const paddle = new THREE.Mesh(new THREE.PlaneGeometry(0.22, 0.12), solarBlueMat);
+      paddle.position.set(-0.18, 0, zOff);
+      paddle.rotation.y = zOff > 0 ? 0.55 : -0.55;
+      craftGroup.add(paddle);
+    });
+  } else if (preset === 'apollo_lm') {
+    // Lunar Regolith Surface Disc underneath Eagle LM
+    const lunarGround = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.75, 0.75, 0.04, 36),
+      new THREE.MeshPhongMaterial({ color: 0x64748b, transparent: true, opacity: 0.72 })
+    );
+    lunarGround.position.y = -0.32;
+    // Octagonal Gold-Foil Descent Stage
+    const descent = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.18, 8), goldFoilMat);
+    descent.position.y = -0.14;
+    // Faceted Silver/Black Ascent Stage
+    const ascent = new THREE.Mesh(new THREE.DodecahedronGeometry(0.21, 0), silverMat);
+    ascent.position.y = 0.08;
+    craftGroup.add(lunarGround, descent, ascent);
+
+    // 4 Landing Legs & Circular Footpads
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.32, 8), goldFoilMat);
+      leg.position.set(Math.cos(a) * 0.34, -0.22, Math.sin(a) * 0.34);
+      leg.rotation.z = Math.cos(a) * 0.45;
+      leg.rotation.x = -Math.sin(a) * 0.45;
+      const pad = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.015, 16), goldFoilMat);
+      pad.position.set(Math.cos(a) * 0.44, -0.30, Math.sin(a) * 0.44);
+      craftGroup.add(leg, pad);
+    }
+  } else if (preset === 'perseverance') {
+    // Martian Red Jezero Regolith Patch
+    const marsGround = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.78, 0.78, 0.04, 36),
+      new THREE.MeshPhongMaterial({ color: 0x9a3412, transparent: true, opacity: 0.72 })
+    );
+    marsGround.position.y = -0.28;
+    // Rover Chassis
+    const chassis = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.14, 0.30), whiteMat);
+    chassis.position.y = -0.10;
+    // SuperCam Remote Sensing Mast
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.26, 12), silverMat);
+    mast.position.set(0.16, 0.08, 0.08);
+    const camHead = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.06, 0.09), whiteMat);
+    camHead.position.set(0.16, 0.21, 0.08);
+    // MMRTG Power Unit at Rear
+    const mmrtg = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.18, 12), goldFoilMat);
+    mmrtg.rotation.z = -1.1;
+    mmrtg.position.set(-0.26, -0.04, 0);
+    craftGroup.add(marsGround, chassis, mast, camHead, mmrtg);
+
+    // 6 Rocker-Bogie Aluminum Wheels
+    [-0.18, 0, 0.18].forEach(wx => {
+      [-0.19, 0.19].forEach(wz => {
+        const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.045, 16), darkCarbonMat);
+        wheel.rotation.x = Math.PI / 2;
+        wheel.position.set(wx, -0.21, wz);
+        craftGroup.add(wheel);
+      });
+    });
+
+    // Hovering Ingenuity Mars Helicopter Overhead!
+    const ingenuity = new THREE.Group();
+    ingenuity.position.set(-0.18, 0.36, -0.15);
+    const heliBox = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.07, 0.07), silverMat);
+    const rotor1 = new THREE.Mesh(new THREE.PlaneGeometry(0.32, 0.035), darkCarbonMat);
+    rotor1.rotation.x = Math.PI / 2;
+    rotor1.position.y = 0.055;
+    const rotor2 = new THREE.Mesh(new THREE.PlaneGeometry(0.035, 0.32), darkCarbonMat);
+    rotor2.rotation.x = Math.PI / 2;
+    rotor2.position.y = 0.08;
+    const heliSolar = new THREE.Mesh(new THREE.PlaneGeometry(0.12, 0.08), solarBlueMat);
+    heliSolar.rotation.x = Math.PI / 2;
+    heliSolar.position.y = 0.105;
+    ingenuity.add(heliBox, rotor1, rotor2, heliSolar);
+    craftGroup.add(ingenuity);
+  } else if (preset === 'seti_arecibo' || preset === 'seti_wow') {
+    // Concentric Radio Wavefront Rings + Beam Cone
+    const waveGroup = new THREE.Group();
+    for (let w = 1; w <= 5; w++) {
+      const wRing = new THREE.Mesh(
+        new THREE.RingGeometry(w * 0.24, w * 0.24 + 0.025, 64),
+        new THREE.MeshBasicMaterial({
+          color: preset === 'seti_arecibo' ? 0x10b981 : 0x38bdf8,
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.75 - w * 0.1
+        })
+      );
+      wRing.position.z = (w - 3) * 0.22;
+      waveGroup.add(wRing);
+    }
+    const beamCone = new THREE.Mesh(
+      new THREE.ConeGeometry(0.65, 1.85, 32, 1, true),
+      new THREE.MeshBasicMaterial({
+        color: preset === 'seti_arecibo' ? 0x10b981 : 0x38bdf8,
+        transparent: true,
+        opacity: 0.22,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+      })
+    );
+    beamCone.rotation.x = Math.PI / 2;
+    waveGroup.add(beamCone);
+    craftGroup.add(waveGroup);
+  } else {
+    // New Horizons / Cassini / Gaia-Kepler Space Observatory
+    const dish = new THREE.Mesh(new THREE.ConeGeometry(0.38, 0.14, 32, 1, true), whiteMat);
+    dish.position.y = 0.16;
+    dish.rotation.x = Math.PI;
+    const bus = new THREE.Mesh(
+      preset === 'newhorizons'
+        ? new THREE.CylinderGeometry(0.28, 0.28, 0.12, 3)
+        : new THREE.CylinderGeometry(0.20, 0.20, 0.34, 12),
+      goldFoilMat
+    );
+    const rtg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.38, 12), darkCarbonMat);
+    rtg.rotation.z = Math.PI / 2;
+    rtg.position.set(0.28, -0.04, 0);
+    craftGroup.add(dish, bus, rtg);
+    if (preset === 'cassini') {
+      const huygens = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.09, 24), goldFoilMat);
+      huygens.rotation.z = -Math.PI / 2;
+      huygens.position.set(-0.23, -0.02, 0);
+      craftGroup.add(huygens);
+    } else if (preset === 'gaia_kepler') {
+      const sunshield = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.02, 32), goldFoilMat);
+      sunshield.position.y = -0.18;
+      craftGroup.add(sunshield);
+    }
+  }
+
+  craftGroup.traverse(child => {
+    child.userData = { isPlanet: true, data: planet };
+  });
+  planetGroup.add(craftGroup);
+  return craftGroup;
+}
+
 // Build the complete Up-Close Planet + 8-Quadrant Overlay + Orbiting Moons + Host Star Group
 export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   const profile = classifyPlanet(planet);
@@ -1302,7 +1802,7 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   const lightDir = new THREE.Vector3(1.0, 0.2, 0.45).normalize();
   const earthTex = getEarthContinentTexture();
 
-  // 1. Planet Core & Procedural Surface Mesh
+  // 1. Planet Core & Procedural Surface Mesh (Semi-Opaque 0.88 so hidden-side labels are differentiated)
   const planetGroup = new THREE.Group();
   planetGroup.scale.set(profile.tidalStretch, 1.0 - profile.oblateness, 1.0);
 
@@ -1310,12 +1810,14 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   const planetMat = new THREE.ShaderMaterial({
     vertexShader: PLANET_VERTEX_SHADER,
     fragmentShader: PLANET_FRAGMENT_SHADER,
+    transparent: true,
     uniforms: {
       uMode: { value: profile.shaderMode },
       uUseEarthTex: { value: profile.useEarthMap ? 1 : 0 },
       uEarthTex: { value: earthTex },
       uSeed: { value: profile.seed },
       uTime: { value: 0.0 },
+      uOpacity: { value: 0.88 },
       uPrimary: { value: profile.primaryColor },
       uSecondary: { value: profile.secondaryColor },
       uAccent: { value: profile.accentColor },
@@ -1328,6 +1830,9 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   planetMesh.name = 'PlanetSurfaceMesh';
   planetMesh.userData = { isPlanet: true, data: planet, profile };
   planetGroup.add(planetMesh);
+
+  // Build custom 3D Spacecraft / Station / Telescope / SETI model when inspecting a space mission
+  const spaceMissionModel = buildSpaceMission3DModel(planet, planetGroup, planetMesh);
 
   // Special Up-Close 3D Features for Black Holes, Galaxies, Nebulae, Pulsars & Clusters
   let deepSkyAnimatedObj = null;
@@ -1576,6 +2081,7 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   quadrantOverlayGroup.add(meridian2);
 
   const quadrantMeshes = [];
+  const quadrantBadges = [];
   PLANETARY_QUADRANTS.forEach(q => {
     const isSelected = q.id === activeQuadrantId;
     const thetaStart = q.hemisphere === 'Northern' ? 0.02 : Math.PI / 2 + 0.02;
@@ -1606,8 +2112,15 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
     const centerVec = latLonToVector3(q.centerLat, q.centerLon, 1.18);
     const badge = createBadgeSprite(q.id, q.color, isSelected ? 0.16 : 0.12);
     badge.position.copy(centerVec);
-    badge.userData = { isQuadrant: true, quadrantId: q.id, quadrantData: q };
+    badge.userData = {
+      isQuadrant: true,
+      quadrantId: q.id,
+      quadrantData: q,
+      baseScale: badge.scale.clone(),
+      localNormal: centerVec.clone().normalize()
+    };
     quadrantOverlayGroup.add(badge);
+    quadrantBadges.push(badge);
 
     if (isSelected) {
       const surfaceOrigin = latLonToVector3(q.centerLat, q.centerLon, 1.01);
@@ -1620,7 +2133,7 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   planetGroup.add(quadrantOverlayGroup);
   rootGroup.add(planetGroup);
 
-  // 3. Orbiting 3D Moons (or Looming Parent Planet if currently inspecting a Moon)
+  // 3. Orbiting 3D Moons (or Looming Parent Planet if currently inspecting a Moon / Orbital Station)
   const moonsGroup = new THREE.Group();
   moonsGroup.name = 'OrbitingMoonsGroup';
   const animatedMoons = [];
@@ -1647,31 +2160,43 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
     );
     moonsGroup.add(orbitLine);
 
-    // Moon 3D Sphere (brightened on dark side via emissive fill)
+    // Moon 3D Sphere (brightened on dark side via emissive fill, slightly translucent)
     const moonColor = new THREE.Color(m.color || 0xcbd5e1);
     const moonMat = new THREE.MeshPhongMaterial({
       color: moonColor,
       emissive: moonColor.clone().multiplyScalar(0.42),
-      shininess: 15
+      shininess: 15,
+      transparent: true,
+      opacity: 0.90
     });
     const moonMesh = new THREE.Mesh(new THREE.SphereGeometry(moonR, 24, 24), moonMat);
-    moonMesh.userData = {
+    const moonMeta = {
       isMoon: true,
+      targetObjectId: m.targetObjectId || null,
       data: {
         Moon: m.name,
         'Parent World': planet.id,
         'Relative Radius': `${(moonR * 100).toFixed(0)}% of parent display scale`,
-        Tip: 'You can also select major Solar System moons directly in the top dropdown!'
+        Tip: m.targetObjectId
+          ? 'Click "Inspect & View Sky" below (or double-click this moon) to jump to its 3D surface!'
+          : 'Orbiting satellite in this planetary system.',
+        _targetObjectId: m.targetObjectId || null
       }
     };
+    moonMesh.userData = moonMeta;
 
     const moonLabel = createBadgeSprite(`🌕 ${m.name}`, m.color || 0x94a3b8, 0.11);
     moonLabel.position.set(0, moonR + 0.14, 0);
+    moonLabel.userData = {
+      ...moonMeta,
+      baseScale: moonLabel.scale.clone()
+    };
     moonMesh.add(moonLabel);
 
     moonsGroup.add(moonMesh);
     animatedMoons.push({
       mesh: moonMesh,
+      labelSprite: moonLabel,
       orbitR,
       speed: m.speed || 0.7,
       phase: idx * 2.1,
@@ -1679,8 +2204,8 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
     });
   });
 
-  // If currently inspecting a Moon (e.g. Luna, Io, Europa, Titan), show its Parent Planet looming in background!
-  if (planet.bodyType === 'moon' && planet.parentBody) {
+  // If currently inspecting a Moon or Orbital Space Station with a parentBody, show its Parent World looming in background!
+  if ((planet.bodyType === 'moon' || planet.isSpaceMission) && planet.parentBody) {
     const parentIsEarth = planet.parentBody.startsWith('Earth');
     const parentGeo = new THREE.SphereGeometry(0.95, 48, 48);
     let parentMat;
@@ -1688,6 +2213,7 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
       parentMat = new THREE.ShaderMaterial({
         vertexShader: PLANET_VERTEX_SHADER,
         fragmentShader: PLANET_FRAGMENT_SHADER,
+        transparent: true,
         uniforms: {
           uMode: { value: 0 },
           uUseEarthTex: { value: 1 },
@@ -1698,102 +2224,126 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
           uSecondary: { value: new THREE.Color(0x2f7d3d) },
           uAccent: { value: new THREE.Color(0xd9b382) },
           uAtmo: { value: new THREE.Color(0x4da6ff) },
-          uLightDir: { value: lightDir }
+          uLightDir: { value: lightDir },
+          uOpacity: { value: 0.88 }
         }
       });
     } else {
       const pCol = new THREE.Color(0xd99b52);
       parentMat = new THREE.MeshPhongMaterial({
         color: pCol,
-        emissive: pCol.clone().multiplyScalar(0.45)
+        emissive: pCol.clone().multiplyScalar(0.45),
+        transparent: true,
+        opacity: 0.88
       });
     }
     const parentMesh = new THREE.Mesh(parentGeo, parentMat);
     parentMesh.position.set(-3.2, 1.1, -2.6);
+    const parentMeta = {
+      isMoon: true,
+      targetObjectId: planet.parentBody,
+      data: {
+        'Parent World': planet.parentBody,
+        'Current Vantage Point': planet.id,
+        Tip: 'Click "Inspect & View Sky" below or double-click to return to the parent world!',
+        _targetObjectId: planet.parentBody
+      }
+    };
+    parentMesh.userData = parentMeta;
     const pBadge = createBadgeSprite(`🪐 Parent: ${planet.parentBody}`, 0x38bdf8, 0.22);
     pBadge.position.set(0, 1.25, 0);
+    pBadge.userData = parentMeta;
     parentMesh.add(pBadge);
     moonsGroup.add(parentMesh);
   }
 
-  // 3b. Render Interactive 3D Scientific Expedition Spacecraft / Probe Marker in Orbit
-  const expeditions = getExpeditionsForWorld(planet);
+  // 3b. Render Interactive 3D Scientific Expedition Spacecraft / Stations in Orbit (up to 4 pickable probes)
+  const expeditions = !planet.isSpaceMission ? getExpeditionsForWorld(planet) : [];
   if (expeditions && expeditions.length > 0) {
-    const primaryExp = expeditions[0];
-    const probeOrbitR = 1.62;
-    const probeInc = 0.38;
+    const probeColors = [0x10b981, 0x38bdf8, 0xfbbf24, 0xc084fc];
+    expeditions.slice(0, 4).forEach((exp, eIdx) => {
+      const probeOrbitR = 1.52 + eIdx * 0.22;
+      const probeInc = (eIdx % 2 === 0 ? 1 : -1) * (0.34 + eIdx * 0.14);
+      const badgeColor = probeColors[eIdx % probeColors.length];
 
-    const probeOrbitPts = [];
-    for (let i = 0; i <= 96; i++) {
-      const a = (i / 96) * Math.PI * 2;
-      probeOrbitPts.push(
-        new THREE.Vector3(
-          Math.cos(a) * probeOrbitR,
-          Math.sin(a) * probeOrbitR * Math.sin(probeInc),
-          Math.sin(a) * probeOrbitR * Math.cos(probeInc)
-        )
-      );
-    }
-    const probeTrack = new THREE.LineLoop(
-      new THREE.BufferGeometry().setFromPoints(probeOrbitPts),
-      new THREE.LineBasicMaterial({ color: 0x10b981, transparent: true, opacity: 0.35 })
-    );
-    moonsGroup.add(probeTrack);
-
-    // Build miniature 3D Spacecraft (Gold Foil Bus + Blue Solar Panels + Dish Antenna)
-    const probeGroup = new THREE.Group();
-    const busMesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.032, 0.032, 0.075, 12),
-      new THREE.MeshPhongMaterial({ color: 0xfbbf24, emissive: 0xb45309 })
-    );
-    const panelMat = new THREE.MeshBasicMaterial({ color: 0x2563eb, side: THREE.DoubleSide });
-    const leftWing = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.045), panelMat);
-    leftWing.position.set(-0.095, 0, 0);
-    const rightWing = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.045), panelMat);
-    rightWing.position.set(0.095, 0, 0);
-    const dishMesh = new THREE.Mesh(
-      new THREE.ConeGeometry(0.042, 0.025, 16, 1, true),
-      new THREE.MeshBasicMaterial({ color: 0xf8fafc, side: THREE.DoubleSide })
-    );
-    dishMesh.position.set(0, 0.05, 0);
-
-    probeGroup.add(busMesh);
-    probeGroup.add(leftWing);
-    probeGroup.add(rightWing);
-    probeGroup.add(dishMesh);
-
-    const probeMeta = {
-      isMoon: true,
-      isExpeditionProbe: true,
-      data: {
-        'Scientific Expedition': primaryExp.mission,
-        'Agency & Timeline': primaryExp.agency,
-        'Vehicles / Spacecraft Sent': primaryExp.vehicles,
-        'Key Scientific Results': primaryExp.results,
-        'Total Recorded Expeditions': `${expeditions.length} Mission Campaign(s) (See Dossier Panel)`
+      const probeOrbitPts = [];
+      for (let i = 0; i <= 96; i++) {
+        const a = (i / 96) * Math.PI * 2;
+        probeOrbitPts.push(
+          new THREE.Vector3(
+            Math.cos(a) * probeOrbitR,
+            Math.sin(a) * probeOrbitR * Math.sin(probeInc),
+            Math.sin(a) * probeOrbitR * Math.cos(probeInc)
+          )
+        );
       }
-    };
-    probeGroup.userData = probeMeta;
-    probeGroup.traverse(c => {
-      c.userData = probeMeta;
-    });
+      const probeTrack = new THREE.LineLoop(
+        new THREE.BufferGeometry().setFromPoints(probeOrbitPts),
+        new THREE.LineBasicMaterial({ color: badgeColor, transparent: true, opacity: 0.34 })
+      );
+      moonsGroup.add(probeTrack);
 
-    const probeBadge = createBadgeSprite(
-      primaryExp.probeLabel || '🛰️ Scientific Probe',
-      0x10b981,
-      0.165
-    );
-    probeBadge.position.set(0, 0.14, 0);
-    probeBadge.userData = probeMeta;
-    probeGroup.add(probeBadge);
+      // Build miniature 3D Spacecraft (Gold Foil Bus + Solar Panels + Dish Antenna)
+      const probeGroup = new THREE.Group();
+      const busMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.032, 0.032, 0.075, 12),
+        new THREE.MeshPhongMaterial({ color: 0xfbbf24, emissive: 0xb45309 })
+      );
+      const panelMat = new THREE.MeshBasicMaterial({ color: 0x2563eb, side: THREE.DoubleSide });
+      const leftWing = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.045), panelMat);
+      leftWing.position.set(-0.095, 0, 0);
+      const rightWing = new THREE.Mesh(new THREE.PlaneGeometry(0.14, 0.045), panelMat);
+      rightWing.position.set(0.095, 0, 0);
+      const dishMesh = new THREE.Mesh(
+        new THREE.ConeGeometry(0.042, 0.025, 16, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0xf8fafc, side: THREE.DoubleSide })
+      );
+      dishMesh.position.set(0, 0.05, 0);
 
-    moonsGroup.add(probeGroup);
-    animatedMoons.push({
-      mesh: probeGroup,
-      orbitR: probeOrbitR,
-      speed: 1.45,
-      phase: 1.2,
-      inc: probeInc
+      probeGroup.add(busMesh);
+      probeGroup.add(leftWing);
+      probeGroup.add(rightWing);
+      probeGroup.add(dishMesh);
+
+      const probeMeta = {
+        isMoon: true,
+        isExpeditionProbe: true,
+        targetObjectId: exp.targetObjectId || null,
+        data: {
+          'Scientific Expedition': exp.mission,
+          'Agency & Timeline': exp.agency,
+          'Vehicles / Spacecraft Sent': exp.vehicles,
+          'Key Scientific Results': exp.results,
+          'Total Recorded Expeditions': `${expeditions.length} Mission Campaign(s) (See Dossier Panel)`,
+          _targetObjectId: exp.targetObjectId || null
+        }
+      };
+      probeGroup.userData = probeMeta;
+      probeGroup.traverse(c => {
+        c.userData = probeMeta;
+      });
+
+      const probeBadge = createBadgeSprite(
+        exp.probeLabel || '🛰️ Scientific Probe',
+        badgeColor,
+        0.155
+      );
+      probeBadge.position.set(0, 0.14, 0);
+      probeBadge.userData = {
+        ...probeMeta,
+        baseScale: probeBadge.scale.clone()
+      };
+      probeGroup.add(probeBadge);
+
+      moonsGroup.add(probeGroup);
+      animatedMoons.push({
+        mesh: probeGroup,
+        labelSprite: probeBadge,
+        orbitR: probeOrbitR,
+        speed: 1.35 - eIdx * 0.18,
+        phase: 1.2 + eIdx * 1.65,
+        inc: probeInc
+      });
     });
   }
 
@@ -1812,9 +2362,11 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   const starMat = new THREE.ShaderMaterial({
     vertexShader: PLANET_VERTEX_SHADER,
     fragmentShader: STAR_SURFACE_FRAGMENT_SHADER,
+    transparent: true,
     uniforms: {
       uStarColor: { value: starColor },
-      uTime: { value: 0.0 }
+      uTime: { value: 0.0 },
+      uOpacity: { value: 0.90 }
     }
   });
   const hostStarMesh = new THREE.Mesh(starGeo, starMat);
@@ -1864,6 +2416,45 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
   }
   updateOrbitingMoons(0);
 
+  // Differentiate front-side vs. hidden-side labels behind the semi-opaque globe
+  const _camDir = new THREE.Vector3();
+  const _worldNormal = new THREE.Vector3();
+  const _planetQuat = new THREE.Quaternion();
+  const _itemWorldPos = new THREE.Vector3();
+  function updateHiddenSideLabels(camera) {
+    if (!camera) return;
+    _camDir.copy(camera.position).normalize();
+    planetGroup.getWorldQuaternion(_planetQuat);
+
+    // 1. Quadrant badges on the globe surface
+    quadrantBadges.forEach(badge => {
+      const localN = badge.userData.localNormal;
+      const baseScale = badge.userData.baseScale;
+      if (!localN || !baseScale) return;
+      _worldNormal.copy(localN).applyQuaternion(_planetQuat).normalize();
+      const dot = _worldNormal.dot(_camDir);
+      // Smooth transition across the limb (-0.12 to +0.15)
+      const t = THREE.MathUtils.clamp((dot + 0.12) / 0.27, 0.0, 1.0);
+      badge.material.opacity = THREE.MathUtils.lerp(0.22, 0.96, t);
+      const sFactor = THREE.MathUtils.lerp(0.80, 1.0, t);
+      badge.scale.set(baseScale.x * sFactor, baseScale.y * sFactor, 1);
+    });
+
+    // 2. Orbiting moon & expedition probe labels (dim when passing behind the central globe)
+    animatedMoons.forEach(m => {
+      if (!m.labelSprite || !m.labelSprite.userData.baseScale) return;
+      m.mesh.getWorldPosition(_itemWorldPos);
+      const alongCam = _itemWorldPos.dot(_camDir);
+      // Perpendicular distance from camera-to-origin sightline
+      const perpDistSq = Math.max(0, _itemWorldPos.lengthSq() - alongCam * alongCam);
+      const isOccludedByGlobe = alongCam < -0.15 && perpDistSq < 1.05;
+      const baseScale = m.labelSprite.userData.baseScale;
+      m.labelSprite.material.opacity = isOccludedByGlobe ? 0.26 : 0.95;
+      const sFactor = isOccludedByGlobe ? 0.84 : 1.0;
+      m.labelSprite.scale.set(baseScale.x * sFactor, baseScale.y * sFactor, 1);
+    });
+  }
+
   return {
     rootGroup,
     planetGroup,
@@ -1877,6 +2468,7 @@ export function buildCelestialSystem(planet, activeQuadrantId = 'Q1') {
     moonsGroup,
     moonsList,
     updateOrbitingMoons,
+    updateHiddenSideLabels,
     profile
   };
 }
@@ -1891,12 +2483,13 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
   let systemPlanets = [];
   let hostTitle = selectedWorld.hostname || 'Sol (Our Sun)';
 
-  if (selectedWorld.isSolarSystem) {
+  const isSolMission = selectedWorld.isSpaceMission && (selectedWorld.hostname || '').startsWith('Sol');
+  if (selectedWorld.isSolarSystem || isSolMission) {
     hostTitle = 'Sol (Our Sun)';
     systemPlanets = allCatalogWorlds.filter(
       w => w.isSolarSystem && (w.bodyType === 'planet' || w.bodyType === 'dwarf_planet')
     );
-  } else if (selectedWorld.isDeepSky) {
+  } else if (selectedWorld.isDeepSky || (selectedWorld.isSpaceMission && !isSolMission)) {
     hostTitle = selectedWorld.hostname || selectedWorld.id;
     if (Array.isArray(selectedWorld.moons) && selectedWorld.moons.length > 0) {
       systemPlanets = selectedWorld.moons.map((m, idx) => ({
@@ -1919,7 +2512,7 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
     const is40Eri = hName.includes('40 Eridani') || hName.includes('HD 26965');
     const isAlphaCen = hName.includes('Alpha Centauri') || hName.includes('Rigil Kentaurus') || hName.includes('Proxima');
     systemPlanets = allCatalogWorlds.filter(w => {
-      if (w.isSolarSystem || w.isDeepSky) return false;
+      if (w.isSolarSystem || w.isDeepSky || w.isSpaceMission) return false;
       if (w.hostname === hName) return true;
       if (is40Eri && ((w.hostname || '').includes('40 Eridani') || (w.hostname || '').includes('HD 26965'))) return true;
       if (isAlphaCen && ((w.hostname || '').includes('Alpha Centauri') || (w.hostname || '').includes('Proxima'))) return true;
@@ -1930,7 +2523,7 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
   // Sort planets from innermost to outermost semi-major axis (pl_orbsmax)
   systemPlanets = systemPlanets.slice().sort((a, b) => (a.pl_orbsmax || 0.5) - (b.pl_orbsmax || 0.5));
 
-  // Determine which planet in the system should be highlighted (if a moon is selected, highlight its parent planet)
+  // Determine which planet in the system should be highlighted (if a moon or orbital mission is selected, highlight its parent planet)
   const targetPlanetId = selectedWorld.parentBody || selectedWorld.id;
 
   // 2. Central Host Star (or Central Black Hole / Deep-Sky Core)
@@ -1941,9 +2534,11 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
   const starMat = new THREE.ShaderMaterial({
     vertexShader: PLANET_VERTEX_SHADER,
     fragmentShader: STAR_SURFACE_FRAGMENT_SHADER,
+    transparent: true,
     uniforms: {
       uStarColor: { value: starColor },
-      uTime: { value: 0.0 }
+      uTime: { value: 0.0 },
+      uOpacity: { value: 0.90 }
     }
   });
 
@@ -1960,7 +2555,7 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
       'Spectral Class': selectedWorld.st_spectype || 'G2 V',
       'Effective Temp': `${stTeff} K`,
       'System Worlds': `${systemPlanets.length} Orbiting Bodies`,
-      'Distance from Earth': selectedWorld.isSolarSystem ? '0 ly (Home Solar System)' : `${selectedWorld.distance} ly`
+      'Distance from Earth': (selectedWorld.isSolarSystem || isSolMission) ? '0 ly (Home Solar System)' : `${selectedWorld.distance} ly`
     }
   };
   rootGroup.add(centralStarMesh);
@@ -1981,7 +2576,7 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
   rootGroup.add(hostBadge);
 
   // If binary/multi-star system (sy_snum >= 2), render companion star!
-  if ((selectedWorld.sy_snum || 1) >= 2 && !selectedWorld.isSolarSystem) {
+  if ((selectedWorld.sy_snum || 1) >= 2 && !selectedWorld.isSolarSystem && !isSolMission) {
     const compStar = new THREE.Mesh(
       new THREE.SphereGeometry(centralRadius * 0.55, 32, 32),
       new THREE.MeshBasicMaterial({ color: 0xffb366 })
@@ -2057,6 +2652,7 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
     const pMat = new THREE.ShaderMaterial({
       vertexShader: PLANET_VERTEX_SHADER,
       fragmentShader: PLANET_FRAGMENT_SHADER,
+      transparent: true,
       uniforms: {
         uMode: { value: pProfile.shaderMode },
         uUseEarthTex: { value: pProfile.useEarthMap ? 1 : 0 },
@@ -2067,7 +2663,8 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
         uSecondary: { value: pProfile.secondaryColor },
         uAccent: { value: pProfile.accentColor },
         uAtmo: { value: pProfile.atmoColor },
-        uLightDir: { value: new THREE.Vector3(-1, 0.2, 0).normalize() }
+        uLightDir: { value: new THREE.Vector3(-1, 0.2, 0).normalize() },
+        uOpacity: { value: 0.88 }
       }
     });
     planetMaterials.push(pMat);
@@ -2117,13 +2714,16 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
         new THREE.SphereGeometry(mRad, 16, 16),
         new THREE.MeshPhongMaterial({
           color: mCol,
-          emissive: mCol.clone().multiplyScalar(0.5)
+          emissive: mCol.clone().multiplyScalar(0.5),
+          transparent: true,
+          opacity: 0.90
         })
       );
       mMesh.userData = {
         isSystemPlanet: true,
         planetData: p,
-        moonName: m.name
+        moonName: m.name,
+        targetObjectId: m.targetObjectId || null
       };
       pNode.add(mMesh);
       moonNodes.push({
@@ -2162,7 +2762,7 @@ export function buildStarSystemOrrery(selectedWorld, allCatalogWorlds) {
   });
 
   // 5. Asteroid Belt for Solar System (between Mars index 3 and Jupiter index 4)
-  if (selectedWorld.isSolarSystem && systemPlanets.length >= 5) {
+  if ((selectedWorld.isSolarSystem || isSolMission) && systemPlanets.length >= 5) {
     const beltR = 3.6 + 3.5 * 2.55;
     const beltCount = 1200;
     const bPos = new Float32Array(beltCount * 3);

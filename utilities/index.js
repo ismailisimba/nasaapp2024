@@ -75,9 +75,14 @@ async function fetchAndConvertCSV() {
     const idx = {};
     headers.forEach((h, i) => { idx[h] = i; });
 
-    // Load Solar System planets, major moons, Popular Media systems & Deep-Sky Objects from constellations_data.js
+    // Load Solar System planets, major moons, Space Missions/Stations, Popular Media systems & Deep-Sky Objects from constellations_data.js
     const constModUrl = 'file://' + path.resolve(__dirname, './assets/constellations_data.js').replace(/\\/g, '/');
-    const { SOLAR_SYSTEM_BODIES, POPULAR_MEDIA_SYSTEMS, DEEP_SKY_OBJECTS } = await import(constModUrl);
+    const {
+      SOLAR_SYSTEM_BODIES,
+      SPACE_MISSIONS_AND_STATIONS,
+      POPULAR_MEDIA_SYSTEMS,
+      DEEP_SKY_OBJECTS
+    } = await import(constModUrl);
 
     const planetMap = new Map();
 
@@ -109,6 +114,15 @@ async function fetchAndConvertCSV() {
         vmag: body.isEarth ? -26.74 : -2.0,
         sy_snum: 1,
         sy_pnum: 8
+      });
+    }
+
+    // 1a. Prepend Space Stations, Space Telescopes, Deep-Space Probes & SETI Landmarks (JWST, ISS, Tiangong, Hubble, Voyager 1 & 2, Parker, SETI...)
+    for (const missionObj of SPACE_MISSIONS_AND_STATIONS) {
+      planetMap.set(missionObj.id, {
+        ...missionObj,
+        sy_snum: 1,
+        sy_pnum: missionObj.moons ? Math.max(1, missionObj.moons.length) : 1
       });
     }
 

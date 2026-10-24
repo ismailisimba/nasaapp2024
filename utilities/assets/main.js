@@ -5,9 +5,11 @@ import {
   SOLAR_SYSTEM_BODIES,
   POPULAR_MEDIA_SYSTEMS,
   DEEP_SKY_OBJECTS,
+  SPACE_MISSIONS_AND_STATIONS,
   NAMED_STARS,
   IAU_CONSTELLATIONS,
-  getExpeditionsForWorld
+  getExpeditionsForWorld,
+  computeTelemetryAndTravelGuide
 } from './constellations_data.js';
 import {
   bvToColor,
@@ -113,6 +115,7 @@ const iauGroup = new THREE.Group();
 const horizonCompassGroup = new THREE.Group();
 const earthBeaconGroup = new THREE.Group(); // Always visible on horizon!
 const solarSystemSkyGroup = new THREE.Group(); // Solar System planets & moons in the sky
+const spaceMissionsSkyGroup = new THREE.Group(); // Space Stations, Telescopes, Probes & SETI markers in the sky
 const deepSkyGroup = new THREE.Group(); // Black Holes, Galaxies, Nebulae, Pulsars & Clusters in the sky
 const labelsGroup = new THREE.Group();
 const customLinesGroup = new THREE.Group();
@@ -121,6 +124,7 @@ skyScene.add(iauGroup);
 skyScene.add(horizonCompassGroup);
 skyScene.add(earthBeaconGroup);
 skyScene.add(solarSystemSkyGroup);
+skyScene.add(spaceMissionsSkyGroup);
 skyScene.add(deepSkyGroup);
 skyScene.add(labelsGroup);
 skyScene.add(customLinesGroup);
@@ -210,12 +214,12 @@ function azimuthToCompass16(azDeg) {
   return dirs[idx];
 }
 
-// Format human-readable distance from selected planet/moon/exoplanet/deep-sky object to Earth
+// Format human-readable distance from selected planet/moon/station/exoplanet/deep-sky object to Earth
 export function formatDistanceToEarth(planet) {
   if (!planet || planet.isEarth) {
     return '0 km (Home World)';
   }
-  if (planet.isSolarSystem) {
+  if (planet.isSolarSystem || (planet.isSpaceMission && planet.dist_km_from_earth !== undefined)) {
     const km = planet.dist_km_from_earth || 0;
     if (km < 2000000) {
       return `${km.toLocaleString('en-US')} km`;
@@ -451,12 +455,14 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
     beaconMesh.position.copy(horizonPos);
     beaconMesh.userData = {
       isSolarSystemSkyBody: true,
+      targetObjectId: 'Earth (Sol System)',
       data: {
         Object: '🌍 Earth (Horizon Bearing Beacon)',
         'Distance from Current World': distText,
         'Horizon Bearing': `${compass} (Azimuth ${azDeg}°)`,
         'True Sky Altitude': `${altDeg}° (${altDeg >= 0 ? 'Above Horizon' : 'Below Horizon'})`,
-        Note: 'This horizon beacon is always pinned at Earth\'s azimuth so you can orient yourself toward home!'
+        Note: 'This horizon beacon is always pinned at Earth\'s azimuth so you can orient yourself toward home!',
+        _targetObjectId: 'Earth (Sol System)'
       }
     };
     earthBeaconGroup.add(beaconMesh);
@@ -595,6 +601,7 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
       bodyMesh.userData = {
         isSolarSystemSkyBody: true,
         targetPlanetId: body.id,
+        targetObjectId: body.id,
         data: {
           Object: body.id,
           Type: body.bodyType === 'moon' ? `Moon of ${body.parentBody}` : 'Solar System Planet',
@@ -602,7 +609,8 @@ function buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant) {
           'Distance from Earth': formatDistanceToEarth(body),
           'Where to Look': `${compass} (Azimuth ${azDeg}°, Altitude ${altDeg}°)`,
           Radius: `${body.pl_rade} R⊕`,
-          'Equilibrium Temp': `${body.pl_eqt} K`
+          'Equilibrium Temp': `${body.pl_eqt} K`,
+          _targetObjectId: body.id
         }
       };
       solarSystemSkyGroup.add(bodyMesh);
@@ -777,7 +785,8 @@ function buildDeepSkyObjectsInSky(planet, quadrant) {
         'Apparent Magnitude': dso.vmag !== undefined ? `Mag ${dso.vmag}` : 'Radio / X-Ray',
         Mass: dso.st_mass ? `${Number(dso.st_mass).toLocaleString('en-US')} M☉` : 'N/A',
         Summary: dso.description || '',
-        Tip: 'Double-click this marker or select it in the top dropdown to inspect it up close in 3D!'
+        Tip: 'Click "Inspect & View Sky" below or double-click this marker to inspect it in 3D!',
+        _targetObjectId: dso.id
       }
     };
 
@@ -794,12 +803,146 @@ function buildDeepSkyObjectsInSky(planet, quadrant) {
       13.5
     );
     badge.position.copy(skyPos).add(new THREE.Vector3(0, 15, 0));
-    badge.material.opacity = altDeg >= 0 ? 0.92 : 0.32;
+    badge.material.opacity = altDeg >= 0 ? 0.92 : 0.28;
     badge.userData = metaPayload;
     deepSkyGroup.add(badge);
   });
 
   deepSkyGroup.visible = showDeepSky;
+}
+
+// Render Pickable Space Stations, Space Telescopes, Interstellar Probes & SETI Landmarks on the Sky Dome
+function buildSpaceMissionsInSky(planet, quadrant) {
+  while (spaceMissionsSkyGroup.children.length > 0) {
+    const c = spaceMissionsSkyGroup.children[0];
+    spaceMissionsSkyGroup.remove(c);
+    if (c.geometry) c.geometry.dispose();
+  }
+
+  const { east, zenith, north } = getQuadrantBasisICRS(quadrant);
+  const planetPosPc = planet.isEarth
+    ? new THREE.Vector3(0, 0, 0)
+    : sphericalToCartesianPc(planet.ra, planet.dec, planet.dist_pc || 0);
+
+  SPACE_MISSIONS_AND_STATIONS.forEach(msn => {
+    if (msn.id === planet.id) return;
+
+    let dirICRS;
+    let distLabel = formatDistanceToEarth(msn);
+
+    // If standing on a non-Earth Solar System world and the mission has heliocentric AU coordinates
+    const isCurrentSol = planet.isSolarSystem || (planet.isSpaceMission && planet.dist_km_from_earth !== undefined);
+    const isMsnSol = msn.dist_km_from_earth !== undefined && msn.x_au !== undefined;
+
+    if (!planet.isEarth && isCurrentSol && isMsnSol) {
+      const dx = (msn.x_au ?? 1) - (planet.x_au ?? 1);
+      const dy = (msn.y_au ?? 0) - (planet.y_au ?? 0);
+      const dz = (msn.z_au ?? 0) - (planet.z_au ?? 0);
+      const distAu = Math.hypot(dx, dy, dz);
+      if (distAu > 0.005) {
+        dirICRS = new THREE.Vector3(dx, dy, dz).normalize();
+        const distKm = Math.round(distAu * KM_PER_AU);
+        distLabel = distKm < 2000000
+          ? `${distKm.toLocaleString('en-US')} km`
+          : `${(distKm / 1e6).toFixed(1)}M km (${distAu.toFixed(2)} AU)`;
+      }
+    }
+
+    if (!dirICRS) {
+      const msnPosPc = sphericalToCartesianPc(msn.ra, msn.dec, Math.max(1e-5, msn.dist_pc || 1e-4));
+      const relVec = msnPosPc.sub(planetPosPc);
+      if (relVec.lengthSq() < 1e-16) return;
+      dirICRS = relVec.normalize();
+      if (!isCurrentSol && msn.dist_pc !== undefined) {
+        const distLy = relVec.length() * PARSEC_TO_LY;
+        distLabel = distLy < 1 ? formatDistanceToEarth(msn) : `${distLy.toFixed(1)} ly`;
+      }
+    }
+
+    const lEast = dirICRS.dot(east);
+    const lUp = dirICRS.dot(zenith);
+    const lNorth = dirICRS.dot(north);
+
+    const altDeg = Number(THREE.MathUtils.radToDeg(Math.asin(Math.max(-1, Math.min(1, lUp)))).toFixed(1));
+    if (altDeg < 0 && belowHorizonMode === 'hidden') return;
+
+    const azRad = Math.atan2(lEast, lNorth);
+    const azDeg = Number(((THREE.MathUtils.radToDeg(azRad) + 360) % 360).toFixed(1));
+    const compass = azimuthToCompass16(azDeg);
+
+    const skyPos = new THREE.Vector3(
+      lEast * (SKY_RADIUS - 15),
+      lUp * (SKY_RADIUS - 15),
+      -lNorth * (SKY_RADIUS - 15)
+    );
+
+    const isAbove = altDeg >= 0;
+    const opacity = isAbove ? 0.95 : 0.25;
+    const mType = msn.stationPreset || msn.missionType || '';
+    const isSETI = mType.startsWith('seti');
+    const isTelescope = mType === 'jwst' || mType === 'hubble' || mType === 'gaia_kepler';
+    const icon = isSETI ? '📡' : isTelescope ? '🔭' : '🛰️';
+    const badgeColor = isSETI ? 0x22d3ee : isTelescope ? 0xfbbf24 : 0x10b981;
+
+    // Build miniature 3D spacecraft / telescope / dish icon on the sky dome
+    const markerGroup = new THREE.Group();
+    const coreMesh = new THREE.Mesh(
+      new THREE.OctahedronGeometry(4.2, 1),
+      new THREE.MeshBasicMaterial({
+        color: badgeColor,
+        transparent: true,
+        opacity
+      })
+    );
+    const wingMesh = new THREE.Mesh(
+      new THREE.RingGeometry(4.8, 7.6, 6),
+      new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: opacity * 0.8
+      })
+    );
+    wingMesh.rotation.x = Math.PI / 3;
+    markerGroup.add(coreMesh);
+    markerGroup.add(wingMesh);
+    markerGroup.position.copy(skyPos);
+
+    const metaPayload = {
+      isSolarSystemSkyBody: true,
+      isSpaceMissionSkyBody: true,
+      targetObjectId: msn.id,
+      data: {
+        Object: msn.id,
+        'Mission / Facility Type': msn.st_spectype || 'Spacecraft / Observatory',
+        'Distance from Current World': distLabel,
+        'Distance from Earth': formatDistanceToEarth(msn),
+        'Where to Look': `${compass} (Azimuth ${azDeg}°, Altitude ${altDeg}° · ${isAbove ? 'Above Horizon' : 'Below Horizon / Hidden Side'})`,
+        Summary: msn.description || '',
+        Tip: 'Click "Inspect 3D Model" below or double-click this marker to inspect this station/telescope in 3D!',
+        _targetObjectId: msn.id
+      }
+    };
+
+    markerGroup.userData = metaPayload;
+    markerGroup.traverse(c => {
+      c.userData = metaPayload;
+    });
+    spaceMissionsSkyGroup.add(markerGroup);
+
+    const shortName = msn.id.split(' (')[0].split(' — ')[0];
+    const badge = createBadgeSprite(
+      `${icon} ${shortName} (${distLabel})`,
+      badgeColor,
+      13.0
+    );
+    badge.position.copy(skyPos).add(new THREE.Vector3(0, 13, 0));
+    badge.material.opacity = isAbove ? 0.94 : 0.25;
+    badge.userData = metaPayload;
+    spaceMissionsSkyGroup.add(badge);
+  });
+
+  spaceMissionsSkyGroup.visible = showStarLabels;
 }
 
 // Compute true-scale star positions, apparent magnitudes & colors for selected planet + quadrant
@@ -908,6 +1051,7 @@ function updateSkyAndInspectorForPlanet(planet, resetCam = false) {
   refreshStarVisualAttributes();
   buildHorizonAndCompassGrid(quadrant);
   buildEarthHorizonBeaconAndSolarSystemSky(planet, quadrant);
+  buildSpaceMissionsInSky(planet, quadrant);
   buildDeepSkyObjectsInSky(planet, quadrant);
   rebuildIAUConstellationsAndLabels();
   rebuildCustomConstellationLines();
@@ -1056,6 +1200,7 @@ function rebuildIAUConstellationsAndLabels() {
   iauGroup.visible = showIAUConstellations;
   labelsGroup.visible = showStarLabels;
   solarSystemSkyGroup.visible = showStarLabels;
+  spaceMissionsSkyGroup.visible = showStarLabels;
   deepSkyGroup.visible = showDeepSky;
   updateSkyZoomLabels();
 }
@@ -1080,7 +1225,7 @@ function updateSkyZoomLabels() {
     }
   });
 
-  [solarSystemSkyGroup, deepSkyGroup, earthBeaconGroup, horizonCompassGroup].forEach(group => {
+  [solarSystemSkyGroup, spaceMissionsSkyGroup, deepSkyGroup, earthBeaconGroup, horizonCompassGroup].forEach(group => {
     group.children.forEach(obj => {
       if (obj.isSprite) {
         if (!obj.userData?.baseScale) {
@@ -1318,21 +1463,57 @@ function updateDossierAndQuadrantUI(planet, quadrant) {
     ${earthLine}
   `;
 
+  // Populate Live Signal Light-Time, Propulsion Travel Time & SETI / Observatory Telemetry Box
+  const telemetryBox = document.getElementById('telemetryGuideBox');
+  if (telemetryBox) {
+    const tGuide = computeTelemetryAndTravelGuide(planet);
+    telemetryBox.innerHTML = `
+      <div class="telemetry-title">
+        <span>📡 Signal Light-Time &amp; Travel Telemetry</span>
+      </div>
+      <div><strong>One-Way Light / Radio Delay:</strong> <span style="color:#fde68a;font-weight:700;">${tGuide.lightTime}</span></div>
+      <div class="telemetry-grid">
+        <div class="telemetry-pill">
+          <span class="t-label">Apollo Chemical (40k km/h)</span>
+          <span class="t-val">${tGuide.apolloTime}</span>
+        </div>
+        <div class="telemetry-pill">
+          <span class="t-label">Voyager 1 (17 km/s)</span>
+          <span class="t-val">${tGuide.voyagerTime}</span>
+        </div>
+        <div class="telemetry-pill">
+          <span class="t-label">Parker Solar Probe (192 km/s)</span>
+          <span class="t-val">${tGuide.parkerTime}</span>
+        </div>
+        <div class="telemetry-pill">
+          <span class="t-label">Starshot Laser Sail (0.20c)</span>
+          <span class="t-val">${tGuide.starshotTime}</span>
+        </div>
+      </div>
+      <div style="margin-top:4px;color:#cbd5e1;"><strong>🔭 SETI &amp; Observatory Status:</strong> ${tGuide.setiStatus}</div>
+    `;
+  }
+
   // Populate Scientific Expeditions, Vehicles Sent & Results Box
   const expBox = document.getElementById('expeditionsBox');
   if (expBox) {
     const expeditions = getExpeditionsForWorld(planet);
     const cardsHtml = expeditions
-      .map(
-        exp => `
+      .map(exp => {
+        const canJump = exp.targetObjectId && exp.targetObjectId !== planet.id;
+        const jumpBtnHtml = canJump
+          ? `<button type="button" class="expedition-jump-btn" data-target-id="${exp.targetObjectId}">🛰️ Inspect ${exp.probeLabel || exp.mission.split('(')[0]} in 3D &amp; Sky ⤢</button>`
+          : '';
+        return `
         <div class="expedition-card">
           <div class="expedition-name">🛰️ ${exp.mission}</div>
           <div class="expedition-agency">${exp.agency}</div>
           <div class="expedition-vehicles"><strong>Vehicles:</strong> ${exp.vehicles}</div>
           <div class="expedition-results"><strong>Results:</strong> ${exp.results}</div>
+          ${jumpBtnHtml}
         </div>
-      `
-      )
+      `;
+      })
       .join('');
     expBox.innerHTML = `
       <div class="expeditions-title">
@@ -1340,6 +1521,12 @@ function updateDossierAndQuadrantUI(planet, quadrant) {
       </div>
       ${cardsHtml}
     `;
+    expBox.querySelectorAll('.expedition-jump-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tid = btn.getAttribute('data-target-id');
+        if (tid) jumpToCelestialObjectById(tid, 'inspector');
+      });
+    });
   }
 
   document.getElementById('activeQuadrantInfo').innerHTML = `
@@ -1348,6 +1535,29 @@ function updateDossierAndQuadrantUI(planet, quadrant) {
   document.querySelectorAll('.quad-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.quadId === currentQuadrantId);
   });
+}
+
+// Jump directly to any celestial body, moon, space station, telescope, probe, or SETI landmark by ID
+function jumpToCelestialObjectById(targetId, switchMode = null) {
+  if (!targetId) return;
+  const found = exoplanets.find(p => p.id === targetId);
+  if (!found) return;
+
+  const selectEl = document.getElementById('exoplanetSelect');
+  if (!filteredPlanets.some(p => p.id === found.id)) {
+    const catEl = document.getElementById('planetCategoryFilter');
+    const searchEl = document.getElementById('planetSearchInput');
+    if (catEl) catEl.value = 'all';
+    if (searchEl) searchEl.value = '';
+    filterAndPopulatePlanets(false);
+  }
+  if (selectEl) selectEl.value = found.id;
+  updateSkyAndInspectorForPlanet(found, true);
+  if (switchMode) {
+    setViewMode(switchMode);
+  }
+  const popup = document.getElementById('popup');
+  if (popup) popup.style.display = 'none';
 }
 
 function initQuadrantButtons() {
@@ -1433,20 +1643,22 @@ function lookAtEarthOnHorizon() {
   skyControls.update();
 }
 
-// Search & Category Filtering for Planets, Moons, Popular Media & Deep-Sky Objects
+// Search & Category Filtering for Planets, Moons, Space Stations, Telescopes, Popular Media & Deep-Sky Objects
 function filterAndPopulatePlanets(keepCurrentSelection = true) {
   const query = (document.getElementById('planetSearchInput').value || '').trim().toLowerCase();
   const cat = document.getElementById('planetCategoryFilter').value;
 
   filteredPlanets = exoplanets.filter(p => {
-    if (cat === 'solar_system') {
-      if (!p.isSolarSystem) return false;
+    if (cat === 'space_missions') {
+      if (!p.isSpaceMission) return false;
+    } else if (cat === 'solar_system') {
+      if (!p.isSolarSystem || p.isSpaceMission) return false;
     } else if (cat === 'popular_media') {
       if (!p.isPopularMedia) return false;
     } else if (cat === 'deep_sky') {
       if (!p.isDeepSky) return false;
     } else if (cat === 'earth_nearby') {
-      if (!p.isSolarSystem && p.distance > 50) return false;
+      if (!p.isSolarSystem && !p.isSpaceMission && p.distance > 50) return false;
     } else if (cat !== 'all') {
       if (!p._filterGroup) {
         p._filterGroup = classifyPlanet(p).filterGroup;
@@ -1476,7 +1688,10 @@ function filterAndPopulatePlanets(keepCurrentSelection = true) {
     const dType = exo.deepSkyType || exo.bodyType;
     let prefix = '';
     if (exo.isEarth) prefix = '🌍 ';
-    else if (exo.isPopularMedia && !exo.isSolarSystem && !exo.isDeepSky) prefix = '🎬 ';
+    else if (exo.isSpaceMission) {
+      const mt = exo.stationPreset || exo.missionType || '';
+      prefix = mt.startsWith('seti') ? '📡 ' : (mt === 'jwst' || mt === 'hubble' || mt === 'gaia_kepler') ? '🔭 ' : '🛰️ ';
+    } else if (exo.isPopularMedia && !exo.isSolarSystem && !exo.isDeepSky) prefix = '🎬 ';
     else if (dType === 'moon') prefix = '🌕 ';
     else if (exo.isSolarSystem) prefix = '🪐 ';
     else if (dType === 'black_hole') prefix = '🕳️ ';
@@ -1659,23 +1874,22 @@ renderer.domElement.addEventListener('dblclick', e => {
   if (viewMode === 'sky') {
     raycaster.setFromCamera(mouseNDC, skyCamera);
 
-    // Double-clicking a Deep-Sky or Solar System marker jumps straight to inspecting it in 3D
+    // Double-clicking a Space Station, Telescope, Probe, Deep-Sky, or Solar System marker jumps straight to inspecting it in 3D
     const skyObjHits = raycaster.intersectObjects(
-      deepSkyGroup.children.concat(solarSystemSkyGroup.children),
+      deepSkyGroup.children
+        .concat(solarSystemSkyGroup.children)
+        .concat(spaceMissionsSkyGroup.children)
+        .concat(earthBeaconGroup.children),
       true
     );
     if (skyObjHits.length > 0) {
-      const targetId = skyObjHits[0].object.userData?.targetObjectId || skyObjHits[0].object.userData?.targetPlanetId;
+      const targetId =
+        skyObjHits[0].object.userData?.targetObjectId ||
+        skyObjHits[0].object.userData?.targetPlanetId ||
+        skyObjHits[0].object.userData?.data?._targetObjectId;
       if (targetId) {
-        const found = exoplanets.find(p => p.id === targetId);
-        if (found) {
-          document.getElementById('planetCategoryFilter').value = 'all';
-          filterAndPopulatePlanets(false);
-          document.getElementById('exoplanetSelect').value = found.id;
-          updateSkyAndInspectorForPlanet(found, true);
-          setViewMode('inspector');
-          return;
-        }
+        jumpToCelestialObjectById(targetId, 'inspector');
+        return;
       }
     }
 
@@ -1693,16 +1907,29 @@ renderer.domElement.addEventListener('dblclick', e => {
     const hits = raycaster.intersectObjects(activeSystemOrrery.rootGroup.children, true);
     const planetHit = hits.find(h => h.object.userData?.isSystemPlanet);
     if (planetHit) {
+      const moonTargetId = planetHit.object.userData.targetObjectId;
       const targetPlanet = planetHit.object.userData.planetData;
-      if (targetPlanet) {
-        const selectEl = document.getElementById('exoplanetSelect');
-        if (selectEl) selectEl.value = targetPlanet.id;
-        updateSkyAndInspectorForPlanet(targetPlanet, false);
-        setViewMode('inspector');
+      if (moonTargetId) {
+        jumpToCelestialObjectById(moonTargetId, 'inspector');
+      } else if (targetPlanet) {
+        jumpToCelestialObjectById(targetPlanet.id, 'inspector');
       }
     }
   } else if (activeCelestialSystem) {
     raycaster.setFromCamera(mouseNDC, inspectorCamera);
+    // First check if user double-clicked an orbiting Moon, Space Station, Telescope, or Probe
+    const moonOrProbeHits = raycaster.intersectObjects(activeCelestialSystem.moonsGroup.children, true);
+    if (moonOrProbeHits.length > 0) {
+      const hitObj = moonOrProbeHits.find(
+        h => h.object.userData?.targetObjectId || h.object.userData?.data?._targetObjectId
+      )?.object;
+      const targetId = hitObj?.userData?.targetObjectId || hitObj?.userData?.data?._targetObjectId;
+      if (targetId) {
+        jumpToCelestialObjectById(targetId, 'inspector');
+        return;
+      }
+    }
+
     const hits = raycaster.intersectObjects(activeCelestialSystem.quadrantOverlayGroup.children, true);
     if (hits.length > 0 && hits[0].object.userData.quadrantId) {
       selectQuadrant(hits[0].object.userData.quadrantId);
@@ -1742,9 +1969,10 @@ function handleViewportClick(event) {
   if (viewMode === 'sky') {
     raycaster.setFromCamera(mouseNDC, skyCamera);
 
-    // Check if user clicked Earth Horizon Beacon, a Solar System Planet/Moon, or a Deep-Sky Object in the sky
+    // Check if user clicked Earth Horizon Beacon, a Space Station/Telescope/Probe, a Solar System Planet/Moon, or a Deep-Sky Object in the sky
     const ssHits = raycaster.intersectObjects(
       earthBeaconGroup.children
+        .concat(spaceMissionsSkyGroup.children)
         .concat(solarSystemSkyGroup.children)
         .concat(deepSkyGroup.children),
       true
@@ -1766,21 +1994,24 @@ function handleViewportClick(event) {
       const starHit = hits.find(h => h.object.userData?.isHostStar);
       if (planetHit) {
         const p = planetHit.object.userData.planetData;
+        const moonName = planetHit.object.userData.moonName;
+        const moonTargetId = planetHit.object.userData.targetObjectId;
         const prof = planetHit.object.userData.profile || classifyPlanet(p);
-        if (p && p !== currentPlanet) {
+        if (p && p !== currentPlanet && !moonTargetId) {
           const selectEl = document.getElementById('exoplanetSelect');
           if (selectEl) selectEl.value = p.id;
           updateSkyAndInspectorForPlanet(p, false);
         }
         showObjectDetails({
-          World: p.id,
-          Classification: prof.type,
+          World: moonName ? `${moonName} (Moon of ${p.id.split(' (')[0]})` : p.id,
+          Classification: moonName ? 'Natural Satellite / Moon' : prof.type,
           'Host System': `${p.hostname} (${activeSystemOrrery.systemPlanetsCount} Worlds in System)`,
           'Orbital Distance': `${p.pl_orbsmax ?? '?'} AU (Period: ${p.pl_orbper ?? '?'} days)`,
           Radius: `${p.pl_rade ?? 1.0} R⊕ (${p.pl_radj ?? 0.09} R♃)`,
           'Equilibrium Temp': `${p.pl_eqt ?? 'N/A'} K`,
           'Distance to Earth': formatDistanceToEarth(p),
-          Tip: 'Double-click any planet in the Star System to zoom into its Up-Close 3D Inspector!'
+          Tip: 'Click the buttons below or double-click in the Star System to inspect in 3D or view its sky!',
+          _targetObjectId: moonTargetId || p.id
         });
       } else if (starHit) {
         showObjectDetails(starHit.object.userData.data);
@@ -1825,7 +2056,8 @@ function handleViewportClick(event) {
           Radius: `${currentPlanet.pl_rade} R⊕ (${currentPlanet.pl_radj} R♃)`,
           Mass: `${currentPlanet.pl_bmasse ?? 'N/A'} M⊕`,
           'Equilibrium Temp': `${currentPlanet.pl_eqt} K`,
-          'Host Star': `${currentPlanet.hostname} (${currentPlanet.st_spectype || 'G2 V'})`
+          'Host Star': `${currentPlanet.hostname} (${currentPlanet.st_spectype || 'G2 V'})`,
+          _targetObjectId: currentPlanet.id
         });
       }
     }
@@ -1842,9 +2074,10 @@ renderer.domElement.addEventListener('pointermove', event => {
   if (viewMode === 'sky') {
     raycaster.setFromCamera(mouseNDC, skyCamera);
 
-    // Check Earth Beacon, Solar System Sky Bodies, or Deep-Sky Objects first
+    // Check Earth Beacon, Space Missions/Stations, Solar System Sky Bodies, or Deep-Sky Objects first
     const ssHits = raycaster.intersectObjects(
       earthBeaconGroup.children
+        .concat(spaceMissionsSkyGroup.children)
         .concat(solarSystemSkyGroup.children)
         .concat(deepSkyGroup.children),
       true
@@ -1858,7 +2091,8 @@ renderer.domElement.addEventListener('pointermove', event => {
       tooltip.innerHTML = `
         <strong>${d.Object}</strong><br/>
         📏 Dist: <strong>${d['Distance from Current World']}</strong><br/>
-        🧭 ${d['Horizon Bearing'] || d['Where to Look'] || ''}
+        🧭 ${d['Horizon Bearing'] || d['Where to Look'] || ''}<br/>
+        <em>Click for details · Double-click to inspect in 3D</em>
       `;
       return;
     }
@@ -1882,13 +2116,14 @@ renderer.domElement.addEventListener('pointermove', event => {
     const planetHit = hits.find(h => h.object.userData?.isSystemPlanet);
     if (planetHit) {
       const p = planetHit.object.userData.planetData;
+      const moonName = planetHit.object.userData.moonName;
       const prof = planetHit.object.userData.profile || classifyPlanet(p);
       renderer.domElement.style.cursor = 'pointer';
       tooltip.style.display = 'block';
       tooltip.style.left = `${Math.min(rect.width - 260, event.clientX - rect.left + 14)}px`;
       tooltip.style.top = `${Math.max(10, event.clientY - rect.top + 14)}px`;
       tooltip.innerHTML = `
-        <strong>${p.id}</strong> (${prof.type})<br/>
+        <strong>${moonName ? `🌕 ${moonName} (${p.id.split(' (')[0]})` : p.id}</strong> (${prof.type})<br/>
         🪐 Orbit: <strong>${p.pl_orbsmax ?? '?'} AU</strong> · Period: ${p.pl_orbper ?? '?'} d<br/>
         🌡️ Temp: ${p.pl_eqt ?? 'N/A'} K · Radius: ${p.pl_rade ?? 1.0} R⊕<br/>
         <em>Click to select · Double-click to inspect up close</em>
@@ -1906,9 +2141,24 @@ renderer.domElement.addEventListener('pointermove', event => {
       tooltip.style.left = `${Math.min(rect.width - 260, event.clientX - rect.left + 14)}px`;
       tooltip.style.top = `${Math.max(10, event.clientY - rect.top + 14)}px`;
       tooltip.innerHTML = `
-        <strong>🛰️ ${d.Mission}</strong> (${d.Year})<br/>
-        🚀 Vehicle: <strong>${d.Vehicle}</strong><br/>
-        <em>Click for full scientific results</em>
+        <strong>🛰️ ${d['Scientific Expedition'] || 'Spacecraft'}</strong><br/>
+        🏛️ ${d['Agency & Timeline'] || ''}<br/>
+        🚀 <strong>${d['Vehicles / Spacecraft Sent'] || ''}</strong><br/>
+        <em>Click for details · Double-click to inspect 3D spacecraft</em>
+      `;
+      return;
+    }
+    const moonHit = allHits.find(h => h.object.userData?.isMoon && !h.object.userData?.isExpeditionProbe);
+    if (moonHit && moonHit.object.userData.data) {
+      const d = moonHit.object.userData.data;
+      renderer.domElement.style.cursor = 'pointer';
+      tooltip.style.display = 'block';
+      tooltip.style.left = `${Math.min(rect.width - 260, event.clientX - rect.left + 14)}px`;
+      tooltip.style.top = `${Math.max(10, event.clientY - rect.top + 14)}px`;
+      tooltip.innerHTML = `
+        <strong>🌕 ${d.Moon || d['Parent World'] || 'Satellite'}</strong><br/>
+        🪐 ${d['Parent World'] ? `Parent: ${d['Parent World']}` : ''}<br/>
+        <em>Click for details · Double-click to inspect in 3D</em>
       `;
       return;
     }
@@ -1942,13 +2192,35 @@ function showObjectDetails(data) {
 
   popup.innerHTML = '<h3>Object Details</h3>';
   for (const key in data) {
+    if (key.startsWith('_')) continue;
     popup.innerHTML += `<strong>${key}:</strong> ${data[key]}<br/>`;
+  }
+
+  const targetId = data._targetObjectId || data.targetObjectId;
+  if (targetId && exoplanets.some(p => p.id === targetId)) {
+    const shortTarget = targetId.split(' (')[0].split(' — ')[0];
+    const inspectBtn = document.createElement('button');
+    inspectBtn.className = 'popup-jump-btn';
+    inspectBtn.textContent = `🪐 Inspect 3D Model (${shortTarget})`;
+    inspectBtn.onclick = () => {
+      jumpToCelestialObjectById(targetId, 'inspector');
+    };
+    popup.appendChild(inspectBtn);
+
+    const skyBtn = document.createElement('button');
+    skyBtn.className = 'popup-jump-btn';
+    skyBtn.textContent = `🌌 View Sky from ${shortTarget}`;
+    skyBtn.onclick = () => {
+      jumpToCelestialObjectById(targetId, 'sky');
+    };
+    popup.appendChild(skyBtn);
   }
 
   const closeButton = document.createElement('button');
   closeButton.className = 'tool-btn';
   closeButton.textContent = 'Close';
   closeButton.style.marginTop = '8px';
+  closeButton.style.width = '100%';
   closeButton.onclick = () => {
     popup.style.display = 'none';
   };
@@ -2051,6 +2323,7 @@ document.getElementById('toggleBelowHorizonButton').addEventListener('click', e 
   buildHorizonAndCompassGrid(q);
   if (currentPlanet) {
     buildEarthHorizonBeaconAndSolarSystemSky(currentPlanet, q);
+    buildSpaceMissionsInSky(currentPlanet, q);
     buildDeepSkyObjectsInSky(currentPlanet, q);
   }
   rebuildIAUConstellationsAndLabels();
@@ -2060,6 +2333,7 @@ document.getElementById('toggleStarLabelsButton').addEventListener('click', e =>
   showStarLabels = !showStarLabels;
   labelsGroup.visible = showStarLabels;
   solarSystemSkyGroup.visible = showStarLabels;
+  spaceMissionsSkyGroup.visible = showStarLabels;
   e.target.classList.toggle('active', showStarLabels);
   e.target.textContent = `🏷️ Labels: ${showStarLabels ? 'ON' : 'OFF'}`;
 });
@@ -2246,6 +2520,9 @@ function renderFrame(timeSec) {
           -3.4 * Math.cos(latRad) * Math.sin(lonRad)
         );
         miniGlobeCamera.lookAt(0, 0, 0);
+        if (activeCelestialSystem.updateHiddenSideLabels) {
+          activeCelestialSystem.updateHiddenSideLabels(miniGlobeCamera);
+        }
 
         renderer.setViewport(vpX, vpY, vpW, vpH);
         renderer.setScissor(vpX, vpY, vpW, vpH);
@@ -2260,6 +2537,9 @@ function renderFrame(timeSec) {
     renderer.render(systemScene, systemCamera);
   } else {
     inspectorControls.update();
+    if (activeCelestialSystem && activeCelestialSystem.updateHiddenSideLabels) {
+      activeCelestialSystem.updateHiddenSideLabels(inspectorCamera);
+    }
     renderer.render(inspectorScene, inspectorCamera);
   }
 

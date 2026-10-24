@@ -352,6 +352,78 @@ body {
   margin-bottom: 8px;
 }
 
+/* Live Signal Light-Time, Propulsion Travel Time & SETI Telemetry Box */
+.telemetry-guide-box {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  border-radius: 7px;
+  padding: 8px 9px;
+  margin-bottom: 8px;
+  font-size: 0.72rem;
+  line-height: 1.38;
+  color: #e2e8f0;
+}
+
+.telemetry-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #7dd3fc;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  margin: 5px 0;
+}
+
+.telemetry-pill {
+  background: rgba(15, 23, 42, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 5px;
+  padding: 4px 6px;
+}
+
+.telemetry-pill .t-label {
+  display: block;
+  font-size: 0.64rem;
+  color: #94a3b8;
+}
+
+.telemetry-pill .t-val {
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: #fde68a;
+}
+
+.expedition-jump-btn,
+.popup-jump-btn {
+  display: inline-block;
+  margin-top: 6px;
+  width: 100%;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.32), rgba(16, 185, 129, 0.32));
+  color: #f8fafc;
+  border: 1px solid rgba(56, 189, 248, 0.65);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.expedition-jump-btn:hover,
+.popup-jump-btn:hover {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.58), rgba(16, 185, 129, 0.58));
+  border-color: #7dd3fc;
+  color: #ffffff;
+}
+
 /* Scientific Expeditions, Vehicles & Results Box */
 .expeditions-box {
   background: rgba(16, 185, 129, 0.08);

@@ -141,7 +141,7 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Moon (Luna)', radiusRatio: 0.273, orbitRadius: 2.35, speed: 0.55, color: 0xcbd5e1, inclination: 0.09 }
+      { name: 'Moon (Luna)', radiusRatio: 0.273, orbitRadius: 2.35, speed: 0.55, color: 0xcbd5e1, inclination: 0.09, targetObjectId: 'Moon / Luna (Earth Moon)' }
     ]
   },
   {
@@ -252,7 +252,7 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Phobos', radiusRatio: 0.09, orbitRadius: 1.65, speed: 1.4, color: 0xa89f91, inclination: 0.03 },
+      { name: 'Phobos', radiusRatio: 0.09, orbitRadius: 1.65, speed: 1.4, color: 0xa89f91, inclination: 0.03, targetObjectId: 'Phobos (Mars Moon)' },
       { name: 'Deimos', radiusRatio: 0.07, orbitRadius: 2.25, speed: 0.85, color: 0xc2b8a3, inclination: 0.05 }
     ]
   },
@@ -310,10 +310,10 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Io', radiusRatio: 0.11, orbitRadius: 1.75, speed: 1.25, color: 0xfacc15, inclination: 0.02 },
-      { name: 'Europa', radiusRatio: 0.095, orbitRadius: 2.2, speed: 0.92, color: 0xe0f2fe, inclination: 0.03 },
-      { name: 'Ganymede', radiusRatio: 0.145, orbitRadius: 2.75, speed: 0.65, color: 0x94a3b8, inclination: 0.04 },
-      { name: 'Callisto', radiusRatio: 0.13, orbitRadius: 3.35, speed: 0.45, color: 0x64748b, inclination: 0.05 }
+      { name: 'Io', radiusRatio: 0.11, orbitRadius: 1.75, speed: 1.25, color: 0xfacc15, inclination: 0.02, targetObjectId: 'Io (Jupiter Moon)' },
+      { name: 'Europa', radiusRatio: 0.095, orbitRadius: 2.2, speed: 0.92, color: 0xe0f2fe, inclination: 0.03, targetObjectId: 'Europa (Jupiter Moon)' },
+      { name: 'Ganymede', radiusRatio: 0.145, orbitRadius: 2.75, speed: 0.65, color: 0x94a3b8, inclination: 0.04, targetObjectId: 'Ganymede (Jupiter Moon)' },
+      { name: 'Callisto', radiusRatio: 0.13, orbitRadius: 3.35, speed: 0.45, color: 0x64748b, inclination: 0.05, targetObjectId: 'Callisto (Jupiter Moon)' }
     ]
   },
   {
@@ -454,8 +454,8 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Enceladus', radiusRatio: 0.08, orbitRadius: 2.45, speed: 1.05, color: 0xf0f9ff, inclination: 0.04 },
-      { name: 'Titan', radiusRatio: 0.145, orbitRadius: 3.15, speed: 0.62, color: 0xf59e0b, inclination: 0.06 }
+      { name: 'Enceladus', radiusRatio: 0.08, orbitRadius: 2.45, speed: 1.05, color: 0xf0f9ff, inclination: 0.04, targetObjectId: 'Enceladus (Saturn Moon)' },
+      { name: 'Titan', radiusRatio: 0.145, orbitRadius: 3.15, speed: 0.62, color: 0xf59e0b, inclination: 0.06, targetObjectId: 'Titan (Saturn Moon)' }
     ]
   },
   {
@@ -570,7 +570,7 @@ export const SOLAR_SYSTEM_BODIES = [
     st_rad: 1.0,
     st_mass: 1.0,
     moons: [
-      { name: 'Triton', radiusRatio: 0.125, orbitRadius: 2.35, speed: -0.75, color: 0xfce7f3, inclination: 0.35 }
+      { name: 'Triton', radiusRatio: 0.125, orbitRadius: 2.35, speed: -0.75, color: 0xfce7f3, inclination: 0.35, targetObjectId: 'Triton (Neptune Moon)' }
     ]
   },
   {
@@ -2264,22 +2264,593 @@ export const POPULAR_MEDIA_SYSTEMS = [
   }
 ];
 
+// 16 Pickable Space Stations, Space Telescopes, Interstellar Probes, SETI Landmarks & JWST Benchmark Exoplanets
+export const SPACE_MISSIONS_AND_STATIONS = [
+  {
+    id: 'International Space Station (ISS — LEO 408 km)',
+    pl_name: 'International Space Station (ISS — LEO 408 km)',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Earth (Sol System)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'iss',
+    bodyType: 'space_station',
+    x_au: -0.999997,
+    y_au: 0.000001,
+    z_au: 0.000001,
+    dist_km_from_earth: 408,
+    ra: 120.0,
+    dec: 51.6,
+    distance: 0.000000043,
+    dist_pc: 0.000000013,
+    pl_rade: 0.01,
+    pl_radj: 0.0009,
+    pl_bmasse: 0.00000007,
+    pl_bmassj: 0.0000000002,
+    pl_orbper: 0.0645,
+    pl_orbsmax: 1.0,
+    pl_orbeccen: 0.0004,
+    pl_eqt: 288,
+    discoverymethod: 'In-Orbit Modular Assembly (40+ Flights)',
+    disc_year: 1998,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Humanity\'s flagship orbital laboratory in Low Earth Orbit (408 km altitude, 51.6° inclination, 27,600 km/h, 92.9-min period). Spanning 109 m × 73 m (football-field size, 450,000 kg) with 16 Sawyer solar array wings, pressurized labs (Destiny, Harmony, Columbus, Kibo, Zvezda, Nauka), Canadarm2, and the 7-window Cupola Earth-observatory dome.',
+    moons: [
+      { name: 'Crew Dragon "Endeavour" & Soyuz MS', radiusRatio: 0.08, orbitRadius: 1.85, speed: 1.35, color: 0xf8fafc, inclination: 0.12 },
+      { name: 'Earth (Home World — 408 km Below)', radiusRatio: 0.38, orbitRadius: 2.8, speed: 0.35, color: 0x2563eb, inclination: -0.08, targetObjectId: 'Earth (Sol System)' }
+    ]
+  },
+  {
+    id: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)',
+    pl_name: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Earth (Sol System)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'jwst',
+    bodyType: 'space_telescope',
+    x_au: -1.01,
+    y_au: 0.0,
+    z_au: 0.002,
+    dist_km_from_earth: 1500000,
+    ra: 90.0,
+    dec: -5.0,
+    distance: 0.0000158,
+    dist_pc: 0.0000048,
+    pl_rade: 0.012,
+    pl_radj: 0.001,
+    pl_bmasse: 0.00000001,
+    pl_bmassj: 0.00000000003,
+    pl_orbper: 365.25,
+    pl_orbsmax: 1.01,
+    pl_orbeccen: 0.01,
+    pl_eqt: 40,
+    discoverymethod: 'Ariane 5 Launch to Sun-Earth L2 Halo Orbit',
+    disc_year: 2021,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Premier infrared space observatory orbiting Sun-Earth Lagrange Point 2 (1.5 million km / 0.01 AU anti-sunward of Earth). Equipped with a 6.5m 18-segment gold-coated beryllium primary mirror, 5-layer tennis-court-sized Kapton sunshield (cooling NIRCam, NIRSpec, FGS/NIRISS to 40 K and MIRI to 7 K), discovering the earliest cosmic-dawn galaxies (JADES-GS-z14-0) and exoplanet atmospheric SO₂/CO₂/CH₄.',
+    moons: [
+      { name: 'Gaia Space Observatory (L2)', radiusRatio: 0.09, orbitRadius: 2.1, speed: 0.85, color: 0x38bdf8, inclination: 0.2, targetObjectId: 'Gaia, Kepler & TESS Exoplanet Space Observatories (L2)' },
+      { name: 'Earth & Moon at 1.5M km', radiusRatio: 0.24, orbitRadius: 2.85, speed: 0.45, color: 0x3b82f6, inclination: -0.1, targetObjectId: 'Earth (Sol System)' }
+    ]
+  },
+  {
+    id: 'Hubble Space Telescope (HST — LEO 535 km)',
+    pl_name: 'Hubble Space Telescope (HST — LEO 535 km)',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Earth (Sol System)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'hubble',
+    bodyType: 'space_telescope',
+    x_au: -0.999996,
+    y_au: -0.000002,
+    z_au: 0.000001,
+    dist_km_from_earth: 535,
+    ra: 210.0,
+    dec: 28.5,
+    distance: 0.000000056,
+    dist_pc: 0.000000017,
+    pl_rade: 0.01,
+    pl_radj: 0.0009,
+    pl_bmasse: 0.00000002,
+    pl_orbper: 0.066,
+    pl_orbsmax: 1.0,
+    pl_orbeccen: 0.0003,
+    pl_eqt: 294,
+    discoverymethod: 'Space Shuttle Discovery STS-31 & 5 Servicing Missions',
+    disc_year: 1990,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Iconic 2.4-meter UV/Visible/Near-IR space telescope in Low Earth Orbit (535 km altitude, 28.5° inclination, 95-min orbit). Executed 1.6+ million observations since 1990—including the Hubble Ultra Deep Field (10,000 galaxies), Cepheid calibration of cosmic expansion (H₀), Pillars of Creation, and the first exoplanet atmospheric sodium detection (HD 209458 b).',
+    moons: [
+      { name: 'Earth (535 km Below)', radiusRatio: 0.36, orbitRadius: 2.7, speed: 0.4, color: 0x2563eb, inclination: 0.08, targetObjectId: 'Earth (Sol System)' }
+    ]
+  },
+  {
+    id: 'Tiangong Space Station (CSS — LEO 390 km)',
+    pl_name: 'Tiangong Space Station (CSS — LEO 390 km)',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Earth (Sol System)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'tiangong',
+    bodyType: 'space_station',
+    x_au: -0.999997,
+    y_au: 0.000002,
+    z_au: -0.000001,
+    dist_km_from_earth: 390,
+    ra: 300.0,
+    dec: 41.5,
+    distance: 0.000000041,
+    dist_pc: 0.000000012,
+    pl_rade: 0.01,
+    pl_radj: 0.0009,
+    pl_bmasse: 0.00000003,
+    pl_orbper: 0.064,
+    pl_orbsmax: 1.0,
+    pl_orbeccen: 0.0005,
+    pl_eqt: 290,
+    discoverymethod: 'CNSA Modular Assembly (Tianhe + Wentian + Mengtian)',
+    disc_year: 2021,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Three-module T-shaped orbital space station in Low Earth Orbit (390 km altitude, 41.5° inclination) comprising the Tianhe core module and Wentian & Mengtian laboratory cabin modules, visited by Shenzhou crewed spacecraft and Tianzhou cargo freighters.',
+    moons: [
+      { name: 'Shenzhou Crew Vehicle', radiusRatio: 0.08, orbitRadius: 1.9, speed: 1.25, color: 0xfef08a, inclination: 0.14 },
+      { name: 'Earth (390 km Below)', radiusRatio: 0.36, orbitRadius: 2.75, speed: 0.38, color: 0x2563eb, inclination: -0.08, targetObjectId: 'Earth (Sol System)' }
+    ]
+  },
+  {
+    id: 'Voyager 1 Interstellar Probe & Golden Record (172 AU — Ophiuchus)',
+    pl_name: 'Voyager 1 Interstellar Probe & Golden Record (172 AU — Ophiuchus)',
+    hostname: 'Sol (Our Sun)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'voyager1',
+    bodyType: 'space_probe',
+    x_au: -32.0,
+    y_au: -158.0,
+    z_au: 60.0,
+    dist_km_from_earth: 25800000000,
+    ra: 258.0,
+    dec: 12.1,
+    distance: 0.00272,
+    dist_pc: 0.00083,
+    pl_rade: 0.008,
+    pl_radj: 0.0007,
+    pl_bmasse: 0.000000001,
+    pl_orbper: 100000,
+    pl_orbsmax: 172.0,
+    pl_orbeccen: 3.7,
+    pl_eqt: 45,
+    discoverymethod: 'NASA Deep Space Network (DSN 70m Dish Telemetry)',
+    disc_year: 1977,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Farthest human-made object in history (172+ AU / 25.8 billion km in Ophiuchus; one-way radio light-time ~23h 55m, speed 17.0 km/s). After imaging Jupiter & Saturn (and taking the "Pale Blue Dot" portrait of Earth at 40 AU in 1990), Voyager 1 crossed the heliopause into interstellar space in August 2012, carrying Carl Sagan\'s 12-inch gold-plated copper Voyager Golden Record.',
+    moons: [
+      { name: 'Voyager Golden Record (12-inch Gold Phonograph)', radiusRatio: 0.09, orbitRadius: 1.75, speed: 1.1, color: 0xfacc15, inclination: 0.15 }
+    ]
+  },
+  {
+    id: 'Voyager 2 Interstellar Grand Tour Probe (143 AU — Pavo)',
+    pl_name: 'Voyager 2 Interstellar Grand Tour Probe (143 AU — Pavo)',
+    hostname: 'Sol (Our Sun)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'voyager2',
+    bodyType: 'space_probe',
+    x_au: 38.0,
+    y_au: -65.0,
+    z_au: -121.0,
+    dist_km_from_earth: 21400000000,
+    ra: 300.5,
+    dec: -58.2,
+    distance: 0.00226,
+    dist_pc: 0.00069,
+    pl_rade: 0.008,
+    pl_radj: 0.0007,
+    pl_bmasse: 0.000000001,
+    pl_orbper: 100000,
+    pl_orbsmax: 143.0,
+    pl_orbeccen: 3.2,
+    pl_eqt: 48,
+    discoverymethod: 'NASA Grand Tour & Deep Space Network Canberra (DSS-43)',
+    disc_year: 1977,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Only spacecraft ever to visit all four giant planets—Jupiter (1979), Saturn (1981), Uranus (1986), and Neptune/Triton (1989). Crossed the heliopause into the interstellar medium in November 2018 and now cruises at 15.4 km/s in the southern constellation Pavo (143+ AU / 21.4 billion km from Earth), carrying a twin Voyager Golden Record.',
+    moons: [
+      { name: 'Voyager Golden Record (Twin Interstellar Disc)', radiusRatio: 0.09, orbitRadius: 1.75, speed: 1.1, color: 0xfacc15, inclination: -0.15 }
+    ]
+  },
+  {
+    id: 'Parker Solar Probe (Solar Corona — 6.1M km Perihelion)',
+    pl_name: 'Parker Solar Probe (Solar Corona — 6.1M km Perihelion)',
+    hostname: 'Sol (Our Sun)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'parker',
+    bodyType: 'space_probe',
+    x_au: 0.04,
+    y_au: 0.01,
+    z_au: 0.0,
+    dist_km_from_earth: 143500000,
+    ra: 280.0,
+    dec: -23.0,
+    distance: 0.000015,
+    dist_pc: 0.0000046,
+    pl_rade: 0.008,
+    pl_radj: 0.0007,
+    pl_bmasse: 0.000000001,
+    pl_orbper: 88.0,
+    pl_orbsmax: 0.38,
+    pl_orbeccen: 0.89,
+    pl_eqt: 1400,
+    discoverymethod: 'NASA / JHUAPL Solar Corona Touchdown Mission',
+    disc_year: 2018,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Fastest human-made object in history (692,000 km/h / 192 km/s — 0.064% the speed of light!). Protected by an 11.4 cm carbon-composite Thermal Protection System (TPS) heat shield withstanding 1,400°C, Parker Solar Probe dived inside the Sun\'s Alfvén critical surface to 6.1 million km (9.86 R☉) above the solar photosphere, discovering magnetic "switchbacks" in the young solar wind.',
+    moons: []
+  },
+  {
+    id: 'New Horizons Kuiper Belt Probe (61 AU — Pluto & Arrokoth)',
+    pl_name: 'New Horizons Kuiper Belt Probe (61 AU — Pluto & Arrokoth)',
+    hostname: 'Sol (Our Sun)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'newhorizons',
+    bodyType: 'space_probe',
+    x_au: 18.0,
+    y_au: -55.0,
+    z_au: -19.0,
+    dist_km_from_earth: 9120000000,
+    ra: 290.5,
+    dec: -20.6,
+    distance: 0.00096,
+    dist_pc: 0.00029,
+    pl_rade: 0.008,
+    pl_radj: 0.0007,
+    pl_bmasse: 0.000000001,
+    pl_orbper: 50000,
+    pl_orbsmax: 61.0,
+    pl_orbeccen: 1.5,
+    pl_eqt: 38,
+    discoverymethod: 'NASA / JHUAPL / SwRI Kuiper Belt Extended Mission',
+    disc_year: 2006,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Launched at record Earth-escape velocity (16.26 km/s), New Horizons performed the historic July 14, 2015 flyby of Pluto & Charon and the Jan 1, 2019 flyby of contact-binary Kuiper Belt Object Arrokoth (2014 MU69 at 43.4 AU). At 61+ AU, it even measured the first interplanetary stellar parallax of Proxima Centauri and Wolf 359!',
+    moons: [
+      { name: 'Arrokoth (2014 MU69 Contact Binary KBO)', radiusRatio: 0.14, orbitRadius: 2.1, speed: 0.7, color: 0xb45309, inclination: 0.12 },
+      { name: 'Pluto (Visited 2015)', radiusRatio: 0.22, orbitRadius: 2.8, speed: 0.4, color: 0xd6b091, inclination: -0.15, targetObjectId: 'Pluto (Dwarf Planet)' }
+    ]
+  },
+  {
+    id: 'Cassini–Huygens Saturn Flagship Orbiter & Titan Probe',
+    pl_name: 'Cassini–Huygens Saturn Flagship Orbiter & Titan Probe',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Saturn (Sol System)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'cassini',
+    bodyType: 'space_probe',
+    x_au: 9.1,
+    y_au: -2.9,
+    z_au: -0.3,
+    dist_km_from_earth: 1425000000,
+    ra: 342.8,
+    dec: -9.5,
+    distance: 0.00015,
+    dist_pc: 0.000046,
+    pl_rade: 0.009,
+    pl_radj: 0.0008,
+    pl_bmasse: 0.000000001,
+    pl_orbper: 10759.2,
+    pl_orbsmax: 9.58,
+    pl_orbeccen: 0.056,
+    pl_eqt: 134,
+    discoverymethod: 'NASA / ESA / ASI Flagship Saturn Orbiter (294 Orbits)',
+    disc_year: 1997,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Monumental 6.7-meter flagship spacecraft that orbited Saturn 294 times (2004–2017), deployed the ESA Huygens lander onto Titan\'s surface, flew directly through Enceladus\'s hydrothermal water-vapor plumes, and completed 22 Grand Finale dives inside Saturn\'s rings.',
+    moons: [
+      { name: 'ESA Huygens Titan Parachute Probe', radiusRatio: 0.11, orbitRadius: 1.85, speed: 1.2, color: 0xf59e0b, inclination: 0.18 },
+      { name: 'Saturn (Parent Ringed Giant)', radiusRatio: 0.38, orbitRadius: 2.85, speed: 0.35, color: 0xe3c38b, inclination: -0.1, targetObjectId: 'Saturn (Sol System)' }
+    ]
+  },
+  {
+    id: 'Apollo 11 "Eagle" Lunar Module (Tranquility Base — Moon)',
+    pl_name: 'Apollo 11 "Eagle" Lunar Module (Tranquility Base — Moon)',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Moon / Luna (Earth Moon)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'apollo_lm',
+    bodyType: 'space_lander',
+    x_au: -0.9974,
+    y_au: 0.001,
+    z_au: 0.0002,
+    dist_km_from_earth: 384400,
+    ra: 115.4,
+    dec: 22.1,
+    distance: 0.00000004,
+    dist_pc: 0.000000012,
+    pl_rade: 0.008,
+    pl_radj: 0.0007,
+    pl_bmasse: 0.000000001,
+    pl_orbper: 27.32,
+    pl_orbsmax: 1.0,
+    pl_orbeccen: 0.055,
+    pl_eqt: 250,
+    discoverymethod: 'NASA Apollo 11 Crewed Lunar Landing (July 20, 1969)',
+    disc_year: 1969,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Historic Apollo Lunar Module LM-5 "Eagle" landed by Neil Armstrong and Buzz Aldrin at Mare Tranquillitatis (0.674°N, 23.473°E) on July 20, 1969 while Michael Collins orbited overhead in Command Module "Columbia". Deployed the Laser Ranging Retroreflector (still used today!) and Passive Seismic Experiment.',
+    moons: [
+      { name: 'CSM "Columbia" in Lunar Orbit', radiusRatio: 0.09, orbitRadius: 1.9, speed: 1.15, color: 0xe2e8f0, inclination: 0.1 },
+      { name: 'Moon (Luna — Mare Tranquillitatis)', radiusRatio: 0.34, orbitRadius: 2.7, speed: 0.4, color: 0xcbd5e1, inclination: -0.08, targetObjectId: 'Moon / Luna (Earth Moon)' }
+    ]
+  },
+  {
+    id: 'Perseverance Rover & Ingenuity Helicopter (Jezero Crater — Mars)',
+    pl_name: 'Perseverance Rover & Ingenuity Helicopter (Jezero Crater — Mars)',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Mars (Sol System)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'perseverance',
+    bodyType: 'space_lander',
+    x_au: -1.1,
+    y_au: 1.05,
+    z_au: 0.03,
+    dist_km_from_earth: 225000000,
+    ra: 108.5,
+    dec: 23.8,
+    distance: 0.000024,
+    dist_pc: 0.0000073,
+    pl_rade: 0.008,
+    pl_radj: 0.0007,
+    pl_bmasse: 0.000000001,
+    pl_orbper: 686.98,
+    pl_orbsmax: 1.524,
+    pl_orbeccen: 0.0934,
+    pl_eqt: 210,
+    discoverymethod: 'NASA Sky-Crane Touchdown at Octavia E. Butler Landing (Feb 18, 2021)',
+    disc_year: 2021,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Car-sized nuclear-powered Mars 2020 rover and coaxial-rotor Ingenuity Mars Helicopter exploring the 45-km Jezero Crater ancient lake-delta system (18.38°N, 77.58°E). Cached 20+ titanium sample tubes, produced oxygen from Martian CO₂ via MOXIE, discovered organic-rich "Cheyava Falls" rock, and completed 72 powered flights on another planet!',
+    moons: [
+      { name: 'Ingenuity Mars Helicopter (72 Flights)', radiusRatio: 0.08, orbitRadius: 1.75, speed: 1.65, color: 0xfacc15, inclination: 0.22 },
+      { name: 'Mars (Jezero Crater Delta)', radiusRatio: 0.35, orbitRadius: 2.75, speed: 0.38, color: 0xc85328, inclination: -0.06, targetObjectId: 'Mars (Sol System)' }
+    ]
+  },
+  {
+    id: 'Gaia, Kepler & TESS Exoplanet Space Observatories (L2)',
+    pl_name: 'Gaia, Kepler & TESS Exoplanet Space Observatories (L2)',
+    hostname: 'Sol (Our Sun)',
+    parentBody: 'Earth (Sol System)',
+    isSolarSystem: true,
+    isSpaceMission: true,
+    stationPreset: 'gaia_kepler',
+    bodyType: 'space_telescope',
+    x_au: -1.01,
+    y_au: 0.002,
+    z_au: -0.001,
+    dist_km_from_earth: 1500000,
+    ra: 92.0,
+    dec: -4.0,
+    distance: 0.0000158,
+    dist_pc: 0.0000048,
+    pl_rade: 0.01,
+    pl_radj: 0.0009,
+    pl_bmasse: 0.00000001,
+    pl_orbper: 365.25,
+    pl_orbsmax: 1.01,
+    pl_orbeccen: 0.01,
+    pl_eqt: 110,
+    discoverymethod: 'ESA Gaia Astrometry + NASA Kepler & TESS Transit Surveys',
+    disc_year: 2009,
+    st_spectype: 'G2 V',
+    st_teff: 5778,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'The trio of space observatories that built modern galactic cartography: ESA\'s Gaia at Sun-Earth L2 measured 3D positions, parallaxes, and proper motions for 1.8+ billion stars (and discovered dormant black holes Gaia BH1–BH3), while NASA\'s Kepler and TESS photometers discovered over two-thirds of the 5,740+ known exoplanets in this star chart!',
+    moons: [
+      { name: 'JWST (Co-Orbiting at Sun-Earth L2)', radiusRatio: 0.11, orbitRadius: 2.0, speed: 0.9, color: 0xfacc15, inclination: 0.15, targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)' }
+    ]
+  },
+  {
+    id: 'SETI: Arecibo Message & Globular Cluster M13 (Hercules — 22,200 ly)',
+    pl_name: 'SETI: Arecibo Message & Globular Cluster M13 (Hercules — 22,200 ly)',
+    hostname: 'Messier 13 (Great Globular Cluster in Hercules)',
+    isDeepSky: true,
+    isSpaceMission: true,
+    deepSkyType: 'cluster',
+    stationPreset: 'seti_arecibo',
+    ra: 250.4218,
+    dec: 36.4599,
+    distance: 22200,
+    dist_pc: 6800,
+    vmag: 5.8,
+    pl_rade: 8400,
+    pl_radj: 750,
+    pl_bmasse: 2e11,
+    pl_orbper: 100000,
+    pl_orbsmax: 145,
+    pl_eqt: 5800,
+    discoverymethod: 'Arecibo 305m Planetary Radar Broadcast (2,380 MHz, Nov 16, 1974)',
+    disc_year: 1974,
+    st_spectype: 'Globular Cluster (300,000+ Stars) + 1,679-Bit METI Signal',
+    st_teff: 5900,
+    st_rad: 84.0,
+    st_mass: 600000,
+    description: 'Target of humanity\'s most famous Active SETI (METI) interstellar broadcast! On November 16, 1974, Frank Drake and Carl Sagan used Puerto Rico\'s 305-meter Arecibo Radio Telescope (450 kW at 2,380 MHz) to beam a 1,679-bit (73 rows × 23 columns semiprime) binary bitmap toward the 300,000 stars of Globular Cluster M13 in Hercules—encoding numbers 1–10, DNA nucleotides, the double helix, a human figure, the Solar System, and the Arecibo dish.',
+    moons: [
+      { name: '1,679-Bit Arecibo Wavefront (Currently ~52 ly from Earth)', radiusRatio: 0.14, orbitRadius: 2.1, speed: 1.4, color: 0x10b981, inclination: 0.15 }
+    ]
+  },
+  {
+    id: 'SETI: The "Wow! Signal" Locus & Breakthrough Listen (Sagittarius)',
+    pl_name: 'SETI: The "Wow! Signal" Locus & Breakthrough Listen (Sagittarius)',
+    hostname: 'Chi Sagittarii Region (1420.4556 MHz Hydrogen Line)',
+    isDeepSky: true,
+    isSpaceMission: true,
+    deepSkyType: 'nebula',
+    stationPreset: 'seti_wow',
+    ra: 291.38,
+    dec: -26.95,
+    distance: 1800,
+    dist_pc: 552,
+    vmag: 9.5,
+    pl_rade: 120,
+    pl_radj: 10.7,
+    pl_bmasse: 1000,
+    pl_orbper: 3650,
+    pl_orbsmax: 10,
+    pl_eqt: 5780,
+    discoverymethod: 'OSU Big Ear Radio Telescope (Aug 15, 1977 — "6EQUJ5") & Breakthrough Listen',
+    disc_year: 1977,
+    st_spectype: '1420.4556 MHz (21-cm Neutral Hydrogen Line Signal)',
+    st_teff: 5780,
+    st_rad: 1.0,
+    st_mass: 1.0,
+    description: 'Sky locus in Sagittarius (near Chi Sagittarii) where astronomer Jerry Ehman detected the famous 72-second narrowband (<10 kHz) radio signal "6EQUJ5" (30σ above deep-space noise) on August 15, 1977 using Ohio State University\'s Big Ear Radio Telescope right at the 1420.4556 MHz 21-cm Hydrogen Line predicted by Cocconi, Morrison, and Frank Drake\'s Project Ozma.',
+    moons: [
+      { name: 'Breakthrough Listen / Green Bank & Allen Telescope Array Beam', radiusRatio: 0.12, orbitRadius: 2.0, speed: 1.25, color: 0x38bdf8, inclination: 0.18 }
+    ]
+  },
+  {
+    id: 'WASP-39b — JWST Photochemical SO₂ & CO₂ Discovery (700 ly)',
+    pl_name: 'WASP-39b — JWST Photochemical SO₂ & CO₂ Discovery (700 ly)',
+    hostname: 'WASP-39 (Malmok)',
+    isPopularMedia: true,
+    isSpaceMission: true,
+    mediaFranchise: 'JWST Early Release Science Landmark Discovery',
+    stationPreset: 'wasp39b',
+    bodyType: 'planet',
+    ra: 217.3267,
+    dec: -3.4445,
+    distance: 698.0,
+    dist_pc: 214.0,
+    vmag: 12.1,
+    pl_rade: 14.2,
+    pl_radj: 1.27,
+    pl_bmasse: 89.0,
+    pl_bmassj: 0.28,
+    pl_orbper: 4.05526,
+    pl_orbsmax: 0.0486,
+    pl_orbeccen: 0.0,
+    pl_eqt: 1166,
+    discoverymethod: 'JWST NIRSpec / NIRISS / NIRCam Transmission Spectroscopy',
+    disc_year: 2022,
+    st_spectype: 'G8 V (Solar-Type Star in Virgo)',
+    st_teff: 5400,
+    st_rad: 0.895,
+    st_mass: 0.93,
+    description: 'Puffy "Hot Saturn" (0.28 M♃, 1.27 R♃, 1,166 K) 700 ly away in Virgo where the James Webb Space Telescope achieved a historic milestone: the first definitive detection of carbon dioxide (CO₂) and photochemical sulfur dioxide (SO₂) in an exoplanet atmosphere, alongside H₂O, CO, Na, and K—proving active starlight-driven photochemistry on a distant world!',
+    moons: [
+      { name: 'JWST NIRSpec Transmission Spectrum Probe', radiusRatio: 0.09, orbitRadius: 1.85, speed: 1.35, color: 0xfacc15, inclination: 0.2, targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)' }
+    ]
+  },
+  {
+    id: 'K2-18b — JWST Hycean Ocean World Candidate (124 ly)',
+    pl_name: 'K2-18b — JWST Hycean Ocean World Candidate (124 ly)',
+    hostname: 'K2-18 (EPIC 201912552)',
+    isPopularMedia: true,
+    isSpaceMission: true,
+    mediaFranchise: 'JWST Habitable-Zone Hycean Discovery',
+    stationPreset: 'k2_18b',
+    bodyType: 'planet',
+    ra: 172.5605,
+    dec: 7.5884,
+    distance: 124.0,
+    dist_pc: 38.02,
+    vmag: 13.5,
+    pl_rade: 2.61,
+    pl_radj: 0.233,
+    pl_bmasse: 8.63,
+    pl_bmassj: 0.027,
+    pl_orbper: 32.9396,
+    pl_orbsmax: 0.1429,
+    pl_orbeccen: 0.09,
+    pl_eqt: 265,
+    discoverymethod: 'NASA Kepler K2 & JWST NIRISS / NIRSpec / MIRI Spectroscopy',
+    disc_year: 2015,
+    st_spectype: 'M2.5 V (Red Dwarf in Leo)',
+    st_teff: 3457,
+    st_rad: 0.411,
+    st_mass: 0.359,
+    description: 'Habitable-zone sub-Neptune (2.61 R⊕, 8.63 M⊕, 265 K) 124 ly away in Leo. In 2023–2024, JWST transmission spectra revealed abundant methane (CH₄) and carbon dioxide (CO₂) with a lack of ammonia—consistent with a "Hycean" world (a global liquid water ocean beneath a hydrogen-rich atmosphere) and sparking intense investigation into candidate dimethyl sulfide (DMS) signatures.',
+    moons: [
+      { name: 'JWST NIRISS / NIRSpec Biosignature Survey', radiusRatio: 0.09, orbitRadius: 1.85, speed: 1.35, color: 0xfacc15, inclination: 0.2, targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)' }
+    ]
+  }
+];
+
 // Comprehensive Scientific Expeditions, Vehicles Sent & Scientific Results Database
 export const SCIENTIFIC_EXPEDITIONS = {
   earth: [
     {
       mission: 'International Space Station (ISS) & Crew Expeditions 1–72',
       agency: 'NASA / ESA / JAXA / Roscosmos / CSA (1998–Present)',
-      vehicles: 'ISS Orbital Laboratory, Space Shuttle, Crew Dragon, Soyuz, Cupola Observatory',
+      vehicles: 'ISS Orbital Laboratory (408 km LEO), Space Shuttle, Crew Dragon, Soyuz, Cupola Observatory',
       results: 'Continuous human presence in Low Earth Orbit for 25+ years; conducted 3,500+ microgravity, Earth climate, cosmic-ray (AMS-02), and closed-loop life-support experiments.',
-      probeLabel: '🛰️ ISS Orbital Lab'
+      probeLabel: '🛰️ ISS (408 km LEO)',
+      targetObjectId: 'International Space Station (ISS — LEO 408 km)'
     },
     {
-      mission: 'Landsat 1–9 & Copernicus Sentinel Earth Observation Fleet',
-      agency: 'NASA / USGS / ESA (1972–Present)',
-      vehicles: 'Landsat 8 & 9, Sentinel-1/2/3/5P, Terra, Aqua, PACE, DSCOVR (L1)',
-      results: '50+ years of continuous multispectral global mapping of Earth\'s continents, ice sheets, ocean chlorophyll, atmospheric CO2/methane, and tectonic changes.',
-      probeLabel: '🛰️ Landsat / Sentinel'
+      mission: 'James Webb Space Telescope (JWST) at Sun-Earth L2',
+      agency: 'NASA / ESA / CSA (2021–Present)',
+      vehicles: 'JWST 6.5m Gold-Beryllium Infrared Observatory & 5-Layer Kapton Sunshield (1.5M km at L2)',
+      results: 'Revolutionized infrared astrophysics and exoplanet spectroscopy from Sun-Earth L2: discovered earliest galaxies (JADES-GS-z14-0), detected photochemical SO₂ & CO₂ on WASP-39b, and identified CH₄ & CO₂ on habitable-zone Hycean candidate K2-18b.',
+      probeLabel: '🛰️ James Webb (JWST L2)',
+      targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
+    },
+    {
+      mission: 'Hubble Space Telescope (HST) & Tiangong Space Station (CSS)',
+      agency: 'NASA / ESA (1990–Present) & CNSA (2021–Present)',
+      vehicles: 'Hubble 2.4m Space Telescope (535 km LEO) & Tiangong 3-Module Space Station (390 km LEO)',
+      results: 'Hubble completed 1.6+ million cosmic observations (Hubble Ultra Deep Field, cosmic expansion rate H₀); Tiangong operates continuous microgravity science across its Tianhe, Wentian, and Mengtian modules.',
+      probeLabel: '🛰️ Hubble & Tiangong',
+      targetObjectId: 'Hubble Space Telescope (HST — LEO 535 km)'
+    },
+    {
+      mission: 'SETI: Project Ozma, Arecibo Message, Wow! Signal & Breakthrough Listen',
+      agency: 'NRAO Green Bank / Arecibo / OSU Big Ear / SETI Institute / Breakthrough Listen (1960–Present)',
+      vehicles: 'Green Bank 100m Telescope, Arecibo 305m Dish, Allen Telescope Array (42 Dishes), Parkes & MeerKAT',
+      results: 'Pioneered the search for extraterrestrial technosignatures across the 1420 MHz (21-cm H-I) "Water Hole", beamed the 1,679-bit Arecibo Message toward M13 (1974), recorded the 72-second "6EQUJ5" Wow! Signal (1977), and surveys 1,000,000 nearby stars.',
+      probeLabel: '📡 SETI & Breakthrough Listen',
+      targetObjectId: 'SETI: Arecibo Message & Globular Cluster M13 (Hercules — 22,200 ly)'
     }
   ],
   moon: [
@@ -2288,7 +2859,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA (1968–1972)',
       vehicles: 'Saturn V, Command/Service Module, Lunar Module (Eagle..Challenger), 3 Lunar Roving Vehicles (LRV)',
       results: 'Landed 12 astronauts across 6 lunar sites (Mare Tranquillitatis to Taurus-Littrow); returned 382 kg of lunar rocks confirming the Giant-Impact origin of the Moon; deployed ALSEP seismometers and laser retroreflectors.',
-      probeLabel: '🛰️ Apollo CSM & Eagle LM'
+      probeLabel: '🛰️ Apollo 11 Eagle LM',
+      targetObjectId: 'Apollo 11 "Eagle" Lunar Module (Tranquility Base — Moon)'
     },
     {
       mission: 'Chang\'e 4, 5 & 6 Lunar Far-Side & Sample Return Missions',
@@ -2343,7 +2915,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / JPL (2020–Present)',
       vehicles: 'Perseverance Nuclear-Powered Rover & Ingenuity Coaxial Rotorcraft',
       results: 'Explored ancient Jezero Crater river delta; discovered organic-bearing mudstones ("Cheyava Falls") and cached sample tubes for return; Ingenuity completed 72 powered flights—the first aircraft flight on another planet.',
-      probeLabel: '🛰️ Perseverance & Ingenuity'
+      probeLabel: '🛰️ Perseverance & Ingenuity',
+      targetObjectId: 'Perseverance Rover & Ingenuity Helicopter (Jezero Crater — Mars)'
     },
     {
       mission: 'Mars Science Laboratory (Curiosity) & MER Spirit / Opportunity',
@@ -2391,7 +2964,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / ESA (1972–Present)',
       vehicles: 'Pioneer 10–11, Voyager 1–2, ESA JUICE Orbiter, NASA Europa Clipper',
       results: 'Pioneer & Voyager executed the first outer-planet flybys, discovering Jupiter\'s faint gossamer rings, lightning, aurorae, and active volcanism in the Jovian system.',
-      probeLabel: '🛰️ Voyager & Europa Clipper'
+      probeLabel: '🛰️ Voyager 1 & Clipper',
+      targetObjectId: 'Voyager 1 Interstellar Probe & Golden Record (172 AU — Ophiuchus)'
     }
   ],
   io: [
@@ -2436,7 +3010,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / ESA / ASI (1997–2017)',
       vehicles: 'Cassini Orbiter & Huygens Titan Lander (plus Pioneer 11 & Voyager 1–2)',
       results: 'Spent 13 years orbiting Saturn; imaged Saturn\'s north polar Hexagon jet stream, ring-moon "propellers" and vertical ring waves, discovered 7 new moons, and executed the Grand Finale diving 22 times between Saturn\'s cloud tops and innermost D-ring.',
-      probeLabel: '🛰️ Cassini Orbiter'
+      probeLabel: '🛰️ Cassini–Huygens Orbiter',
+      targetObjectId: 'Cassini–Huygens Saturn Flagship Orbiter & Titan Probe'
     }
   ],
   titan: [
@@ -2445,7 +3020,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'ESA / NASA / ASI (2005–Present)',
       vehicles: 'Huygens Atmospheric Parachute Lander (2005), Cassini SAR Radar, Dragonfly Nuclear Octocopter (Launching 2028)',
       results: 'Huygens achieved the farthest landing from Earth in history, transmitting images of rounded water-ice river cobbles and orange tholin haze; Cassini Radar mapped northern liquid methane/ethane seas (Kraken Mare, Ligeia Mare) and river networks.',
-      probeLabel: '🛰️ Huygens Lander & Dragonfly'
+      probeLabel: '🛰️ Huygens & Cassini',
+      targetObjectId: 'Cassini–Huygens Saturn Flagship Orbiter & Titan Probe'
     }
   ],
   enceladus: [
@@ -2454,7 +3030,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / ESA / ASI (2005–2017)',
       vehicles: 'Cassini Ion & Neutral Mass Spectrometer (INMS) & Cosmic Dust Analyzer',
       results: 'Flew directly through Enceladus\'s south polar "Tiger Stripe" cryovolcanic geysers at 48 km altitude; detected water vapor, salts, silica nanograins (proving seafloor hydrothermal vents!), complex organic molecules, and molecular hydrogen (H2).',
-      probeLabel: '🛰️ Cassini Plume Diver'
+      probeLabel: '🛰️ Cassini Plume Diver',
+      targetObjectId: 'Cassini–Huygens Saturn Flagship Orbiter & Titan Probe'
     }
   ],
   uranus: [
@@ -2463,7 +3040,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / JPL / ESA (1986 & 2023)',
       vehicles: 'Voyager 2 Grand Tour Spacecraft & James Webb Space Telescope (NIRCam)',
       results: 'Voyager 2 flew within 81,500 km of Uranus\'s cloud tops in Jan 1986, discovering 10 new moons (including Puck), 2 new rings, Miranda\'s 20 km Verona Rupes cliff, and a bizarre 59°-tilted offset magnetosphere.',
-      probeLabel: '🛰️ Voyager 2 Flyby'
+      probeLabel: '🛰️ Voyager 2 Flyby',
+      targetObjectId: 'Voyager 2 Interstellar Grand Tour Probe (143 AU — Pavo)'
     }
   ],
   neptune: [
@@ -2472,7 +3050,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / JPL (August 1989)',
       vehicles: 'Voyager 2 Deep-Space Probe & HST / JWST Follow-up',
       results: 'Flew 4,950 km above Neptune\'s north pole; discovered the Great Dark Spot, white methane-ice "Scooter" clouds driven by 2,100 km/h supersonic winds (fastest in the Solar System), 6 new moons, and complete Adams/Le Verrier ring arcs.',
-      probeLabel: '🛰️ Voyager 2 (4,950 km)'
+      probeLabel: '🛰️ Voyager 2 (4,950 km)',
+      targetObjectId: 'Voyager 2 Interstellar Grand Tour Probe (143 AU — Pavo)'
     }
   ],
   triton: [
@@ -2481,7 +3060,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / JPL (August 25, 1989)',
       vehicles: 'Voyager 2 Imaging Science Subsystem',
       results: 'Revealed a geologically young cantaloupe-terrain nitrogen/methane ice crust (38 K) with active cryovolcanic geysers erupting dark plumes 8 km high into a thin nitrogen atmosphere—confirming Triton is a captured Kuiper Belt dwarf planet.',
-      probeLabel: '🛰️ Voyager 2 Triton Pass'
+      probeLabel: '🛰️ Voyager 2 Triton Pass',
+      targetObjectId: 'Voyager 2 Interstellar Grand Tour Probe (143 AU — Pavo)'
     }
   ],
   pluto: [
@@ -2490,7 +3070,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'NASA / JHUAPL / SwRI (2006–Present, Pluto Flyby July 14, 2015)',
       vehicles: 'New Horizons RTG Spacecraft (LORRI, Ralph, Alice, REX, SWAP)',
       results: 'Flew 12,500 km above Pluto after a 9.5-year journey; revealed the vast convecting nitrogen-ice glacier Sputnik Planitia ("Pluto\'s Heart"), 3.5 km water-ice mountains (Tenzing & Hillary Montes), blue atmospheric haze layers, and later visited Arrokoth (2014 MU69).',
-      probeLabel: '🛰️ New Horizons (12,500 km)'
+      probeLabel: '🛰️ New Horizons (12,500 km)',
+      targetObjectId: 'New Horizons Kuiper Belt Probe (61 AU — Pluto & Arrokoth)'
     }
   ],
   adrian_tau_ceti: [
@@ -2502,11 +3083,12 @@ export const SCIENTIFIC_EXPEDITIONS = {
       probeLabel: '🛰️ Hail Mary & Blip-A'
     },
     {
-      mission: 'Real Astronomical Surveys: Keck HIRES, HARPS & ALMA Debris Disk Imaging',
-      agency: 'W. M. Keck Observatory / ESO HARPS / ALMA (2012–Present)',
-      vehicles: 'HARPS Spectrograph (La Silla), Keck HIRES, ALMA Millimeter Array, Hubble Space Telescope',
-      results: 'Detected 4 super-Earth radial-velocity planet candidates (Tau Ceti g, h, e, f) and imaged a massive Kuiper-like dusty debris disk containing 10x more comets and asteroids than our Solar System.',
-      probeLabel: '🛰️ ALMA & HARPS Survey'
+      mission: 'Project Ozma (First Modern SETI Experiment) & HARPS / ALMA Surveys',
+      agency: 'NRAO Green Bank (Frank Drake, 1960) / Keck HIRES / ESO HARPS / ALMA',
+      vehicles: '85-ft Tatel Radio Telescope (1.420 GHz Hydrogen Line), HARPS Spectrograph, ALMA Array',
+      results: 'Tau Ceti was one of the first two stars ever searched for extraterrestrial radio signals in Frank Drake\'s 1960 Project Ozma; radial velocity and ALMA surveys detected 4 super-Earth candidates and a broad Kuiper-like debris belt.',
+      probeLabel: '📡 SETI Project Ozma & ALMA',
+      targetObjectId: 'SETI: The "Wow! Signal" Locus & Breakthrough Listen (Sagittarius)'
     }
   ],
   erid_40_eridani: [
@@ -2531,7 +3113,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'Harvard-Smithsonian CfA & Dharma Survey (1991 & 2018)',
       vehicles: 'Mt. Wilson HK Project, Dharma Spectroscopic Telescope, NASA TESS',
       results: 'In 1991, Gene Roddenberry and astronomers Sallie Baliunas, Robert Donahue, and George Gatewood officially identified 40 Eridani A as Vulcan\'s host star; in 2018, the Dharma Planet Survey detected a real super-Earth signature at 42.4 days.',
-      probeLabel: '🛰️ USS Enterprise & TESS'
+      probeLabel: '🛰️ USS Enterprise & TESS',
+      targetObjectId: 'Gaia, Kepler & TESS Exoplanet Space Observatories (L2)'
     }
   ],
   pandora: [
@@ -2540,7 +3123,8 @@ export const SCIENTIFIC_EXPEDITIONS = {
       agency: 'ESO Very Large Telescope / Breakthrough Watch / NASA JWST (2021–Present)',
       vehicles: 'VLT VISIR Thermal Coronagraph (100-hour exposure) & JWST MIRI Coronagraph',
       results: 'Direct mid-infrared thermal imaging at 10–12.5 microns probed the habitable zone of Alpha Centauri A, identifying candidate C1 (~1.1 AU) while JWST searches for giant planets and exomoons.',
-      probeLabel: '🛰️ VLT NEAR & ISV Venture Star'
+      probeLabel: '🛰️ JWST & VLT NEAR',
+      targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
     }
   ],
   gargantua: [
@@ -2551,6 +3135,174 @@ export const SCIENTIFIC_EXPEDITIONS = {
       results: 'Using Kip Thorne\'s Double Negative relativistic ray-tracing code, produced the first scientifically accurate visualization of a spinning Kerr black hole\'s warped accretion disk; TARS transmitted quantum gravity data from inside the singularity.',
       probeLabel: '🛰️ Endurance & Ranger'
     }
+  ],
+  iss: [
+    {
+      mission: 'ISS Assembly & Expeditions 1–72 Continuous Human Presence',
+      agency: 'NASA / Roscosmos / ESA / JAXA / CSA (1998–Present)',
+      vehicles: '16 Pressurized Modules, 109m Integrated Truss, SpaceX Crew Dragon, Boeing Starliner, Soyuz, Space Shuttle, Canadarm2',
+      results: 'Over 280 astronauts from 23 countries have lived aboard the ISS; hosted the Alpha Magnetic Spectrometer (AMS-02 recording 200+ billion cosmic rays), NICER X-ray pulsar telescope, Cold Atom Lab (Bose-Einstein condensates at 100 picokelvin), and vascular/bone countermeasures for deep-space missions.',
+      probeLabel: '🌍 View Earth (408 km Below)',
+      targetObjectId: 'Earth (Sol System)'
+    }
+  ],
+  jwst: [
+    {
+      mission: 'James Webb Space Telescope Science Operations at Sun-Earth L2',
+      agency: 'NASA / ESA / CSA / STScI (Launched Dec 25, 2021 — Operational at L2)',
+      vehicles: 'Ariane 5 ECA, 6.5m 18-Segment Gold-Beryllium Primary Mirror, 5-Layer Kapton Sunshield, NIRCam, NIRSpec, MIRI, FGS/NIRISS',
+      results: 'Operating in a 1.5-million-km halo orbit around L2: discovered cosmic-dawn galaxies <300 Myr after the Big Bang (JADES-GS-z14-0), detected photochemical SO₂ and CO₂ on WASP-39b, detected CH₄ & CO₂ on habitable-zone Hycean world K2-18b, and measured thermal emission across the 7 rocky planets of TRAPPIST-1.',
+      probeLabel: '🪐 Inspect WASP-39b (JWST Target)',
+      targetObjectId: 'WASP-39b — JWST Photochemical SO₂ & CO₂ Discovery (700 ly)'
+    },
+    {
+      mission: 'JWST Habitable-Zone Sub-Neptune & Biosignature Campaign',
+      agency: 'STScI / Cambridge / NASA JWST GO Programs',
+      vehicles: 'JWST NIRISS SOSS, NIRSpec G395H & MIRI LRS Spectrographs',
+      results: 'Probed K2-18b (124 ly in Leo), revealing ~1% methane (CH₄) and carbon dioxide (CO₂) with depleted ammonia—matching predictions for a hydrogen envelope over a global water ocean ("Hycean" world).',
+      probeLabel: '🌊 Inspect K2-18b (Hycean World)',
+      targetObjectId: 'K2-18b — JWST Hycean Ocean World Candidate (124 ly)'
+    }
+  ],
+  hubble: [
+    {
+      mission: 'Hubble Space Telescope 35-Year Cosmic Discovery Legacy & 5 Shuttle Servicing Missions',
+      agency: 'NASA / ESA / STScI (1990–Present)',
+      vehicles: '2.4m Ritchey-Chrétien Reflector, WFC3, ACS, STIS, COS & Space Shuttles Discovery, Endeavour, Columbia, Atlantis',
+      results: '1.6+ million observations and 21,000+ peer-reviewed papers: imaged the Hubble Ultra Deep Field back to z~11, pinned down the Hubble Constant (H₀) and helped discover Dark Energy, imaged shoemaker-Levy 9 impacting Jupiter, and pioneered exoplanet transmission spectroscopy.',
+      probeLabel: '🌍 View Earth (535 km Below)',
+      targetObjectId: 'Earth (Sol System)'
+    }
+  ],
+  tiangong: [
+    {
+      mission: 'Tiangong China Space Station Modular Operations',
+      agency: 'CNSA / CMSA (2021–Present)',
+      vehicles: 'Tianhe Core Module, Wentian & Mengtian Lab Modules, Shenzhou Crewed Spacecraft, Tianzhou Cargo Ships',
+      results: 'Completed T-shaped orbital assembly in 2022; conducts microgravity combustion, closed-loop aquatic ecosystems, atomic clock relativity tests, and gamma-ray burst polarimetry (POLAR-2).',
+      probeLabel: '🌍 View Earth (390 km Below)',
+      targetObjectId: 'Earth (Sol System)'
+    }
+  ],
+  voyager1: [
+    {
+      mission: 'Voyager 1 Planetary Grand Tour & Interstellar Medium Exploration',
+      agency: 'NASA / JPL Deep Space Network (Launched Sept 5, 1977 — 172+ AU)',
+      vehicles: 'Voyager 1 Spacecraft (3.7m High-Gain Dish, 3 Pu-238 RTGs, Magnetometer, Plasma Wave Subsystem & Golden Record)',
+      results: 'Discovered active volcanism on Io (1979) and Titan\'s thick nitrogen-methane atmosphere (1980), captured the "Pale Blue Dot" Family Portrait of the Solar System (Feb 14, 1990 at 40.5 AU), crossed the heliopause on Aug 25, 2012 at 121.6 AU, and directly samples interstellar magnetic fields and plasma waves at 172+ AU.',
+      probeLabel: '🪐 View Saturn (Visited 1980)',
+      targetObjectId: 'Saturn (Sol System)'
+    }
+  ],
+  voyager2: [
+    {
+      mission: 'Voyager 2 Four-Giant-Planet Grand Tour & Interstellar Mission',
+      agency: 'NASA / JPL Deep Space Network (Launched Aug 20, 1977 — 143+ AU)',
+      vehicles: 'Voyager 2 Spacecraft (3.7m High-Gain Dish, 3 RTGs, Cosmic Ray & Low-Energy Charged Particle Instruments)',
+      results: 'Executed the only 4-planet Grand Tour in history (Jupiter 1979, Saturn 1981, Uranus 1986, Neptune & Triton 1989), discovering 16 moons, Neptune\'s Great Dark Spot, and Triton\'s nitrogen geysers before crossing into interstellar space on Nov 5, 2018 at 119.7 AU.',
+      probeLabel: '🪐 View Neptune (Visited 1989)',
+      targetObjectId: 'Neptune (Sol System)'
+    }
+  ],
+  parker: [
+    {
+      mission: 'Parker Solar Probe Perihelion 22 — Touching the Sun at 6.1M km',
+      agency: 'NASA / Johns Hopkins APL (2018–Present)',
+      vehicles: 'Parker Solar Probe (11.4 cm Carbon-Composite TPS Heat Shield, WISPR Imager, FIELDS, SWEAP Faraday Cup, ISOIS)',
+      results: 'On Dec 24, 2024, flew within 6.1 million km (9.86 R☉) of the Sun\'s surface at 692,000 km/h (192 km/s); crossed inside the Alfvén critical surface into the magnetically dominated solar corona and traced the origin of magnetic "switchbacks" to photospheric supergranulation funnels.',
+      probeLabel: '🌍 View Earth (1 AU Outward)',
+      targetObjectId: 'Earth (Sol System)'
+    }
+  ],
+  newhorizons: [
+    {
+      mission: 'New Horizons Pluto–Charon & Kuiper Belt Extended Mission (KEM)',
+      agency: 'NASA / JHUAPL / SwRI (2006–Present — 61+ AU)',
+      vehicles: 'New Horizons RTG Spacecraft (LORRI, Ralph/MVIC/LEISA, Alice UV, REX, SWAP, PEPSSI, SDC)',
+      results: 'Transformed Pluto & Charon from fuzzy pixels into dynamic geological worlds (Sputnik Planitia glacier, cryovolcano Wright Mons), imaged pristine contact-binary planetesimal Arrokoth (2014 MU69) at 43.4 AU, and measures outer heliospheric pickup ions and cosmic optical background at 61+ AU.',
+      probeLabel: '🪐 View Pluto (Visited 2015)',
+      targetObjectId: 'Pluto (Dwarf Planet)'
+    }
+  ],
+  cassini: [
+    {
+      mission: 'Cassini–Huygens 13-Year Saturn System Orbiter & Titan Landing',
+      agency: 'NASA / ESA / ASI (1997–2017)',
+      vehicles: 'Cassini Orbiter (12 Instruments, 3 RTGs) & ESA Huygens Titan Atmospheric Entry Lander',
+      results: 'Completed 294 Saturn orbits, 162 targeted moon flybys, landed Huygens on Titan, sampled Enceladus\'s hydrothermal plumes (H₂, silica, organics), and plunged into Saturn\'s atmosphere on Sept 15, 2017 to protect Enceladus and Titan from biological contamination.',
+      probeLabel: '🪐 View Saturn & Rings',
+      targetObjectId: 'Saturn (Sol System)'
+    }
+  ],
+  apollo_lm: [
+    {
+      mission: 'Apollo 11 Tranquility Base EVA & Lunar Laser Ranging Experiment',
+      agency: 'NASA Manned Spacecraft Center (July 16–24, 1969)',
+      vehicles: 'Saturn V SA-506, CSM-107 "Columbia" & LM-5 "Eagle"',
+      results: 'First human footsteps on another celestial body; returned 21.55 kg of Mare Tranquillitatis ilmenite-rich basalt (dated to 3.7 billion years old) and deployed the Lunar Laser Ranging Retroreflector array that proves the Moon spirals away from Earth at 3.8 cm/year.',
+      probeLabel: '🌕 View Moon (Luna)',
+      targetObjectId: 'Moon / Luna (Earth Moon)'
+    }
+  ],
+  perseverance: [
+    {
+      mission: 'Mars 2020 Perseverance Sample Caching & Ingenuity Aerial Scouting',
+      agency: 'NASA / JPL (Landed Feb 18, 2021 — Jezero Crater)',
+      vehicles: 'Perseverance Rover (PIXL, SHERLOC, SuperCam, MOXIE, RIMFAX) & Ingenuity 1.8-kg Coaxial Helicopter',
+      results: 'Traversed the Jezero crater floor, sedimentary delta fan, and crater rim; discovered "leopard spot" iron-phosphate reduction rims in Cheyava Falls mudstone, generated breathable oxygen from Mars\'s CO₂ atmosphere via MOXIE, and flew Ingenuity 72 times over 17.0 km.',
+      probeLabel: '🪐 View Mars Globe',
+      targetObjectId: 'Mars (Sol System)'
+    }
+  ],
+  gaia_kepler: [
+    {
+      mission: 'ESA Gaia DR3/DR4 Astrometric Census & NASA Kepler / TESS Exoplanet Surveys',
+      agency: 'ESA (2013–2025) & NASA (Kepler 2009–2018, TESS 2018–Present)',
+      vehicles: 'ESA Gaia (1-Gigapixel Focal Plane at L2), NASA Kepler (0.95m Photometer), NASA TESS (4 Wide-Field Cameras)',
+      results: 'Gaia mapped 1.8+ billion stars in 3D phase space, uncovering ancient galactic mergers (Gaia-Enceladus) and dormant black holes; Kepler & TESS discovered 5,700+ transiting exoplanets, proving that small rocky worlds outnumber stars in the Milky Way.',
+      probeLabel: '🛰️ Inspect JWST at L2',
+      targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
+    }
+  ],
+  seti_arecibo: [
+    {
+      mission: '1974 Arecibo Interstellar Radio Broadcast to Messier 13',
+      agency: 'Cornell University / NAIC Arecibo Observatory (Frank Drake, Carl Sagan & Richard Isaacman — Nov 16, 1974)',
+      vehicles: 'Arecibo 305-Meter Spherical Reflector Dish & 450 kW S-Band Radar Transmitter (2,380 MHz, 10 Hz FM Shift)',
+      results: 'Transmitted 1,679 binary bits (73 × 23 semiprime grid) over 167.9 seconds at an effective isotropic radiated power of 20 terawatts—20 million times brighter than the Sun at 2,380 MHz—toward the 300,000 stars of Globular Cluster M13 in Hercules.',
+      probeLabel: '📡 View Wow! Signal Locus',
+      targetObjectId: 'SETI: The "Wow! Signal" Locus & Breakthrough Listen (Sagittarius)'
+    }
+  ],
+  seti_wow: [
+    {
+      mission: '1977 OSU Big Ear "Wow! Signal" Detection & Breakthrough Listen Technosignature Survey',
+      agency: 'Ohio State University Big Ear Observatory (Jerry Ehman, Aug 15, 1977) & Breakthrough Listen / SETI Institute',
+      vehicles: 'OSU Big Ear Kraus-Type Radio Telescope (50-Channel Receiver), Green Bank 100m, Parkes 64m, MeerKAT & Allen Telescope Array',
+      results: 'Recorded the 72-second narrowband signal "6EQUJ5" (30x background noise) at 1420.4556 MHz (within 50 kHz of the 21-cm neutral hydrogen hyperfine transition line); Breakthrough Listen and the Allen Telescope Array continue multi-petabyte wideband searches across 1,000,000 target stars.',
+      probeLabel: '📡 View Arecibo M13 Target',
+      targetObjectId: 'SETI: Arecibo Message & Globular Cluster M13 (Hercules — 22,200 ly)'
+    }
+  ],
+  wasp39b: [
+    {
+      mission: 'JWST Transiting Exoplanet Community Early Release Science (JTEC ERS) Program',
+      agency: 'NASA / ESA / CSA JWST ERS Team (300+ Astronomers — 2022–2024)',
+      vehicles: 'James Webb Space Telescope (NIRSpec PRISM/G395H, NIRISS SOSS, NIRCam F322W2)',
+      results: 'Obtained 0.5–5.5 micron transmission spectra across four JWST instruments: delivered the first unambiguous exoplanet detection of CO₂ (26σ significance) and photochemical SO₂ (produced by UV photodissociation of H₂S and H₂O), plus morning-vs-evening limb temperature asymmetry (200°C difference!).',
+      probeLabel: '🛰️ Inspect JWST at L2',
+      targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
+    }
+  ],
+  k2_18b: [
+    {
+      mission: 'JWST Cycle 1 & 2 Habitable-Zone Sub-Neptune Spectroscopy (GO 2722 & 2372)',
+      agency: 'NASA / ESA / CSA / University of Cambridge (Madhusudhan et al. 2023–2024) & Hubble / Kepler K2',
+      vehicles: 'James Webb Space Telescope (NIRISS SOSS, NIRSpec G395H, MIRI LRS) & Hubble WFC3',
+      results: 'Detected strong absorption features of methane (CH₄) and carbon dioxide (CO₂) at ~1% abundance with non-detection of ammonia (NH₃) and carbon monoxide (CO)—supporting a hydrogen-rich atmosphere above a habitable-zone ocean ("Hycean" world) and motivating deep follow-up of candidate dimethyl sulfide (DMS) features at 3.3 and 7–10 microns.',
+      probeLabel: '🛰️ Inspect JWST at L2',
+      targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
+    }
   ]
 };
 
@@ -2558,6 +3310,9 @@ export const SCIENTIFIC_EXPEDITIONS = {
 export function getExpeditionsForWorld(planet) {
   if (!planet) return [];
   if (planet.isEarth) return SCIENTIFIC_EXPEDITIONS.earth;
+  if (planet.stationPreset && SCIENTIFIC_EXPEDITIONS[planet.stationPreset]) {
+    return SCIENTIFIC_EXPEDITIONS[planet.stationPreset];
+  }
   if (planet.solarPreset && SCIENTIFIC_EXPEDITIONS[planet.solarPreset]) {
     return SCIENTIFIC_EXPEDITIONS[planet.solarPreset];
   }
@@ -2576,7 +3331,8 @@ export function getExpeditionsForWorld(planet) {
             agency: 'EHT Collaboration (ALMA, SPT, IRAM, JCMT, SMA, SMT — 2017–2024)',
             vehicles: 'Earth-Sized Virtual Radio Telescope Array (1.3 mm wavelength) + Chandra X-Ray & GRAVITY/VLT',
             results: `Captured the first direct horizon-scale image of ${planet.id.split(' (')[0]}'s glowing photon ring and shadow, confirming Einstein's General Relativity in the strong-field regime and mapping polarized magnetic field spirals.`,
-            probeLabel: '🛰️ Event Horizon Telescope'
+            probeLabel: '🛰️ Event Horizon Telescope',
+            targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
           }
         ];
       }
@@ -2586,7 +3342,8 @@ export function getExpeditionsForWorld(planet) {
           agency: 'NASA Chandra / ESA Gaia / NRAO VLBA',
           vehicles: 'Chandra X-Ray Space Observatory, ESA Gaia Astrometric Spacecraft, IXPE Polarimeter',
           results: `Measured relativistic X-ray accretion disk spectra, orbital dynamics, and black hole mass (${Number(planet.st_mass || 10).toLocaleString('en-US')} M☉) for ${planet.id}.`,
-          probeLabel: '🛰️ Chandra & Gaia'
+          probeLabel: '🛰️ Chandra & Gaia',
+          targetObjectId: 'Gaia, Kepler & TESS Exoplanet Space Observatories (L2)'
         }
       ];
     }
@@ -2597,7 +3354,8 @@ export function getExpeditionsForWorld(planet) {
           agency: 'NASA / ESA / CSA (1990–Present)',
           vehicles: 'Hubble Space Telescope (ACS/WFC3), James Webb Space Telescope (NIRCam/MIRI), Spitzer & GALEX',
           results: `Resolved individual Cepheid variable stars, H-II star-forming knots, dust lanes, and 3D proper-motion kinematics across ${planet.id}, calibrating the cosmic distance scale (${Number(planet.distance).toLocaleString('en-US')} ly).`,
-          probeLabel: '🛰️ JWST & Hubble'
+          probeLabel: '🛰️ JWST & Hubble',
+          targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
         }
       ];
     }
@@ -2607,7 +3365,8 @@ export function getExpeditionsForWorld(planet) {
         agency: 'NASA / ESA / CSA',
         vehicles: 'JWST (NIRCam / MIRI), Hubble Space Telescope, Chandra X-Ray Observatory',
         results: `Mapped ionized hydrogen/oxygen filaments, protoplanetary proplyds, and high-energy stellar winds inside ${planet.id} (${Number(planet.distance).toLocaleString('en-US')} ly).`,
-        probeLabel: '🛰️ JWST & Hubble'
+        probeLabel: '🛰️ JWST & Hubble',
+        targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
       }
     ];
   }
@@ -2620,7 +3379,8 @@ export function getExpeditionsForWorld(planet) {
         agency: 'NASA / ESA / CSA / ESO TRAPPIST (2016–Present)',
         vehicles: 'James Webb Space Telescope (MIRI & NIRSpec), Spitzer Space Telescope, TRAPPIST-South & VLT',
         results: 'Discovered 7 Earth-sized rocky worlds in a resonant chain (3 in the habitable zone); JWST MIRI thermal emission measurements constrained day-side temperatures (503 K on TRAPPIST-1b, 380 K on 1c) and probed for secondary CO2/water atmospheres.',
-        probeLabel: '🛰️ JWST & Spitzer'
+        probeLabel: '🛰️ JWST & Spitzer',
+        targetObjectId: 'James Webb Space Telescope (JWST — Sun-Earth L2, 1.5M km)'
       }
     ];
   }
@@ -2633,7 +3393,8 @@ export function getExpeditionsForWorld(planet) {
         agency: `Hipparcos / Gaia / JWST & ${planet.mediaFranchise || 'Popular Media Canon'}`,
         vehicles: 'ESA Hipparcos & Gaia Astrometric Satellites, Ground-Based Radial Velocity Spectrographs & Canon Starships',
         results: `${planet.description}`,
-        probeLabel: '🛰️ Gaia & Survey Probe'
+        probeLabel: '🛰️ Gaia & JWST Survey',
+        targetObjectId: 'Gaia, Kepler & TESS Exoplanet Space Observatories (L2)'
       }
     ];
   }
@@ -2655,9 +3416,101 @@ export function getExpeditionsForWorld(planet) {
       agency: 'NASA / ESA / Ground-Based Observatory Network',
       vehicles: vehicleName,
       results: `Discovered in ${year} via ${method}. Measured an orbital period of ${planet.pl_orbper ?? '?'} days (${planet.pl_orbsmax ?? '?'} AU) around ${planet.hostname} (${planet.st_spectype || 'G/K/M Star'}, ${planet.distance} ly from Earth) with radius ${planet.pl_rade ?? '?'} R⊕ and equilibrium temperature ${planet.pl_eqt ?? '?'} K.`,
-      probeLabel: isKepler ? '🛰️ Kepler Telescope' : isTess ? '🛰️ TESS Telescope' : '🛰️ Exoplanet Survey'
+      probeLabel: isKepler ? '🛰️ Kepler Telescope' : isTess ? '🛰️ TESS Telescope' : '🛰️ Gaia / JWST Survey',
+      targetObjectId: 'Gaia, Kepler & TESS Exoplanet Space Observatories (L2)'
     }
   ];
 }
+
+// Compute One-Way Radio Light-Time, Propulsion Travel Times & SETI / Observatory Telemetry
+export function computeTelemetryAndTravelGuide(planet) {
+  if (!planet || planet.isEarth) {
+    const homeNote = 'Protected 1420–1720 MHz "Water Hole" radio band monitored by Green Bank, Allen Telescope Array (ATA), MeerKAT & FAST; space observatories in LEO (ISS 408 km, Hubble 535 km, Tiangong 390 km) and Sun-Earth L2 (JWST, Gaia, Euclid at 1.5M km).';
+    return {
+      lightDelayText: '0.00 sec (Home Ground Station — DSN Goldstone / Madrid / Canberra)',
+      chemTimeText: '0 sec (Already on Earth)',
+      voyagerTimeText: '0 sec (Already on Earth)',
+      parkerTimeText: '0 sec (Already on Earth)',
+      starshotTimeText: '0 sec (Already on Earth)',
+      setiAndObsNote: homeNote,
+      lightTime: '0.00 sec (Home Ground Station — DSN)',
+      apolloTime: '0 sec (Home)',
+      voyagerTime: '0 sec (Home)',
+      parkerTime: '0 sec (Home)',
+      starshotTime: '0 sec (Home)',
+      setiStatus: homeNote
+    };
+  }
+
+  const C_KM_S = 299792.458;
+  const KM_PER_LY = 9.4607304725808e12;
+  const distKm = (planet.isSolarSystem || planet.isSpaceMission) && planet.dist_km_from_earth
+    ? Number(planet.dist_km_from_earth)
+    : Number(planet.distance || 0) * KM_PER_LY;
+
+  const formatDurationSec = sec => {
+    if (!Number.isFinite(sec) || sec <= 0) return '< 1 ms';
+    if (sec < 1.0) return `${(sec * 1000).toFixed(2)} ms`;
+    if (sec < 60) return `${sec.toFixed(2)} sec`;
+    if (sec < 3600) {
+      const m = Math.floor(sec / 60);
+      const s = Math.round(sec % 60);
+      return `${m}m ${s}s`;
+    }
+    if (sec < 86400) {
+      const h = Math.floor(sec / 3600);
+      const m = Math.round((sec % 3600) / 60);
+      return `${h}h ${m}m`;
+    }
+    const days = sec / 86400;
+    if (days < 365.25) return `${days.toFixed(1)} days`;
+    const years = days / 365.25;
+    if (years < 1000) return `${years.toFixed(1)} yrs`;
+    if (years < 1e6) return `${Math.round(years).toLocaleString('en-US')} yrs`;
+    if (years < 1e9) return `${(years / 1e6).toFixed(2)}M yrs`;
+    return `${(years / 1e9).toFixed(2)}B yrs`;
+  };
+
+  const lightSec = distKm / C_KM_S;
+  const chemSec = distKm / 11.11;      // Apollo 10/11 translunar speed (~40,000 km/h = 11.11 km/s)
+  const voyagerSec = distKm / 17.0;    // Voyager 1 interstellar cruise (17.0 km/s)
+  const parkerSec = distKm / 192.2;    // Parker Solar Probe record perihelion (692,000 km/h = 192.2 km/s)
+  const starshotSec = distKm / (0.20 * C_KM_S); // Breakthrough Starshot laser-sail (0.20c)
+
+  let setiAndObsNote = 'Observed by ESA Gaia astrometry and NASA/ESA infrared & optical sky surveys.';
+  if (planet.stationPreset === 'jwst' || planet.stationPreset === 'wasp39b' || planet.stationPreset === 'k2_18b') {
+    setiAndObsNote = 'JWST 0.6–28 µm infrared transmission & thermal emission spectroscopy (NIRCam, NIRSpec, NIRISS, MIRI) detecting H₂O, CO₂, CH₄, and photochemical SO₂.';
+  } else if (planet.stationPreset === 'seti_arecibo' || planet.stationPreset === 'seti_wow') {
+    setiAndObsNote = 'Active & Passive SETI benchmark: 2,380 MHz S-band (1974 Arecibo 1,679-bit broadcast) & 1420.4556 MHz 21-cm Neutral Hydrogen Line (1977 "6EQUJ5" Wow! Signal & Breakthrough Listen).';
+  } else if (planet.isSpaceMission) {
+    setiAndObsNote = 'Tracked in real time by NASA\'s Deep Space Network (70m antennas at Goldstone, Madrid & Canberra) and Space Network TDRS satellites on S/X/Ka-band telemetry.';
+  } else if (planet.isSolarSystem) {
+    setiAndObsNote = 'Direct radar ranging, in-situ orbital/lander telemetry via NASA Deep Space Network (DSN), and high-resolution imaging by Hubble & JWST.';
+  } else if (Number(planet.distance) <= 60) {
+    setiAndObsNote = 'Priority nearby target (<60 ly) scanned by Breakthrough Listen (1–12 GHz radio & optical laser technosignatures), TESS, Gaia, and JWST atmospheric reconnaissance.';
+  }
+
+  const lightDelayText = formatDurationSec(lightSec);
+  const chemTimeText = formatDurationSec(chemSec);
+  const voyagerTimeText = formatDurationSec(voyagerSec);
+  const parkerTimeText = formatDurationSec(parkerSec);
+  const starshotTimeText = formatDurationSec(starshotSec);
+
+  return {
+    lightDelayText,
+    chemTimeText,
+    voyagerTimeText,
+    parkerTimeText,
+    starshotTimeText,
+    setiAndObsNote,
+    lightTime: lightDelayText,
+    apolloTime: chemTimeText,
+    voyagerTime: voyagerTimeText,
+    parkerTime: parkerTimeText,
+    starshotTime: starshotTimeText,
+    setiStatus: setiAndObsNote
+  };
+}
+
 
 

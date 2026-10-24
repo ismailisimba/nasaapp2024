@@ -20,14 +20,15 @@
 
       <div class="selector-controls">
         <div class="control-group">
-          <label for="planetSearchInput">Search World / Sci-Fi / Mission</label>
-          <input type="text" id="planetSearchInput" placeholder="e.g. Adrian, Erid, Vulcan, Pandora, Arrakis, Saturn..." autocomplete="off" />
+          <label for="planetSearchInput">Search World / Station / Telescope / Sci-Fi</label>
+          <input type="text" id="planetSearchInput" placeholder="e.g. JWST, ISS, Voyager, SETI, Adrian, Vulcan, Saturn..." autocomplete="off" />
         </div>
 
         <div class="control-group">
           <label for="planetCategoryFilter">Object Category</label>
           <select id="planetCategoryFilter">
-            <option value="all">All Worlds, Media &amp; Deep-Sky (5,799)</option>
+            <option value="all">All Worlds, Stations &amp; Deep-Sky (5,815)</option>
+            <option value="space_missions">🛰️ Space Stations, Telescopes &amp; SETI (JWST, ISS, Voyager)</option>
             <option value="solar_system">☀️ Solar System Planets &amp; Moons (19)</option>
             <option value="popular_media">🎬 Popular Media &amp; Iconic Systems (20)</option>
             <option value="deep_sky">🕳️ Black Holes, Galaxies &amp; Nebulae (22)</option>
@@ -40,7 +41,7 @@
         </div>
 
         <div class="control-group">
-          <label for="exoplanetSelect">Selected Celestial Body (<span id="planetCountLabel">5799</span>)</label>
+          <label for="exoplanetSelect">Selected Celestial Body (<span id="planetCountLabel">5815</span>)</label>
           <select id="exoplanetSelect"></select>
         </div>
       </div>
@@ -102,6 +103,10 @@
             <!-- Populated dynamically with quadrant sky stats, moons & Earth bearing -->
           </div>
 
+          <div class="telemetry-guide-box" id="telemetryGuideBox">
+            <!-- Populated dynamically with Signal Light-Time, Propulsion Travel Times & SETI/Observatory Coverage -->
+          </div>
+
           <div class="expeditions-box" id="expeditionsBox">
             <!-- Populated dynamically with Scientific Expeditions, Vehicles Sent & Results -->
           </div>
@@ -109,11 +114,11 @@
           <details class="instructions-details">
             <summary>💡 Navigation, Zoom &amp; Drawing Controls</summary>
             <ul>
-              <li><strong>🔭 Sky Zoom (Pinch / Wheel / Buttons):</strong> Scroll, pinch with two fingers on mobile, or tap <strong>🔍 + / −</strong> on screen to zoom in up to 8× on the Sky Dome and reveal detailed star &amp; deep-sky labels!</li>
+              <li><strong>🛰️ Pickable Stations, Telescopes &amp; Moons:</strong> Click or double-click any orbiting Space Station (ISS, Tiangong), Space Telescope (JWST, Hubble), Probe (Voyager, Parker), or Moon in the Sky Dome or 3D Inspector to jump directly to it and inspect its 3D model &amp; sky!</li>
+              <li><strong>🔭 Sky Zoom (Pinch / Wheel / Buttons):</strong> Scroll, pinch with two fingers on mobile, or tap <strong>🔍 + / −</strong> on screen to zoom in up to 8× on the Sky Dome and reveal detailed star, station &amp; deep-sky labels!</li>
               <li><strong>🎬 Popular Media &amp; Expeditions:</strong> Filter by <em>Popular Media &amp; Iconic Systems</em> for <em>Project Hail Mary</em> (Adrian / Erid), <em>Star Trek</em> (Vulcan / Andoria), <em>Avatar</em> (Pandora), <em>Dune</em> (Arrakis), and view real + canon spacecraft missions!</li>
-              <li><strong>8 Quadrants &amp; Continents:</strong> Click <strong>Q1–Q8</strong> above (or on the 3D globe) to stand in that octant. On Earth, accurate continents help you orient yourself!</li>
+              <li><strong>8 Quadrants &amp; Semi-Opaque Globes:</strong> Click <strong>Q1–Q8</strong> above (or on the 3D globe) to stand in that octant. Globes are slightly translucent so hidden-side labels are dimmed and easily differentiated!</li>
               <li><strong>🌍 Earth on the Horizon:</strong> Click the green <strong>🌍 Earth on Horizon</strong> pill above to snap your view toward Earth!</li>
-              <li><strong>☀️ Entire Star System View:</strong> Click <strong>☀️ Entire Star System</strong> to view the host star(s), habitable zone, and all planets &amp; moons orbiting together.</li>
             </ul>
           </details>
         </div>
